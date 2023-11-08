@@ -3,26 +3,33 @@ import React from 'react'
 import title from '@/images/title.svg'
 import Link from 'next/link'
 import SearchBar from './SearchBar'
+import {
+  searchFormSubmit
+} from '@/serverActions';
 
-type Props = {}
-
-const Navbar = (props: Props) => {
+const Navbar = () => {
   return (
-    <div className='w-100 flex justify-start items-start'>
+    <div className='w-100 flex justify-start items-center'>
 
-        {/* TITLE */}
-        <Link href="/">
-            <Image 
-                src={title}
-                alt="Anihub"
-                width={200}
-                height={150}
-                className='hover:bg-bgDarkColor hover:cursor-pointer pt-4 pb-2 transition rounded'
-            />
-        </Link>
+        {/* TITLE + SEARCH BAR */}
+        <div>
 
-        {/* Search bar */}
-        <SearchBar />
+          {/* TITLE */}
+          <Link href="/">
+              <Image 
+                  src={title}
+                  alt="Anihub"
+                  width={200}
+                  height={150}
+                  className='hover:bg-bgDarkColor hover:cursor-pointer pt-4 pb-2 transition rounded'
+              />
+          </Link>
+
+          {/* Search bar */}
+          <SearchBar serverAction={searchFormSubmit}/>
+
+        </div>
+        
 
     </div>
   )

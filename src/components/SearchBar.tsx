@@ -1,6 +1,7 @@
-
+'use client'
 
 import React from 'react'
+import SearchIcon from '@mui/icons-material/Search';
 
 type Props = {
     serverAction?: (formData: FormData) => void;
@@ -9,20 +10,22 @@ type Props = {
 const SearchBar = ({ serverAction }: Props) => {
 
 
-    const searchBarInput = (
-        <input
-        type="text"
-        placeholder="Search..."
-        className="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-      />
-    )
+    const searchBarInput = 
+        <div className='bg-bgLight p-1 px-2 flex justify-center items-center rounded w-[inputWidth]'>
+            <SearchIcon className='text-white w-[28px] h-[28px]'/>
+            <input
+                type="text"
+                placeholder="Search for something..."
+                className="px-4 py-2 focus:outline-none bg-transparent text-placeholderColor text-sm"
+            />
+        </div>
 
-    if(serverAction) {
+    
+
+    if (serverAction) {
         return (
-            <form action={serverAction} className="flex items-center space-x-2">
-                {
-                    searchBarInput
-                }
+            <form action={serverAction}>
+                {searchBarInput}
             </form>
         )
     }

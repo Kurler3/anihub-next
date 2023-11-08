@@ -25,6 +25,11 @@ module.exports = {
         // Colors
         bgColor: '#2B2A2A',
         bgDarkColor: '#1E1E1E',
+        bgLight: '#424242',
+        placeholderColor: '#717171',
+
+        // Width
+        inputWidth: '200px',
 
         ///////////////////////////
         // CUSTOM /////////////////
