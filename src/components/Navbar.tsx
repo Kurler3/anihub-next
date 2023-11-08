@@ -12,7 +12,7 @@ const Navbar = () => {
     <div className='w-100 flex justify-start items-center'>
 
         {/* TITLE + SEARCH BAR */}
-        <div>
+        <div className='flex'>
 
           {/* TITLE */}
           <Link href="/">
