@@ -2,3 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+
+:root {
+    --radius: 7px;
+}
+
+
+@layer components {
+    .flexCenterCenter {
+        @apply flex justify-center items-center;
+    }
+}
