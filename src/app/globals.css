@@ -5,10 +5,14 @@
 
 :root {
     --radius: 7px;
+    overflow-x: hidden;
 }
 
 
 @layer components {
+    .responsiveText {
+        @apply text-sm lg:text-base;
+    }
     .flexCenterCenter {
         @apply flex justify-center items-center;
     }

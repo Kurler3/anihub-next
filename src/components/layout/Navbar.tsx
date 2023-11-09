@@ -30,7 +30,10 @@ const Navbar = () => {
         </Link>
 
         {/* Search bar */}
-        <SearchBar serverAction={searchFormSubmit} />
+        <form action="/search" method="GET" className='hidden md:block'>
+          <SearchBar />
+        </form>
+
 
       </div>
 
@@ -38,7 +41,7 @@ const Navbar = () => {
       <div className='flex justify-end items-center gap-6 flex-1'>
 
         {/* LANGUAGE */}
-        <div className='flexCenterCenter cursor-pointer p-1 pl-2 rounded-md transition hover:bg-bgDarkColor text-white'> 
+        <div className='flexCenterCenter cursor-pointer p-1 pl-2 rounded-md transition hover:bg-bgDarkColor text-white hidden md:block'>
           <p>EN</p>
           <KeyboardArrowDownIcon />
         </div>

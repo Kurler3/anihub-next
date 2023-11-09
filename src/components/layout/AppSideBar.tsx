@@ -6,14 +6,12 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import MessageIcon from '@mui/icons-material/Message';
 import ViewListIcon from '@mui/icons-material/ViewList';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { Button } from '../ui/button';
-import Link from 'next/link';
 
 type Props = {}
 
 const AppSideBar = (props: Props) => {
     return (
-        <div className='w-[10%] h-100 gap-4 flexColStartStart'>
+        <div className='w-[10%] h-100 gap-4 flexColStartStart min-w-[50px]'>
 
             <HorizontalSeparator />
 

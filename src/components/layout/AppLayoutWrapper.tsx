@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 import Navbar from '@/components/layout/Navbar'
 import AppSideBar from './AppSideBar'
+import Footer from './Footer'
 
 type Props = {
     children: ReactNode
@@ -13,7 +14,7 @@ const AppLayoutWrapper = ({ children }: Props) => {
             {/* NAVBAR */}
             <Navbar />
 
-            <div className='flex-1 flex w-100 gap-4 mt-2'>
+            <div className='flex-1 flex w-100 gap-4 mt-2 min-h-[850px]'>
 
                 {/* LEFT SIDE BAR */}
                 <AppSideBar />
@@ -25,6 +26,7 @@ const AppLayoutWrapper = ({ children }: Props) => {
             </div>
             
             {/* FOOTER */}
+            <Footer />
             
         </div>
     )
