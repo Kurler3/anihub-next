@@ -28,6 +28,9 @@ module.exports = {
         bgLight: '#424242',
         placeholderColor: '#717171',
         separatorColor: '#393939',
+        sideBarIconColor: '#555555',
+        sideBarTitleColor: '#DADADA',
+        highlightedColor: '#E59904',
 
         ///////////////////////////
         // CUSTOM /////////////////

@@ -12,4 +12,10 @@
     .flexCenterCenter {
         @apply flex justify-center items-center;
     }
+    .flexStartCenter {
+        @apply flex justify-start items-center;
+    }
+    .flexColStartStart {
+        @apply flex flex-col justify-start items-start;
+    }
 }

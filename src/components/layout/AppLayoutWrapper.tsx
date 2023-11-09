@@ -8,7 +8,7 @@ type Props = {
 
 const AppLayoutWrapper = ({ children }: Props) => {
     return (
-        <div className='w-screen h-screen flex flex-col justify-start p-6'>
+        <div className='w-screen h-screen flex flex-col justify-start p-6 py-2'>
 
             {/* NAVBAR */}
             <Navbar />
