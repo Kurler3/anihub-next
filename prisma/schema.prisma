@@ -10,3 +10,124 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id                Int             @id @default(autoincrement())
+  avatarUrl         String?
+  username          String          @unique
+  email             String          @unique
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @default(now())
+  followers         Follows[]       @relation("following")
+  following         Follows[]       @relation("follower")
+  Post              Post[]
+  Comment           Comment[]
+  CommentLike       CommentLike[]
+  AnimeComments     AnimeComment[]
+  WatchList         WatchList[]
+  SharedWatchlists  WatchListUser[]
+
+  @@map("users")
+}
+
+model Follows {
+  follower    User @relation("follower", fields: [followerId], references: [id])
+  followerId  Int
+  following   User @relation("following", fields: [followingId], references: [id])
+  followingId Int
+
+  @@id([followerId, followingId])
+
+  @@map("follows")
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  user      User      @relation(fields: [userId], references: [id])
+  title     String
+  body      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now())
+  Comment   Comment[]
+
+  @@map("posts")
+}
+
+model Comment {
+  id              Int           @id @default(autoincrement())
+  userId          Int
+  user            User          @relation(fields: [userId], references: [id])
+  postId          Int
+  post            Post          @relation(fields: [postId], references: [id])
+  likes           CommentLike[]
+  parentCommentId Int? // Nullable field to reference the parent comment
+  parentComment   Comment?      @relation("ChildComments", fields: [parentCommentId], references: [id])
+  childComments   Comment[]     @relation("ChildComments")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("comments")
+}
+
+model CommentLike {
+  commentId Int
+  comment   Comment @relation(fields: [commentId], references: [id])
+  userId    Int
+  user      User    @relation(fields: [userId], references: [id])
+
+  @@id([commentId, userId])
+
+  @@map("comment_likes")
+}
+
+model AnimeComment {
+  id        Int    @id @default(autoincrement())
+  userId    Int
+  user      User   @relation(fields: [userId], references: [id])
+  animeId   Int
+  episodeId Int?
+  content   String
+
+  parentAnimeCommentId Int?
+  parentAnimeComment   AnimeComment?  @relation("ChildAnimeComments", fields: [parentAnimeCommentId], references: [id])
+  childAnimeComments   AnimeComment[] @relation("ChildAnimeComments")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  @@map("anime_comments")
+}
+
+model WatchList {
+  id             Int              @id @default(autoincrement())
+  name            String
+  description     String?
+  ownerId        Int
+  owner          User             @relation(fields: [ownerId], references: [id])
+  watchlistUsers WatchListUser[]
+  WatchlistAnime WatchlistAnime[]
+
+  @@map("watchlists")
+}
+
+model WatchListUser {
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  watchlistId Int
+  watchlist   WatchList @relation(fields: [watchlistId], references: [id])
+
+  @@id([userId, watchlistId])
+
+  @@map("watchlist_users")
+}
+
+model WatchlistAnime {
+  watchListId Int
+  watchlist   WatchList @relation(fields: [watchListId], references: [id])
+  animeId     Int
+
+  @@id([watchListId, animeId])
+
+  @@map("watchlist_animes")
+}
