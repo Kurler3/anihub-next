@@ -1,7 +1,18 @@
 
-
-export default function HorizontalSeparator() {
+type Props = {
+    width?: number;
+}
+export default function HorizontalSeparator({
+    width
+}: Props) {
     return (
-        <div className="w-[100%] h-[2px] bg-separatorColor"></div>
+        <div
+            className='h-[2px] bg-separatorColor'
+            style={{
+                width: `${width ? width : 100}%`
+            }}
+        >
+
+        </div>
     )
 }

@@ -16,7 +16,7 @@ const AppSideBar = (props: Props) => {
             <HorizontalSeparator />
 
             {/* SEARCH */}
-            <AppSideBarOption 
+            <AppSideBarOption
                 IconComponent={SearchIcon}
                 title='Search'
                 urlValue='search'
@@ -26,14 +26,14 @@ const AppSideBar = (props: Props) => {
             <HorizontalSeparator />
 
             {/* SOCIAL */}
-            <AppSideBarOption 
+            <AppSideBarOption
                 IconComponent={PeopleAltIcon}
                 title='Social'
                 urlValue='social'
             />
 
             {/* MESSAGES */}
-            <AppSideBarOption 
+            <AppSideBarOption
                 IconComponent={MessageIcon}
                 title='Messages'
                 urlValue='messages'
@@ -43,7 +43,7 @@ const AppSideBar = (props: Props) => {
             <HorizontalSeparator />
 
             {/* WATCH LISTS */}
-            <AppSideBarOption 
+            <AppSideBarOption
                 IconComponent={ViewListIcon}
                 title='Watchlists'
                 urlValue='watchlists'
@@ -53,16 +53,16 @@ const AppSideBar = (props: Props) => {
             <HorizontalSeparator />
 
             {/* MADE BY */}
-            <div className='flexCenterCenter gap-2 flex-col'>
+            <div className='flexCenterCenter gap-2 flex-col w-[100%]'>
                 <p className='text-highlightedColor text-center text-xs'>
                     Made by Miguel, 2023
                 </p>
 
                 <div className='hover:bg-bgDarkColor p-2 rounded-md transition'>
                     <a target="_blank" href="https://github.com/Kurler3" rel="noopener noreferrer">
-                        <GitHubIcon className='text-sideBarIconColor'/>
+                        <GitHubIcon className='text-sideBarIconColor' />
                     </a>
-                    
+
                 </div>
             </div>
 

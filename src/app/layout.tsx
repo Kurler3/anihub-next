@@ -23,9 +23,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={mcLaren.className}>
       <body className='bg-bgColor'>
-          <AppLayoutWrapper>
-            {children}
-          </AppLayoutWrapper>
+        <AppLayoutWrapper>
+          {children}
+        </AppLayoutWrapper>
       </body>
     </html>
   )

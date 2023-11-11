@@ -1,12 +1,13 @@
 
 
-import React from 'react'
+import React, { ButtonHTMLAttributes } from 'react'
 
 type Props = {
     title: string;
     onClick?: () => void;
     bgColor: 'highlightedColor' | 'lightColor';
     paddingX: '12' | '8';
+    type?: "button" | "submit" | "reset";
 }
 
 const Button = ({
@@ -14,9 +15,10 @@ const Button = ({
     paddingX,
     onClick,
     bgColor,
+    type,
 }: Props) => {
     return (
-        <button className={`p-3 px-${paddingX} text-white bg-${bgColor} rounded-md`} onClick={onClick}>
+        <button type={type} className={`p-3 px-${paddingX} text-white bg-${bgColor} rounded-md`} onClick={onClick}>
             {title}
         </button>
     )
