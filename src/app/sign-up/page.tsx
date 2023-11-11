@@ -2,15 +2,21 @@
 
 import Button from '@/components/ui/Button'
 import Image from 'next/image'
-import React from 'react'
+import React, { useState } from 'react'
 import profilePic from '@/images/profile_pic.svg';
-import Input from '@/components/ui/Input';
 import HorizontalSeparator from '@/components/HorizontalSeparator';
 import GoogleButton from '@/components/ui/GoogleButton';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { type SignUpFormData } from '@/types/auth.types';
+import Alert from '@/components/ui/Alert';
+import { PUBLIC_IMAGES_URLS } from '@/lib/constants';
+import { getRandomValueFromArray } from '@/lib/utils';
 
 const SignUpPage = () => {
+
+    const [
+        avatarUrl, setAvatarUrl
+    ] = useState<string>(getRandomValueFromArray<string>(PUBLIC_IMAGES_URLS)!);
 
     const {
         register,
@@ -26,15 +32,13 @@ const SignUpPage = () => {
 
     // Watch the password and confirmPassword fields to show an error if they don't match
     const password = watch('password');
-    const confirmPassword = watch('confirmPassword');
-    const passwordMismatch = password !== confirmPassword;
 
     return (
         <div className='w-full h-full flexStartCenter flex-col gap-6 p-4 pt-10'>
 
             {/* CHOSEN AVATAR */}
             <Image
-                src={profilePic}
+                src={avatarUrl}
                 alt='Choosen avatar'
                 width={180}
                 height={180}
@@ -48,39 +52,57 @@ const SignUpPage = () => {
                 paddingX='8'
             />
 
-            <form>
+            <form className='flexStartCenter flex-col gap-3' onSubmit={handleSubmit(onSubmit)}>
 
                 {/* EMAIL INPUT */}
-                <Input
-                    // name='email'
+                <input
+                    className='bg-bgLight p-3 rounded-md text-[12px] focus:outline-none text-white w-80 shadow-md'
                     placeholder='Enter your email...'
                     type='email'
-                    {...register('email', { required: 'Email is required' })}
+                    {...register('email', {
+                        required: 'Email is required', pattern: {
+                            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                            message: "Invalid email address"
+                        }
+                    })}
                 />
 
-                {errors.email && <p>{errors.email.message}</p>}
-
+                {errors.email && <Alert message={errors.email.message!} />}
 
                 {/* USERNAME INPUT */}
-                <Input
-                    name='username'
+                <input
+                    className='bg-bgLight p-3 rounded-md text-[12px] focus:outline-none text-white w-80 shadow-md'
                     placeholder='Enter your username...'
                     type='text'
+                    {...register('username', { required: 'Username is required', minLength: { value: 6, message: 'Username min length is 6' } })}
                 />
+
+                {errors.username && <Alert message={errors.username.message!} />}
+
 
                 {/* PASSWORD INPUT */}
-                <Input
-                    name='password'
-                    placeholder='Enter your password...'
+                <input
+                    className='bg-bgLight p-3 rounded-md text-[12px] focus:outline-none text-white w-80 shadow-md'
+                    placeholder='Enter a password...'
                     type='password'
+                    {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Password min length is 6' } })}
                 />
+                {errors.password && <Alert message={errors.password.message!} />}
+
 
                 {/* CONFIRM PASSWORD INPUT */}
-                <Input
-                    name='confirmPassword'
+                <input
+                    className='bg-bgLight p-3 rounded-md text-[12px] focus:outline-none text-white w-80 shadow-md'
                     placeholder='Confirm your password...'
                     type='password'
+                    {...register('confirmPassword', {
+                        required: 'Confirm Password is required',
+                        validate: (value) => value === password || 'Passwords do not match',
+                        minLength: { value: 6, message: 'Password min length is 6' }
+                    })}
                 />
+
+                {errors.confirmPassword && <Alert message={errors.confirmPassword.message!} />}
 
                 {/* SIGN UP BTN */}
                 <Button
@@ -88,6 +110,7 @@ const SignUpPage = () => {
                     paddingX='12'
                     onClick={() => { }}
                     bgColor='highlightedColor'
+                    bgHoverColor='highlightedHover'
                     type='submit'
                 />
 
@@ -95,7 +118,7 @@ const SignUpPage = () => {
 
 
             {/* SEPARATOR */}
-            <HorizontalSeparator width={30} />
+            <HorizontalSeparator hasOr width={70} />
 
             {/* GOOGLE BTN */}
             <GoogleButton />
