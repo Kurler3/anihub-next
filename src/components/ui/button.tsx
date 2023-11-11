@@ -5,10 +5,10 @@ import React, { ButtonHTMLAttributes } from 'react'
 type Props = {
     title: string;
     onClick?: () => void;
-    bgColor: 'highlightedColor' | 'lightColor';
-    paddingX: '12' | '8';
+    bgColor: string;
+    paddingX: string;
     type?: "button" | "submit" | "reset";
-    bgHoverColor?: 'highlightedHover';
+    bgHoverColor?: string;
 }
 
 const Button = ({

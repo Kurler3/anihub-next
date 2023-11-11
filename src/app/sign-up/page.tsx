@@ -3,14 +3,15 @@
 import Button from '@/components/ui/Button'
 import Image from 'next/image'
 import React, { useState } from 'react'
-import profilePic from '@/images/profile_pic.svg';
 import HorizontalSeparator from '@/components/HorizontalSeparator';
 import GoogleButton from '@/components/ui/GoogleButton';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { type SignUpFormData } from '@/types/auth.types';
 import Alert from '@/components/ui/Alert';
-import { PUBLIC_IMAGES_URLS } from '@/lib/constants';
-import { getRandomValueFromArray } from '@/lib/utils';
+import { CHOOSE_AVATAR_MODAL_ID, PUBLIC_IMAGES_URLS } from '@/lib/constants';
+import { closeModal, getRandomValueFromArray, openModal } from '@/lib/utils';
+import Modal from '@/components/ui/Modal';
+import ChooseAvatarModalBody from './components/ChooseAvatarModalBody';
 
 const SignUpPage = () => {
 
@@ -33,6 +34,13 @@ const SignUpPage = () => {
     // Watch the password and confirmPassword fields to show an error if they don't match
     const password = watch('password');
 
+
+    // Handle select avatar
+    const handleSelectAvatar = (avatarUrl: string) => {
+        setAvatarUrl(avatarUrl);
+        closeModal(CHOOSE_AVATAR_MODAL_ID)
+    }
+
     return (
         <div className='w-full h-full flexStartCenter flex-col gap-6 p-4 pt-10'>
 
@@ -43,6 +51,7 @@ const SignUpPage = () => {
                 width={180}
                 height={180}
                 className='border-2 rounded-full cursor-pointer shadow-md'
+                onClick={() => openModal(CHOOSE_AVATAR_MODAL_ID)}
             />
 
             {/* CHOOSE AVATAR BTN */}
@@ -50,6 +59,7 @@ const SignUpPage = () => {
                 title='Choose avatar'
                 bgColor='highlightedColor'
                 paddingX='8'
+                onClick={() => openModal(CHOOSE_AVATAR_MODAL_ID)}
             />
 
             <form className='flexStartCenter flex-col gap-3' onSubmit={handleSubmit(onSubmit)}>
@@ -122,6 +132,20 @@ const SignUpPage = () => {
 
             {/* GOOGLE BTN */}
             <GoogleButton />
+
+
+            {/* CHOOSE AVATAR MODAL */}
+            <Modal
+                title='Choose avatar'
+                modalId={CHOOSE_AVATAR_MODAL_ID}
+            >
+
+                <ChooseAvatarModalBody
+                    currentAvatar={avatarUrl}
+                    handleConfirm={handleSelectAvatar}
+                />
+
+            </Modal>
 
         </div>
     )

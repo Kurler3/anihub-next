@@ -19,3 +19,8 @@ export function getRandomValueFromArray<T>(arr: T[]): T | undefined {
 export function openModal(modalId: string) {
     ;(document.getElementById(modalId)! as HTMLDialogElement).showModal()
 }
+
+// Close modal
+export function closeModal(modalId: string) {
+    ;(document.getElementById(modalId)! as HTMLDialogElement).close()
+}

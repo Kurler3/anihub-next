@@ -11,7 +11,7 @@ type Props = {
 
 const Modal = ({ modalId, title, children }: Props) => {
     return (
-        <dialog id={modalId} className="modal">
+        <dialog id={modalId} className="modal text-md">
             <div className="modal-box">
                 <h3 className="font-bold text-lg">{title}</h3>
                 <div className="py-4">
@@ -20,6 +20,7 @@ const Modal = ({ modalId, title, children }: Props) => {
                     }
                 </div>
             </div>
+
             <form method="dialog" className="modal-backdrop">
                 <button>close</button>
             </form>
