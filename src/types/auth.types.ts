@@ -11,3 +11,8 @@ export type SignUpFormData = {
     password: string
     confirmPassword: string
 }
+
+export type SignUpModalData = {
+    message: string | null
+    type: 'error' | 'success' | null
+}

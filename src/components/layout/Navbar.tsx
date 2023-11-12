@@ -81,13 +81,13 @@ const Navbar = async () => {
             <div className='flexCenterCenter gap-2'>
 
               <Link href='/login'>
-                <button className='p-3 px-12 text-white bg-highlightedColor rounded-md'>
+                <button className='p-3 px-12 text-white bg-highlightedColor rounded-md text-sm md:text-base'>
                   Login
                 </button>
               </Link>
 
               <Link href='/sign-up'>
-                <button className='p-3 px-8 text-white bg-bgLight rounded-md'>
+                <button className='p-3 px-8 text-white bg-bgLight rounded-md text-sm md:text-base'>
                   Sign up
                 </button>
               </Link>

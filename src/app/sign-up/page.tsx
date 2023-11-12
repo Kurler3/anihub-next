@@ -2,22 +2,35 @@
 
 import Button from '@/components/ui/Button'
 import Image from 'next/image'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import HorizontalSeparator from '@/components/HorizontalSeparator';
 import GoogleButton from '@/components/ui/GoogleButton';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { type SignUpFormData } from '@/types/auth.types';
+import { SignUpModalData, type SignUpFormData } from '@/types/auth.types';
 import Alert from '@/components/ui/Alert';
-import { CHOOSE_AVATAR_MODAL_ID, PUBLIC_IMAGES_URLS } from '@/lib/constants';
+import { CHOOSE_AVATAR_MODAL_ID, PUBLIC_IMAGES_URLS, SIGN_UP_LOADING_MODAl_ID } from '@/lib/constants';
 import { closeModal, getRandomValueFromArray, openModal } from '@/lib/utils';
 import Modal from '@/components/ui/Modal';
 import ChooseAvatarModalBody from './components/ChooseAvatarModalBody';
+import { useRouter } from 'next/navigation';
+
+const initialSignUpModalData = {
+    message: null,
+    type: null,
+}
 
 const SignUpPage = () => {
+
+    const router = useRouter();
 
     const [
         avatarUrl, setAvatarUrl
     ] = useState<string>(getRandomValueFromArray<string>(PUBLIC_IMAGES_URLS)!);
+
+    const [
+        signUpModalData,
+        setSignUpModalData,
+    ] = useState<SignUpModalData>(initialSignUpModalData);
 
     const {
         register,
@@ -26,20 +39,64 @@ const SignUpPage = () => {
         watch,
     } = useForm<SignUpFormData>();
 
-    const onSubmit: SubmitHandler<SignUpFormData> = (data) => {
-        // Handle your form submission logic here
-        console.log(data);
-    };
+    const onSubmit: SubmitHandler<SignUpFormData> = useCallback(async (data) => {
+
+        // Set sign up msg to null
+        setSignUpModalData(initialSignUpModalData);
+
+        // Open sign up loading modal
+        openModal(SIGN_UP_LOADING_MODAl_ID);
+
+
+        const body = {
+            email: data.email,
+            password: data.password,
+            username: data.username,
+            avatarUrl,
+        }
+
+        // Send request to backend
+        const response = await fetch('/api/user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            setSignUpModalData({
+                message: errorData.error,
+                type: 'error',
+            });
+        } else {
+            const responseData = await response.json();
+            // Handle success appropriately
+            setSignUpModalData({
+                message: responseData.message,
+                type: 'success',
+            });
+        }
+
+        // If success => redirect to /
+        if (signUpModalData.type === 'success') {
+
+            setTimeout(() => {
+                router.refresh()
+            }, 2000);
+        }
+
+    }, [avatarUrl, router, signUpModalData.type])
 
     // Watch the password and confirmPassword fields to show an error if they don't match
     const password = watch('password');
 
-
     // Handle select avatar
-    const handleSelectAvatar = (avatarUrl: string) => {
+    const handleSelectAvatar = useCallback((avatarUrl: string) => {
         setAvatarUrl(avatarUrl);
         closeModal(CHOOSE_AVATAR_MODAL_ID)
-    }
+    }, [])
 
     return (
         <div className='w-full h-full flexStartCenter flex-col gap-6 p-4 pt-10'>
@@ -145,6 +202,26 @@ const SignUpPage = () => {
                     handleConfirm={handleSelectAvatar}
                 />
 
+            </Modal>
+
+            {/* LOADING MODAL */}
+            <Modal
+                title='Signing up...'
+                modalId={SIGN_UP_LOADING_MODAl_ID}
+            >
+                <div className='flexCenterCenter text-sm'>
+                    {
+                        signUpModalData.message ? (
+                            <Alert
+                                message={signUpModalData.message}
+                                type={signUpModalData.type!}
+                            />
+                        ) : (
+                            <span className="loading loading-spinner loading-lg"></span>
+
+                        )
+                    }
+                </div>
             </Modal>
 
         </div>

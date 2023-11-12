@@ -20,7 +20,7 @@ const Button = ({
     bgHoverColor,
 }: Props) => {
     return (
-        <button type={type} className={`p-3 px-${paddingX} transition text-white bg-${bgColor} hover:bg-${bgHoverColor} rounded-md`} onClick={onClick}>
+        <button type={type} className={`p-3 px-${paddingX} transition text-white bg-${bgColor} hover:bg-${bgHoverColor} rounded-md `} onClick={onClick}>
             {title}
         </button>
     )

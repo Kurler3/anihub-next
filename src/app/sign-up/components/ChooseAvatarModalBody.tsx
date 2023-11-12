@@ -56,7 +56,7 @@ const ChooseAvatarModalBody = ({ currentAvatar, handleConfirm }: Props) => {
             </div>
 
             {/* FOOTER */}
-            <div className='border-t border-separatorColor w-full p-2 flex justify-end items-center'>
+            <div className='border-t border-separatorColor w-full p-2 flex justify-end items-center gap-2'>
 
                 {/* PICK RANDOM */}
                 <Button
