@@ -1,13 +1,13 @@
 import Image from 'next/image'
 import React from 'react'
 import title from '@/images/title.svg'
-import profilePic from '@/images/profile_pic.svg'
 import Link from 'next/link'
 import SearchBar from '../inputs/SearchBar'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SettingsIcon from '@mui/icons-material/Settings';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { getCurrentUser } from '@/lib/supabase/supabase-server'
+import NavbarAvatarButton from './NavbarAvatarButton'
 
 const Navbar = async () => {
 
@@ -66,17 +66,9 @@ const Navbar = async () => {
         {/* AVATAR */}
         {
           user ? (
-            <Link href="/user/id">
-              <div className='flexCenterCenter cursor-pointer p-1 rounded-md transition hover:bg-bgDarkColor'>
-                <Image
-                  src={profilePic}
-                  alt="Profile Pic"
-                  width={55}
-                  height={50}
-                  className='rounded-full'
-                />
-              </div>
-            </Link>
+
+            <NavbarAvatarButton user={user} />
+
           ) : (
             <div className='flexCenterCenter gap-2'>
 

@@ -1,5 +1,6 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
+import { getPrismaClient } from '../prisma'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY
@@ -24,6 +25,17 @@ export const getCurrentUser = async () => {
     } = await supabase.auth.getUser()
 
     //TODO Get from db with id because need avatar as well.
+    if (user) {
+        const prisma = getPrismaClient()
 
+        // Get from db
+        const userFromDb = await prisma.user.findUnique({
+            where: {
+                id: user.id,
+            },
+        })
+
+        return userFromDb
+    }
     return user
 }
