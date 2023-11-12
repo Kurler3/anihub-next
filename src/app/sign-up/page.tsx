@@ -21,7 +21,7 @@ const initialSignUpModalData = {
 
 const SignUpPage = () => {
 
-    const router = useRouter();
+    const { refresh } = useRouter();
 
     const [
         avatarUrl, setAvatarUrl
@@ -46,7 +46,6 @@ const SignUpPage = () => {
 
         // Open sign up loading modal
         openModal(SIGN_UP_LOADING_MODAl_ID);
-
 
         const body = {
             email: data.email,
@@ -81,13 +80,10 @@ const SignUpPage = () => {
 
         // If success => redirect to /
         if (signUpModalData.type === 'success') {
-
-            setTimeout(() => {
-                router.refresh()
-            }, 2000);
+            refresh();
         }
 
-    }, [avatarUrl, router, signUpModalData.type])
+    }, [avatarUrl, refresh, signUpModalData.type])
 
     // Watch the password and confirmPassword fields to show an error if they don't match
     const password = watch('password');

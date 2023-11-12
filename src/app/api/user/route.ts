@@ -1,8 +1,7 @@
 import { createUserSchema } from '@/schemas'
 import { getPrismaClient } from '@/lib/prisma'
-import { createSupabaseServerSide } from '@/lib/supabase/supabase-server'
 import { NextRequest, NextResponse } from 'next/server'
-import { z } from 'zod'
+import { getSupabaseRouteHandler } from '@/lib/supabase/supabase-route-handler'
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL
 
@@ -13,7 +12,7 @@ export async function POST(req: NextRequest) {
         /////////////////////////////////////////////////
 
         const prisma = getPrismaClient()
-        const supabase = createSupabaseServerSide()
+        const supabase = getSupabaseRouteHandler()
 
         /////////////////////////////////////////////////
         // VALIDATE BODY ////////////////////////////////
@@ -43,15 +42,6 @@ export async function POST(req: NextRequest) {
         const signUpResponse = await supabase.auth.signUp({
             email,
             password,
-            options: {
-                data: {
-                    username,
-                    avatarUrl,
-                },
-            },
-            // options: {
-            //     emailRedirectTo: `${APP_URL}/auth/callback`,
-            // },
         })
 
         const { data: signUpData, error } = signUpResponse
@@ -70,11 +60,6 @@ export async function POST(req: NextRequest) {
                 avatarUrl,
             },
         })
-
-        // await supabase.auth.signInWithPassword({
-        //     email,
-        //     password,
-        // })
 
         return NextResponse.json({ message: 'User created successfully' }, { status: 201 })
     } catch (error) {
