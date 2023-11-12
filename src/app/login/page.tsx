@@ -4,7 +4,6 @@ import HorizontalSeparator from '@/components/HorizontalSeparator'
 import Alert from '@/components/ui/Alert';
 import Button from '@/components/ui/Button';
 import GoogleButton from '@/components/ui/GoogleButton'
-import { createSupabaseServerSide } from '@/lib/supabase/supabase-server';
 import { LoginFormData } from '@/types/auth.types';
 import { useRouter } from 'next/navigation';
 
@@ -13,7 +12,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 const LoginPage = () => {
 
-    const { push, refresh } = useRouter()
+    const { push } = useRouter()
 
     const {
         register,
@@ -36,9 +35,8 @@ const LoginPage = () => {
             const errorData = await response.json();
             console.error(errorData.error)
         } else {
-            refresh()
+            push('/')
         }
-
 
     }
 

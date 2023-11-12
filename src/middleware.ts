@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 
 import type { NextRequest } from 'next/server'
 import type { Database } from '@/types/database.types'
+import { getCurrentUser } from './lib/supabase/supabase-server'
 
 const NEED_LOGIN_PATHS = ['/watchlists', '/social', '/messages', '/notifications']
 const CANNOT_BE_LOGGED_IN_PATHS = ['/sign-up', '/login']
@@ -15,6 +16,7 @@ export async function middleware(req: NextRequest) {
 
     // Refresh the user's session on every request.
     const { data: session } = await supabase.auth.getSession()
+    // const user = await getCurrentUser()
 
     // Needs login
     const requiresLogin = NEED_LOGIN_PATHS.includes(req.nextUrl.pathname)

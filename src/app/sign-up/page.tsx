@@ -21,7 +21,7 @@ const initialSignUpModalData = {
 
 const SignUpPage = () => {
 
-    const { refresh } = useRouter();
+    const { push, refresh } = useRouter();
 
     const [
         avatarUrl, setAvatarUrl
@@ -39,7 +39,7 @@ const SignUpPage = () => {
         watch,
     } = useForm<SignUpFormData>();
 
-    const onSubmit: SubmitHandler<SignUpFormData> = useCallback(async (data) => {
+    const onSubmit: SubmitHandler<SignUpFormData> = async (data) => {
 
         // Set sign up msg to null
         setSignUpModalData(initialSignUpModalData);
@@ -79,11 +79,13 @@ const SignUpPage = () => {
         }
 
         // If success => redirect to /
-        if (signUpModalData.type === 'success') {
-            refresh();
+        if (response.ok) {
+            setTimeout(() => {
+                refresh()
+                push('/');
+            }, 2000);
         }
-
-    }, [avatarUrl, refresh, signUpModalData.type])
+    }
 
     // Watch the password and confirmPassword fields to show an error if they don't match
     const password = watch('password');
