@@ -11,9 +11,13 @@ export async function POST(req: NextRequest) {
         data: { session },
     } = await supabase.auth.getSession()
 
+    console.log(session)
+
     if (session) {
         await supabase.auth.signOut()
     }
+
+    console.log('Redirect')
 
     return NextResponse.redirect(new URL('/', req.url), {
         status: 302,

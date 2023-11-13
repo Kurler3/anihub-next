@@ -12,7 +12,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 
 const LoginPage = () => {
 
-    const { push } = useRouter()
+    const { push, refresh } = useRouter()
 
     const {
         register,
@@ -35,6 +35,7 @@ const LoginPage = () => {
             const errorData = await response.json();
             console.error(errorData.error)
         } else {
+            refresh()
             push('/')
         }
 

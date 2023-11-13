@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 
-var prisma: PrismaClient
+let prisma: PrismaClient
 
 export const getPrismaClient = () => {
     if (prisma) return prisma

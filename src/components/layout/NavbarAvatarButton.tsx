@@ -3,6 +3,7 @@
 import React from 'react'
 import { Database } from '@/types/database.types';
 import Image from 'next/image';
+import { redirectToChangePassword } from '@/serverActions/auth.actions';
 
 type User = Database['public']['Tables']['users']['Row'];
 
@@ -13,6 +14,7 @@ type Props = {
 const NavbarAvatarButton = ({
     user
 }: Props) => {
+
     return (
         <div className='p-1 rounded-md transition hover:bg-bgDarkColor dropdown dropdown-end cursor-pointer'>
             <label tabIndex={0}><Image
@@ -24,12 +26,19 @@ const NavbarAvatarButton = ({
             /></label>
             <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li>
-                    <a>Logout</a>
+                    <form action='/api/auth/signout' method="POST">
+                        <button type='submit'>
+                            Logout
+                        </button>
+                    </form>
                 </li>
                 <li>
-                    <a>
-                        Item 2
-                    </a>
+                    <form action={redirectToChangePassword}>
+                        <button>
+                            Reset password
+                        </button>
+                    </form>
+
                 </li>
             </ul>
         </div>
