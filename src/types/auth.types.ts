@@ -12,7 +12,9 @@ export type SignUpFormData = {
     confirmPassword: string
 }
 
-export type SignUpModalData = {
+export interface SignUpModalData {
     message: string | null
     type: 'error' | 'success' | null
 }
+
+export interface LoginModalData extends SignUpModalData {}
