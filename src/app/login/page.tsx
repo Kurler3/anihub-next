@@ -8,6 +8,7 @@ import Modal from '@/components/ui/Modal';
 import { LOGIN_LOADING_MODAL_ID } from '@/lib/constants';
 import { openModal } from '@/lib/utils';
 import { LoginFormData, LoginModalData } from '@/types/auth.types';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useRouter } from 'next/navigation';
 
 import React, { useState } from 'react'
@@ -76,6 +77,25 @@ const LoginPage = () => {
 
     }
 
+    const handleLoginWithGoogle = async () => {
+
+        const supabase = createClientComponentClient();
+
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${location.origin}/api/auth/loginWithGoogle`,
+            }
+        })
+
+        if (!error) {
+            setTimeout(() => {
+                refresh()
+                push('/');
+            }, 2000);
+        }
+    }
+
     return (
         <div className='w-full h-full flexStartCenter flex-col gap-6 p-4 pt-40'>
 
@@ -127,7 +147,7 @@ const LoginPage = () => {
             <HorizontalSeparator hasOr width={70} />
 
             {/* GOOGLE BTN */}
-            <GoogleButton />
+            <GoogleButton onClick={handleLoginWithGoogle} />
 
             {/* LOADING MODAL */}
             <Modal

@@ -12,7 +12,8 @@ import { CHOOSE_AVATAR_MODAL_ID, PUBLIC_IMAGES_URLS, SIGN_UP_LOADING_MODAl_ID } 
 import { closeModal, getRandomValueFromArray, openModal } from '@/lib/utils';
 import Modal from '@/components/ui/Modal';
 import ChooseAvatarModalBody from './components/ChooseAvatarModalBody';
-import { useRouter } from 'next/navigation';
+import { useRouter, redirect } from 'next/navigation';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 const initialSignUpModalData = {
     message: null,
@@ -85,6 +86,27 @@ const SignUpPage = () => {
                 push('/');
             }, 2000);
         }
+    }
+
+    const handleSignUpWithGoogle = async () => {
+
+        const supabase = createClientComponentClient();
+
+        const { error } = await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: `${location.origin}/api/auth/signUpWithGoogle`,
+            }
+        })
+
+        if (!error) {
+            setTimeout(() => {
+                refresh()
+                push('/');
+            }, 2000);
+        }
+
+
     }
 
     // Watch the password and confirmPassword fields to show an error if they don't match
@@ -173,7 +195,6 @@ const SignUpPage = () => {
                 <Button
                     title='Sign Up'
                     paddingX='12'
-                    onClick={() => { }}
                     bgColor='highlightedColor'
                     bgHoverColor='highlightedHover'
                     type='submit'
@@ -186,7 +207,7 @@ const SignUpPage = () => {
             <HorizontalSeparator hasOr width={70} />
 
             {/* GOOGLE BTN */}
-            <GoogleButton />
+            <GoogleButton onClick={handleSignUpWithGoogle} />
 
 
             {/* CHOOSE AVATAR MODAL */}

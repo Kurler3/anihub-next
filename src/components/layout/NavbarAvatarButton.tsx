@@ -27,14 +27,14 @@ const NavbarAvatarButton = ({
             <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li>
                     <form action='/api/auth/signout' method="POST">
-                        <button type='submit'>
+                        <button type='submit' className='w-full'>
                             Logout
                         </button>
                     </form>
                 </li>
                 <li>
                     <form action={redirectToChangePassword}>
-                        <button>
+                        <button type='submit' className='w-full'>
                             Reset password
                         </button>
                     </form>
