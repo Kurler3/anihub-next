@@ -6,7 +6,11 @@ type Props = {}
 
 const ResetPasswordPage = (props: Props) => {
     return (
-        <div>page</div>
+        <div className='h-full w-full flexCenterCenter'>
+
+
+
+        </div>
     )
 }
 

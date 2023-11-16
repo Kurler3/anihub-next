@@ -5,8 +5,8 @@ import type { NextRequest } from 'next/server'
 import type { Database } from '@/types/database.types'
 import { getCurrentUser } from './lib/supabase/supabase-server'
 
-const NEED_LOGIN_PATHS = ['/watchlists', '/social', '/messages', '/notifications']
-const CANNOT_BE_LOGGED_IN_PATHS = ['/sign-up', '/login']
+const NEED_LOGIN_PATHS = ['/watchlists', '/social', '/messages', '/notifications', '/reset-pwd']
+const CANNOT_BE_LOGGED_IN_PATHS = ['/sign-up', '/login', '/forgot-pwd']
 
 export async function middleware(req: NextRequest) {
     const res = NextResponse.next()

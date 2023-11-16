@@ -3,7 +3,6 @@
 import React from 'react'
 import { Database } from '@/types/database.types';
 import Image from 'next/image';
-import { redirectToChangePassword } from '@/serverActions/auth.actions';
 
 type User = Database['public']['Tables']['users']['Row'];
 
@@ -26,20 +25,20 @@ const NavbarAvatarButton = ({
             /></label>
             <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li>
-                    <form action='/api/auth/signout' method="POST">
+                    <form action='/api/auth/signout' method="POST" className='flex justify-start items-center'>
                         <button type='submit' className='w-full'>
                             Logout
                         </button>
                     </form>
                 </li>
-                <li>
+                {/* <li>
                     <form action={redirectToChangePassword}>
                         <button type='submit' className='w-full'>
                             Reset password
                         </button>
                     </form>
 
-                </li>
+                </li> */}
             </ul>
         </div>
     )

@@ -9,6 +9,8 @@ type Props = {
     paddingX: string;
     type?: "button" | "submit" | "reset";
     bgHoverColor?: string;
+    className?: string;
+    disabled?: boolean;
 }
 
 const Button = ({
@@ -18,9 +20,11 @@ const Button = ({
     bgColor,
     type,
     bgHoverColor,
+    className,
+    disabled
 }: Props) => {
     return (
-        <button type={type} className={`p-3 px-${paddingX} transition text-white bg-${bgColor} hover:bg-${bgHoverColor} rounded-md `} onClick={onClick}>
+        <button type={type} disabled={disabled} className={`p-3 px-${paddingX} transition text-white bg-${bgColor} hover:bg-${bgHoverColor} rounded-md ${className ?? ''} ${disabled ? 'opacity-[0.5]' : ''}`} onClick={onClick}>
             {title}
         </button>
     )

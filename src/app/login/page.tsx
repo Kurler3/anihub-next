@@ -143,6 +143,13 @@ const LoginPage = () => {
 
             </form>
 
+            <div
+                className='text-white cursor-pointer hover:font-bold transition'
+                onClick={() => push('/forgot-pwd')}
+            >
+                Forgot your password?
+            </div>
+
             {/* SEPARATOR */}
             <HorizontalSeparator hasOr width={70} />
 
