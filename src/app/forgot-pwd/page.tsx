@@ -3,10 +3,10 @@
 
 import Alert from '@/components/ui/Alert';
 import Button from '@/components/ui/Button';
+import { supabase } from '@/lib/supabase/supabase-client';
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-type Props = {}
 
 type ForgotPwdFormData = {
     email: string;
@@ -28,6 +28,9 @@ const ForgotPasswordPage = () => {
     const onSubmit: SubmitHandler<ForgotPwdFormData> = async (data) => {
 
         // Send email w/ supabase client
+        await supabase.auth.resetPasswordForEmail(data.email, {
+            redirectTo: `${location.origin}/reset-pwd`,
+        })
 
         setIsEmailSent(true);
     }
@@ -39,7 +42,7 @@ const ForgotPasswordPage = () => {
                 Please enter your email address and we&apos;ll send you a link to reset your password
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className='flexCenterCenter flex-col gap-4 mt-10'>
+            <form onSubmit={handleSubmit(onSubmit)} className='flexCenterCenter flex-col gap-6 mt-5'>
 
                 <input
                     className='bg-bgLight p-3 rounded-md text-[12px] focus:outline-none text-white w-80 shadow-md'

@@ -24,6 +24,8 @@ export const getCurrentUser = async () => {
         data: { user },
     } = await supabase.auth.getUser()
 
+    let userFromDb = null
+
     // Get from db with id because need avatar as well.
     if (user) {
         const prisma = getPrismaClient()
@@ -35,7 +37,13 @@ export const getCurrentUser = async () => {
             },
         })
 
-        return userFromDb
+        if (!userFromDb) return null
+
+        return {
+            ...userFromDb,
+            avatarUrl: userFromDb.avatarUrl ?? null,
+            provider: user.app_metadata.provider,
+        }
     }
-    return user
+    return null
 }

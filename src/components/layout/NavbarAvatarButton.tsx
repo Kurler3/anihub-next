@@ -3,17 +3,18 @@
 import React from 'react'
 import { Database } from '@/types/database.types';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type User = Database['public']['Tables']['users']['Row'];
 
 type Props = {
-    user: User
+    user: User & { provider?: string }
 }
 
 const NavbarAvatarButton = ({
     user
 }: Props) => {
-
+    console.log(user)
     return (
         <div className='p-1 rounded-md transition hover:bg-bgDarkColor dropdown dropdown-end cursor-pointer'>
             <label tabIndex={0}><Image
@@ -21,7 +22,7 @@ const NavbarAvatarButton = ({
                 alt="Profile Pic"
                 width={55}
                 height={50}
-                className='rounded-full'
+                className='rounded-full cursor-pointer'
             /></label>
             <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li>
@@ -31,16 +32,21 @@ const NavbarAvatarButton = ({
                         </button>
                     </form>
                 </li>
-                {/* <li>
-                    <form action={redirectToChangePassword}>
-                        <button type='submit' className='w-full'>
-                            Reset password
-                        </button>
-                    </form>
+                {
+                    user.provider && user.provider === 'email' && (
+                        <li>
+                            <Link href="/reset-pwd" className='flexCenterCenter'>
 
-                </li> */}
+                                <button className='w-full'>
+                                    Reset password
+                                </button>
+                            </Link>
+                        </li>
+                    )
+                }
+
             </ul>
-        </div>
+        </div >
     )
 }
 
