@@ -1,4 +1,4 @@
-import { getPrismaClient } from '@/lib/prisma'
+import getPrismaClient from '@/lib/prisma'
 import { getSupabaseRouteHandler } from '@/lib/supabase/supabase-route-handler'
 import { NextRequest, NextResponse } from 'next/server'
 

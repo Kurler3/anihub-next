@@ -1,5 +1,5 @@
 import { createUserSchema } from '@/schemas'
-import { getPrismaClient } from '@/lib/prisma'
+import getPrismaClient from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseRouteHandler } from '@/lib/supabase/supabase-route-handler'
 

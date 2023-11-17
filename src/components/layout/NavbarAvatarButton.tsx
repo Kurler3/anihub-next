@@ -14,7 +14,7 @@ type Props = {
 const NavbarAvatarButton = ({
     user
 }: Props) => {
-    console.log(user)
+
     return (
         <div className='p-1 rounded-md transition hover:bg-bgDarkColor dropdown dropdown-end cursor-pointer'>
             <label tabIndex={0}><Image

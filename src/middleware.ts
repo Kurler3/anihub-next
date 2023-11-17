@@ -30,7 +30,7 @@ export async function middleware(req: NextRequest) {
 
     // If not logged in and path needs login
     if (!session && requiresLogin) {
-        return NextResponse.redirect(new URL('/sign-up', req.url))
+        return NextResponse.redirect(new URL('/need-auth', req.url))
 
         // If logged in and path needs the user NOT to be logged in
     } else if (session && cannotBeLoggedIn) {
