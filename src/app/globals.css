@@ -2,12 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-
 :root {
     --radius: 7px;
     overflow-x: hidden;
 }
-
 
 @layer components {
     .responsiveText {
@@ -21,5 +19,8 @@
     }
     .flexColStartStart {
         @apply flex flex-col justify-start items-start;
+    }
+    .flexStartStart {
+        @apply flex justify-start items-start;
     }
 }

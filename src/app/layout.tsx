@@ -21,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={mcLaren.className}>
+    <html lang="en" className={`${mcLaren.className} min-w-[428px]`}>
       <body className='bg-bgColor'>
         <AppLayoutWrapper>
           {children}
