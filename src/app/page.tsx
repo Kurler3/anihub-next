@@ -40,7 +40,7 @@ export default async function Home() {
       <div className="flex gap-10 flex-wrap">
 
         {
-          animeData.slice(0, 6).map((anime, index) => {
+          animeData.slice(1, 7).map((anime, index) => {
 
             return (
               <div
@@ -55,6 +55,12 @@ export default async function Home() {
                 />
 
                 <div className="w-full bg-bgColor flexCenterStart flex-col p-2 truncate">
+                  <div className="w-full truncate text-sm">
+                    {anime.title}
+                  </div>
+                  <div className="text-xs">
+                    {anime.episodes} episodes
+                  </div>
 
                 </div>
 
