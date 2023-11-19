@@ -1,44 +1,123 @@
 'use client'
-import React, { useState } from 'react';
+
+import { SelectOption } from '@/types';
+import { useMemo, useState } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-interface MultiSelectDropdownProps {
-    options: string[];
+interface IProps {
+    formInputName: string;
+    options: SelectOption[];
+    placeholderText: string;
+    type: string;
 }
 
-const MultiSelectDropdown: React.FC<MultiSelectDropdownProps> = ({ options }) => {
-    const [selectedItems, setSelectedItems] = useState<string[]>([]);
-    const handleCheckboxChange = (option: string) => {
-        if (selectedItems.includes(option)) {
-            setSelectedItems(selectedItems.filter((item) => item !== option));
+const MultiSelectDropdown = ({ formInputName, options, placeholderText, type }: IProps) => {
+
+    //////////////////////////////////
+    // STATE /////////////////////////
+    //////////////////////////////////
+
+    const [selectedOptions, setSelectedOptions] = useState<SelectOption[]>([]);
+
+    //////////////////////////////////
+    // FUNCTIONS /////////////////////
+    //////////////////////////////////
+
+    const handleCheckboxChange: (option: SelectOption) => void = (option: SelectOption) => {
+
+        const isSelected = selectedOptions.find((selectedOption) => selectedOption.id === option.id)
+
+        if (isSelected) {
+            setSelectedOptions(selectedOptions.filter((item) => item.id !== option.id));
         } else {
-            setSelectedItems([...selectedItems, option]);
+            setSelectedOptions([...selectedOptions, option]);
         }
     };
 
-    return (
-        <div className="my-4 dropdown h-[42px]">
-            <label
-                tabIndex={0}
-                className="h-full flex justify-between items-center text-sm font-medium text-placeholderColor bg-bgLight p-3 rounded-md text-[12px] focus:outline-none  w-48 shadow-md"
-            >
-                <div className="text-xs">Select genres</div>
-                <ExpandMoreIcon />
-            </label>
+    const handleSelectUnselectAll = () => {
 
-            <div className="relative dropdown-content bg-bgLight p-3 rounded-md text-[12px] focus:outline-none text-white w-48 shadow-md overflow-hidden">
-                {options.map((option) => (
-                    <div key={option} className="flex items-center">
-                        <input
-                            type="checkbox"
-                            name='genre'
-                            checked={selectedItems.includes(option)}
-                            onChange={() => handleCheckboxChange(option)}
-                            className="mr-2"
-                        />
-                        <span>{option}</span>
+        setSelectedOptions((prevSelectedOptions) => {
+            return prevSelectedOptions.length > 0 ? [] : options;
+        })
+
+    }
+
+    const displayText = useMemo(() => {
+
+        if (selectedOptions.length > 1) {
+            return `${selectedOptions.length} ${type}s selected`;
+        } else if (selectedOptions.length === 1) {
+            return selectedOptions[0].name;
+        } else return placeholderText;
+
+    }, [placeholderText, selectedOptions, type])
+
+
+    /////////////////////////////
+    // RENDER ///////////////////
+    /////////////////////////////
+
+    return (
+        <div className='dropdown w-48'>
+            <div
+                tabIndex={0}
+                className={` flexCenterCenter bg-bgLight p-3 rounded-md text-[12px] focus:outline-none text-placeholderColor w-full shadow-sm ${selectedOptions.length > 0 ? 'fullHighlightedShadow' : ''} transition `}
+            >
+                <div className='w-full flex justify-between items-center'>
+
+                    <div>
+                        {displayText}
                     </div>
-                ))}
+
+                    <ExpandMoreIcon />
+                </div>
+
+
+            </div>
+            <div
+                tabIndex={0}
+                className="dropdown-content z-[1] p-2 shadow rounded-box bg-bgLight mt-2 flex flex-col text-sm"
+            >
+
+                {/* SELECT / UNSELECT ALL */}
+                <div className="flex items-center py-2 px-4">
+                    <input
+                        type="checkbox"
+                        name={formInputName}
+                        className="mr-2"
+                        id={`${type}_select_all`}
+                        value=''
+                        checked={selectedOptions.length === options.length}
+                        onChange={handleSelectUnselectAll}
+                    />
+                    <label htmlFor={`${type}_select_all`} className="text-placeholderColor hover:text-highlightedHover transition">
+                        Select all {type}s
+                    </label>
+                </div>
+
+                {/* OPTIONS */}
+                {options.map((option) => {
+
+                    const isSelected = selectedOptions.find((item) => item.id === option.id) !== undefined;
+
+                    return (
+                        <div key={option.id} className="flex items-center py-2 px-4">
+                            <input
+                                type="checkbox"
+                                name={formInputName}
+                                className="mr-2"
+                                id={option.id}
+                                value={option.id}
+                                checked={isSelected}
+                                onChange={() => handleCheckboxChange(option)}
+                            />
+                            <label htmlFor={option.id} className="text-placeholderColor hover:text-highlightedHover transition">
+                                {option.name}
+                            </label>
+                        </div>
+                    )
+
+                })}
             </div>
         </div>
     );

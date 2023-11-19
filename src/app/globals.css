@@ -24,3 +24,7 @@
         @apply flex justify-start items-start;
     }
 }
+
+.fullHighlightedShadow {
+    box-shadow: 0 0 10px #e59904;
+}

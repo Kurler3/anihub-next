@@ -65,7 +65,7 @@ export interface Studio {
 
 export interface Genre {
     mal_id: number
-    type: string
+    count: number
     name: string
     url: string
 }
@@ -146,4 +146,8 @@ export interface Pagination {
 export interface ApiResponse {
     data: AnimeItem[]
     pagination: Pagination
+}
+
+export interface GetAnimeGenresResponse {
+    data: Genre[]
 }

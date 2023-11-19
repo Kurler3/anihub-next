@@ -1,20 +1,26 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { SupabaseClient, createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import getPrismaClient from '../prisma'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY
 
+let supabase: SupabaseClient
+
 export const createSupabaseServerSide = () => {
-    return createServerComponentClient(
-        {
-            cookies,
-        },
-        {
-            supabaseKey,
-            supabaseUrl,
-        },
-    )
+    if (!supabase) {
+        supabase = createServerComponentClient(
+            {
+                cookies,
+            },
+            {
+                supabaseKey,
+                supabaseUrl,
+            },
+        )
+    }
+
+    return supabase
 }
 
 export const getCurrentUser = async () => {
@@ -23,8 +29,6 @@ export const getCurrentUser = async () => {
     const {
         data: { user },
     } = await supabase.auth.getUser()
-
-    let userFromDb = null
 
     // Get from db with id because need avatar as well.
     if (user) {

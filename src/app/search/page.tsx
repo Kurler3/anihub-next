@@ -2,11 +2,27 @@
 import MultiSelectDropdown from '@/components/inputs/MultiDropdownInput'
 import TextInput from '@/components/inputs/TextInput'
 import Button from '@/components/ui/Button'
+import { ANIME_STATUS, ANIME_TYPES, SEASONS } from '@/lib/constants'
+import { getSearchAnimeOptions } from '@/lib/functions'
+import { getAnimeGenres } from '@/services'
 import React from 'react'
 
-type Props = {}
+const SearchPage = async () => {
 
-const SearchPage = (props: Props) => {
+  // Get genres
+  const animeGenres = (await getAnimeGenres()).slice(0, 14).map((genre) => {
+    return {
+      id: String(genre.mal_id),
+      name: genre.name,
+    }
+  });
+
+  const seasonOptions = getSearchAnimeOptions(SEASONS);
+
+  const animeTypeOptions = getSearchAnimeOptions(ANIME_TYPES);
+
+  const animeStatusOptions = getSearchAnimeOptions(ANIME_STATUS);
+
   return (
     <div className='w-full h-full flexStartStart flex-col p-4 gap-3'>
 
@@ -24,8 +40,23 @@ const SearchPage = (props: Props) => {
 
         {/* GENRES */}
         <MultiSelectDropdown
-          options={['Comedy', 'Action']}
+          options={animeGenres}
+          formInputName='genre'
+          placeholderText='Select genres'
+          type='genre'
         />
+
+        {/* SEASON */}
+        <MultiSelectDropdown
+          options={seasonOptions}
+          formInputName='season'
+          placeholderText='Select seasons'
+          type='season'
+        />
+
+        {/* TYPE (radio) */}
+
+        {/* STATUS (radio) */}
 
         {/* SUBMIT */}
         <Button
@@ -34,6 +65,7 @@ const SearchPage = (props: Props) => {
           bgColor='highlightedColor'
           bgHoverColor='highlightedColorHover'
           paddingX='8'
+          className='text-sm'
         />
 
       </form>
