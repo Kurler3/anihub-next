@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { AnimeItem } from '@/types/anime.types'
 import React from 'react'
-import StarRating from './StarRating';
+import StarRating from '../StarRating';
 
 type Props = {
     anime: AnimeItem;

@@ -23,12 +23,13 @@ module.exports = {
                 bgColor: '#2B2A2A',
                 bgDarkColor: '#1E1E1E',
                 bgLight: '#424242',
-                placeholderColor: '#717171',
+                placeholderColor: '#858585',
                 separatorColor: '#393939',
                 sideBarIconColor: '#555555',
                 sideBarTitleColor: '#DADADA',
                 highlightedColor: '#E59904',
                 highlightedHover: '#D28B00',
+                smallInfoColor: '#808080',
 
                 ///////////////////////////
                 // CUSTOM /////////////////

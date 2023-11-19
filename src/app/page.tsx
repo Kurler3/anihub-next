@@ -1,14 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
-import HighlightedAnime from "@/components/ui/HighlightedAnime";
-import StarRating from "@/components/ui/StarRating";
+import AnimeCard from "@/components/ui/anime/AnimeCard";
+import HighlightedAnime from "@/components/ui/anime/HighlightedAnime";
 import { JIKAN_API_URL } from "@/lib/constants"
-import { AnimeItem, ApiResponse } from "@/types/anime.types";
-import Image from "next/image";
+import { ApiResponse } from "@/types/anime.types";
+import Link from "next/link";
 
 export default async function Home() {
 
   // Fetch data from your API or other source
-  const res = await fetch(`${JIKAN_API_URL}/top/anime?limit=10`, { next: { revalidate: 60 * 10 } });
+  const res = await fetch(`${JIKAN_API_URL}/top/anime?limit=7`, { next: { revalidate: 60 * 10 } });
 
   if (!res.ok) {
     throw new Error("Failed to fetch anime");
@@ -32,9 +32,18 @@ export default async function Home() {
       }
 
       {/* TOP AIRING TITLE */}
-      <h1 className="text-2xl">
-        Top Airing
-      </h1>
+      <div className='flex justify-between items-center w-full'>
+        <h1 className="text-xl">
+          Top Airing
+        </h1>
+
+        <Link href="/search">
+          <div className="text-smallInfoColor cursor-pointer p-2 transition rounded-md hover:text-highlightedColor hover:bg-bgColor">
+            View more {'>'}
+          </div>
+        </Link>
+      </div>
+
 
       {/* TOP AIRING LIST */}
       <div className="flex gap-10 flex-wrap">
@@ -43,40 +52,10 @@ export default async function Home() {
           animeData.slice(1, 7).map((anime, index) => {
 
             return (
-              <div
+              <AnimeCard
                 key={`anime_card_${anime.mal_id}_${index}`}
-                className='flexCenterCenter flex-col overflow-hidden rounded-md w-[225px]'
-              >
-
-                <img
-                  src={anime.images.jpg.image_url}
-                  alt={`${anime.title}'s image`}
-                  className='object-cover max-h-80 min-w-full'
-                />
-
-                <div className="w-full bg-bgColor flexCenterStart flex-col p-2 truncate">
-                  <div className="w-full truncate text-sm">
-                    {anime.title}
-                  </div>
-                  <div className="text-xs">
-                    {anime.episodes} episodes
-                  </div>
-
-                </div>
-
-                {/* <div className="w-full bg-bgColor flexCenterStart flex-col h-14 p-2">
-
-                  <p className="text-sm truncate w-full">
-                    {anime.title}
-                  </p>
-
-                  <p className="text-xs">
-                    {anime.episodes} episodes
-                  </p>
-
-                </div> */}
-
-              </div>
+                anime={anime}
+              />
             )
 
           })
