@@ -12,3 +12,5 @@ export const getAnimeGenres: () => Promise<Genre[]> = async () => {
 
     return genres.data
 }
+
+export const searchAnimes = () => {}

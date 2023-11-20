@@ -1,5 +1,6 @@
 
 import MultiSelectDropdown from '@/components/inputs/MultiDropdownInput'
+import SingleSelectDropdown from '@/components/inputs/SingleSelectDropdown'
 import TextInput from '@/components/inputs/TextInput'
 import Button from '@/components/ui/Button'
 import { ANIME_STATUS, ANIME_TYPES, SEASONS } from '@/lib/constants'
@@ -7,7 +8,21 @@ import { getSearchAnimeOptions } from '@/lib/functions'
 import { getAnimeGenres } from '@/services'
 import React from 'react'
 
-const SearchPage = async () => {
+interface IProps {
+  searchParams: {
+    q?: string;
+    genre?: string[];
+    season?: string[];
+    type?: string;
+    status?: string;
+  }
+}
+
+const SearchPage = async ({
+  searchParams,
+}: IProps) => {
+
+
 
   // Get genres
   const animeGenres = (await getAnimeGenres()).slice(0, 14).map((genre) => {
@@ -36,6 +51,7 @@ const SearchPage = async () => {
         <TextInput
           name="q"
           placeholder='Search...'
+          initialValue={searchParams.q ?? ''}
         />
 
         {/* GENRES */}
@@ -44,6 +60,7 @@ const SearchPage = async () => {
           formInputName='genre'
           placeholderText='Select genres'
           type='genre'
+          defaultOptions={searchParams.genre ?? []}
         />
 
         {/* SEASON */}
@@ -52,11 +69,26 @@ const SearchPage = async () => {
           formInputName='season'
           placeholderText='Select seasons'
           type='season'
+          defaultOptions={searchParams.season ?? []}
         />
 
         {/* TYPE (radio) */}
+        <SingleSelectDropdown
+          options={animeTypeOptions}
+          formInputName='type'
+          placeholderText='Select type'
+          type='type'
+          defaultOption={searchParams.type}
+        />
 
         {/* STATUS (radio) */}
+        <SingleSelectDropdown
+          options={animeStatusOptions}
+          formInputName='status'
+          placeholderText='Select status'
+          type='status'
+          defaultOption={searchParams.status}
+        />
 
         {/* SUBMIT */}
         <Button
@@ -69,6 +101,9 @@ const SearchPage = async () => {
         />
 
       </form>
+
+      {/* ITEM COUNT */}
+
 
       {/* RESULTS */}
 

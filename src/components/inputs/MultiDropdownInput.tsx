@@ -9,15 +9,30 @@ interface IProps {
     options: SelectOption[];
     placeholderText: string;
     type: string;
+    defaultOptions: string[];
 }
 
-const MultiSelectDropdown = ({ formInputName, options, placeholderText, type }: IProps) => {
+const MultiSelectDropdown = ({ formInputName, options, placeholderText, type, defaultOptions }: IProps) => {
+
+    const defaultSelectedOptions = useMemo(() => {
+
+        const result = [];
+
+        for (const selectedOption of defaultOptions) {
+            const optionFound = options.find((option) => option.id === selectedOption);
+            if (optionFound) {
+                result.push(optionFound);
+            }
+        }
+
+        return result;
+    }, [defaultOptions, options])
 
     //////////////////////////////////
     // STATE /////////////////////////
     //////////////////////////////////
 
-    const [selectedOptions, setSelectedOptions] = useState<SelectOption[]>([]);
+    const [selectedOptions, setSelectedOptions] = useState<SelectOption[]>(defaultSelectedOptions);
 
     //////////////////////////////////
     // FUNCTIONS /////////////////////
@@ -34,13 +49,13 @@ const MultiSelectDropdown = ({ formInputName, options, placeholderText, type }: 
         }
     };
 
-    const handleSelectUnselectAll = () => {
+    // const handleSelectUnselectAll = () => {
 
-        setSelectedOptions((prevSelectedOptions) => {
-            return prevSelectedOptions.length > 0 ? [] : options;
-        })
+    //     setSelectedOptions((prevSelectedOptions) => {
+    //         return prevSelectedOptions.length > 0 ? [] : options;
+    //     })
 
-    }
+    // }
 
     const displayText = useMemo(() => {
 
@@ -69,7 +84,7 @@ const MultiSelectDropdown = ({ formInputName, options, placeholderText, type }: 
                         {displayText}
                     </div>
 
-                    <ExpandMoreIcon />
+                    <ExpandMoreIcon className='text-sm' />
                 </div>
 
 
@@ -80,7 +95,7 @@ const MultiSelectDropdown = ({ formInputName, options, placeholderText, type }: 
             >
 
                 {/* SELECT / UNSELECT ALL */}
-                <div className="flex items-center py-2 px-4">
+                {/* <div className="flex items-center py-2 px-4">
                     <input
                         type="checkbox"
                         name={formInputName}
@@ -93,7 +108,7 @@ const MultiSelectDropdown = ({ formInputName, options, placeholderText, type }: 
                     <label htmlFor={`${type}_select_all`} className="text-placeholderColor hover:text-highlightedHover transition">
                         Select all {type}s
                     </label>
-                </div>
+                </div> */}
 
                 {/* OPTIONS */}
                 {options.map((option) => {

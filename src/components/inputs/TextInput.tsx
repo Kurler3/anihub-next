@@ -5,11 +5,13 @@ import React from 'react'
 type Props = {
     placeholder?: string;
     name: string;
+    initialValue: string;
 }
 
 const TextInput = ({
     placeholder,
     name,
+    initialValue,
 }: Props) => {
     return (
         <input
@@ -17,6 +19,7 @@ const TextInput = ({
             placeholder={placeholder ?? 'Enter something'}
             type='text'
             name={name}
+            defaultValue={initialValue}
         />
     )
 }
