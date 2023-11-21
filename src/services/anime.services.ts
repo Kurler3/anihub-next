@@ -10,7 +10,7 @@ export const fetchAnimeData: (endpoint: string, params?: ISearchAnimeParams) => 
     const queryString = !params
         ? ''
         : Object.entries(params)
-              .filter(([key, value]) => key !== 'page' && key !== 'limit' && value)
+              .filter(([value]) => value)
               .map(([key, value]) => {
                   if (Array.isArray(value)) {
                       return `${key}=${value.join(',')}`
@@ -44,7 +44,7 @@ export const getAnimeGenres: () => Promise<Genre[]> = async () => {
 export const getTopAnime: (params?: ISearchAnimeParams) => Promise<ApiResponse> = async (
     params?: ISearchAnimeParams,
 ) => {
-    return await fetchAnimeData('/top/anime', params)
+    return await fetchAnimeData('top/anime', params)
 }
 
 export const searchAnimes: (params: ISearchAnimeParams) => Promise<ApiResponse> = async (
@@ -62,6 +62,8 @@ export const searchAnimes: (params: ISearchAnimeParams) => Promise<ApiResponse> 
     )
 
     const endpoint = hasNonEmptyKeys ? 'anime' : 'top/anime'
+
+    console.log(params)
 
     // Init response
     const res = await fetchAnimeData(endpoint, params)
