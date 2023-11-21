@@ -2,20 +2,14 @@
 import AnimeCard from "@/components/ui/anime/AnimeCard";
 import HighlightedAnime from "@/components/ui/anime/HighlightedAnime";
 import { JIKAN_API_URL } from "@/lib/constants"
+import { getTopAnime } from "@/services";
 import { ApiResponse } from "@/types/anime.types";
 import Link from "next/link";
 
 export default async function Home() {
 
   // Fetch data from your API or other source
-  const res = await fetch(`${JIKAN_API_URL}/top/anime?limit=7`, { next: { revalidate: 60 * 10 } });
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch anime");
-  }
-
-  // If the content has changed, parse the JSON response and return it as props
-  const responseResult = await res.json() as ApiResponse;
+  const responseResult = await getTopAnime({ limit: 7 });
 
   const animeData = responseResult.data;
 

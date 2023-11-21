@@ -151,3 +151,13 @@ export interface ApiResponse {
 export interface GetAnimeGenresResponse {
     data: Genre[]
 }
+
+export interface ISearchAnimeParams {
+    q?: string
+    genre?: string[]
+    season?: string[]
+    type?: string
+    status?: string
+    page?: number
+    limit?: number
+}

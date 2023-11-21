@@ -5,24 +5,24 @@ import TextInput from '@/components/inputs/TextInput'
 import Button from '@/components/ui/Button'
 import { ANIME_STATUS, ANIME_TYPES, SEASONS } from '@/lib/constants'
 import { getSearchAnimeOptions } from '@/lib/functions'
-import { getAnimeGenres } from '@/services'
+import { getAnimeGenres, searchAnimes } from '@/services'
+import { ISearchAnimeParams } from '@/types'
 import React from 'react'
 
 interface IProps {
-  searchParams: {
-    q?: string;
-    genre?: string[];
-    season?: string[];
-    type?: string;
-    status?: string;
-  }
+  searchParams: ISearchAnimeParams;
 }
 
 const SearchPage = async ({
   searchParams,
 }: IProps) => {
 
+  searchParams.page = 10;
 
+  const {
+    data,
+    pagination,
+  } = await searchAnimes(searchParams);
 
   // Get genres
   const animeGenres = (await getAnimeGenres()).slice(0, 14).map((genre) => {
@@ -103,7 +103,9 @@ const SearchPage = async ({
       </form>
 
       {/* ITEM COUNT */}
-
+      <span className='text-sm'>
+        {pagination.items.total} Items
+      </span>
 
       {/* RESULTS */}
 
