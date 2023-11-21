@@ -1,6 +1,5 @@
 'use client'
 import { Pagination } from "@/types";
-import { useRouter } from "next/navigation";
 
 interface PaginationComponentProps {
     currentPage: number;
