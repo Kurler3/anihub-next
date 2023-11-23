@@ -1,6 +1,6 @@
 import { JIKAN_API_URL } from '@/lib/constants'
 import { Genre, GetAnimeGenresResponse } from '@/types'
-import { ApiResponse, ISearchAnimeParams } from '../types/anime.types'
+import { AnimeItem, ApiResponse, GetAnimeApiResponse, ISearchAnimeParams } from '../types/anime.types'
 
 export const fetchAnimeData: (endpoint: string, params?: ISearchAnimeParams) => Promise<ApiResponse> = async (
     endpoint: string,
@@ -47,26 +47,39 @@ export const getTopAnime: (params?: ISearchAnimeParams) => Promise<ApiResponse> 
     return await fetchAnimeData('top/anime', params)
 }
 
-export const searchAnimes: (params: ISearchAnimeParams) => Promise<ApiResponse> = async (
-    params: ISearchAnimeParams,
+export const searchAnimes: (params?: ISearchAnimeParams) => Promise<ApiResponse> = async (
+    params?: ISearchAnimeParams,
 ) => {
-    const paramsKeys = Object.keys(params) as (keyof typeof params)[]
+    if (!params) params = {}
+
+    const paramsKeys = Object.keys(params ?? {}) as (keyof typeof params)[]
 
     // Check if there are keys other than 'page' and 'limit' with non-empty values
     const hasNonEmptyKeys = paramsKeys.some(
         (key) =>
             key !== 'page' &&
             key !== 'limit' &&
-            params[key] &&
-            (Array.isArray(params[key]) ? (params[key] as string[]).length > 0 : true),
+            params![key] &&
+            (Array.isArray(params![key]) ? (params![key] as string[]).length > 0 : true),
     )
 
     const endpoint = hasNonEmptyKeys ? 'anime' : 'top/anime'
-
-    console.log(params)
 
     // Init response
     const res = await fetchAnimeData(endpoint, params)
 
     return res
+}
+
+// Get anime by id
+export const getAnimeById: (id: string) => Promise<AnimeItem> = async (id: string) => {
+    const animeRes = await fetch(`${JIKAN_API_URL}/anime/${id}`, { next: { revalidate: 60 * 10 } })
+
+    if (!animeRes.ok) {
+        throw new Error('Error fetching anime')
+    }
+
+    const anime = (await animeRes.json()) as GetAnimeApiResponse
+
+    return anime.data
 }

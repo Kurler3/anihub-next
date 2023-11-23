@@ -1,12 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 
-let prisma: PrismaClient
+const globalForPrisma = global as unknown as { prisma: PrismaClient }
 
-const getPrismaClient = () => {
-    if (!prisma) {
-        prisma = new PrismaClient()
-    }
-    return prisma
-}
+const prisma = globalForPrisma.prisma || new PrismaClient()
 
-export default getPrismaClient
+export default prisma

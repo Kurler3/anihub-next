@@ -161,3 +161,7 @@ export interface ISearchAnimeParams {
     page?: number
     limit?: number
 }
+
+export interface GetAnimeApiResponse {
+    data: AnimeItem
+}

@@ -1,4 +1,4 @@
-import getPrismaClient from '@/lib/prisma'
+import prisma from '@/lib/prisma'
 import { getSupabaseRouteHandler } from '@/lib/supabase/supabase-route-handler'
 import { NextRequest, NextResponse } from 'next/server'
 
@@ -7,7 +7,6 @@ export async function GET(req: NextRequest) {
     // INIT SERVICES ////////////////////////////////
     /////////////////////////////////////////////////
 
-    const prisma = getPrismaClient()
     const supabase = getSupabaseRouteHandler()
 
     const code = req.nextUrl.searchParams.get('code')

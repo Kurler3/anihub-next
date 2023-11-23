@@ -1,9 +1,8 @@
+
 /* eslint-disable @next/next/no-img-element */
 import AnimeCard from "@/components/ui/anime/AnimeCard";
 import HighlightedAnime from "@/components/ui/anime/HighlightedAnime";
-import { JIKAN_API_URL } from "@/lib/constants"
 import { getTopAnime } from "@/services";
-import { ApiResponse } from "@/types/anime.types";
 import Link from "next/link";
 
 export default async function Home() {
@@ -32,9 +31,12 @@ export default async function Home() {
         </h1>
 
         <Link href="/search">
+
           <div className="text-smallInfoColor cursor-pointer p-2 transition rounded-md hover:text-highlightedColor hover:bg-bgColor">
             View more {'>'}
           </div>
+
+
         </Link>
       </div>
 

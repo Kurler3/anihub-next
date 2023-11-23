@@ -1,9 +1,7 @@
 import { createUserSchema } from '@/schemas'
-import getPrismaClient from '@/lib/prisma'
+import prisma from '@/lib/prisma'
 import { NextRequest, NextResponse } from 'next/server'
 import { getSupabaseRouteHandler } from '@/lib/supabase/supabase-route-handler'
-
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL
 
 export async function POST(req: NextRequest) {
     try {
@@ -11,7 +9,7 @@ export async function POST(req: NextRequest) {
         // INIT SERVICES ////////////////////////////////
         /////////////////////////////////////////////////
 
-        const prisma = getPrismaClient()
+        // const prisma = getPrismaClient()
         const supabase = getSupabaseRouteHandler()
 
         /////////////////////////////////////////////////
