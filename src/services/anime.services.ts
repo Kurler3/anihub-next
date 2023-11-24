@@ -1,11 +1,9 @@
 import { JIKAN_API_URL } from '@/lib/constants'
-import { Genre, GetAnimeGenresResponse } from '@/types'
+import { Genre, GetAnimeGenresResponse, IAnimeComment } from '@/types'
 import { AnimeItem, ApiResponse, GetAnimeApiResponse, ISearchAnimeParams } from '../types/anime.types'
 
 import { type Database } from '@/types'
 import prisma from '@/lib/prisma'
-
-type IAnimeCommentRow = Database['public']['Tables']['anime_comments']['Row']
 
 export const fetchAnimeData: (endpoint: string, params?: ISearchAnimeParams) => Promise<ApiResponse> = async (
     endpoint: string,
@@ -90,16 +88,20 @@ export const getAnimeById: (id: string) => Promise<AnimeItem> = async (id: strin
 }
 
 // Get anime comments
-export const getAnimeComments: (animeId: number, episode?: number) => Promise<IAnimeCommentRow[]> = async (
+export const getAnimeComments: (animeId: number, episode?: number) => Promise<IAnimeComment[]> = async (
     animeId: number,
     episode?: number,
 ) => {
     const animeComments = await prisma.animeComment.findMany({
         where: {
             animeId,
-            episodeId: episode,
+            episode: episode,
+        },
+        include: {
+            user: true,
+            childAnimeComments: true,
         },
     })
 
-    return animeComments as unknown as IAnimeCommentRow[]
+    return animeComments as unknown as IAnimeComment[]
 }

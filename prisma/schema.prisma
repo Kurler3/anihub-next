@@ -86,7 +86,7 @@ model AnimeComment {
   userId    String
   user      User   @relation(fields: [userId], references: [id])
   animeId   Int
-  episodeId Int?
+  episode Int?
   content   String
 
   parentAnimeCommentId Int?

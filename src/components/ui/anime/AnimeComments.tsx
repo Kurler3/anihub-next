@@ -50,10 +50,16 @@ const AnimeComments = async ({ animeId, episode }: Props) => {
         revalidatePath(`/anime/${animeId}`);
 
     }
+
+    /////////////////////////////////////
+    // RENDER ///////////////////////////
+    /////////////////////////////////////
+
     return (
-        <div className='w-full flexStartStart flex-col gap-2'>
+        <div className='w-full flexStartStart flex-col gap-4'>
             {
                 user && (
+
                     <form action={handleCreateComment} className='w-full flexCenterCenter gap-2'>
                         <Image
                             src={user.avatarUrl!}
@@ -62,11 +68,12 @@ const AnimeComments = async ({ animeId, episode }: Props) => {
                             height={40}
                             className='rounded-full'
                         />
-                        <textarea name='comment' className="textarea textarea-ghost resize-none focus:bg-transparent w-full focus:border-none focus:outline-none " placeholder="Share your thoughts..."></textarea>
+                        <textarea name='comment' className="textarea textarea-ghost resize-none focus:bg-transparent w-full focus:outline-none " placeholder="Share your thoughts..."></textarea>
                         <button type='submit' className="h-full">
                             <SendIcon />
                         </button>
                     </form>
+
                 )
             }
 
@@ -76,8 +83,36 @@ const AnimeComments = async ({ animeId, episode }: Props) => {
                     return (
                         <div
                             key={`anime_${animeId}_comment_${comment.id}`}
+                            className='flexStartStart gap-2 w-full'
                         >
-                            {comment.content}
+
+                            {/* AVATAR + EXPAND LINE */}
+                            <div className='flexStartCenter flex-col h-full gap-1 min-w-fit' style={{ minHeight: '100%' }}>
+
+                                <Image
+                                    src={comment.user.avatarUrl}
+                                    alt='User pic'
+                                    width={40}
+                                    height={40}
+                                    className='rounded-full'
+                                />
+
+                                <div
+                                    className='bg-separatorColor flex-1 cursor-pointer hover:bg-slate-500 transition'
+                                    style={{
+                                        width: '2.5px',
+                                        minHeight: '20px'
+                                    }}
+                                >
+                                </div>
+                            </div>
+
+                            <div
+                                className="bg-transparent resize-none max-w-6xl border-red-100 break-all"
+                            >
+                                {comment.content}
+                            </div>
+
                         </div>
                     )
                 })
