@@ -39,6 +39,8 @@ export const getCurrentUser = async () => {
             },
         })
 
+        console.log('userFromDb: ', userFromDb)
+
         if (!userFromDb) return null
 
         return {

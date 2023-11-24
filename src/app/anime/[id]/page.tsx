@@ -2,9 +2,14 @@
 
 import AnimeEpisodesList from '@/components/ui/anime/AnimeEpisodesList';
 import HighlightedAnime from '@/components/ui/anime/HighlightedAnime';
-import { getAnimeById, searchAnimes } from '@/services'
+import { getCurrentUser } from '@/lib/supabase/supabase-server';
+import { createAnimeComment, getAnimeById, getAnimeComments, searchAnimes } from '@/services'
+import Image from 'next/image';
 import React from 'react'
-
+import SendIcon from '@mui/icons-material/Send';
+import { ICreateAnimeComment } from '@/types';
+import { revalidatePath } from 'next/cache';
+import AnimeComments from '@/components/ui/anime/AnimeComments';
 
 export async function generateStaticParams() {
 
@@ -29,6 +34,10 @@ const AnimePage = async ({ params, searchParams }: Props) => {
     // Get anime
     const anime = await getAnimeById(params.id);
 
+    /////////////////////////////////////
+    // RENDER ///////////////////////////
+    /////////////////////////////////////
+
     return (
         <div className='w-full flexStartCenter flex-col p-4 gap-4'>
 
@@ -45,12 +54,10 @@ const AnimePage = async ({ params, searchParams }: Props) => {
 
 
             {/* COMMENTS */}
-            <form className='w-full flexCenterCenter'>
-                <textarea name='comment' className="textarea textarea-ghost resize-none focus:bg-" placeholder="Share your thoughts..."></textarea>
-                <button type='submit' className="h-full">Submit</button>
-            </form>
-
-
+            <AnimeComments
+                animeId={parseInt(params.id)}
+                episode={searchParams.episode ? parseInt(searchParams.episode) : undefined}
+            />
 
 
 
