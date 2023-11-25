@@ -8,3 +8,8 @@ export const createAnimeComment = async (animeComment: ICreateAnimeComment) => {
     })
     return newAnimeComment
 }
+
+// Create anime like / dislike
+export const createAnimeLikeDislike = async (commentId: number, like: boolean) => {
+    return
+}

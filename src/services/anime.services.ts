@@ -88,10 +88,7 @@ export const getAnimeById: (id: string) => Promise<AnimeItem> = async (id: strin
 }
 
 // Get anime comments
-export const getAnimeComments: (animeId: number, episode?: number) => Promise<IAnimeComment[]> = async (
-    animeId: number,
-    episode?: number,
-) => {
+export const getAnimeComments = async (animeId: number, episode?: number) => {
     const animeComments = await prisma.animeComment.findMany({
         where: {
             animeId,
@@ -100,8 +97,15 @@ export const getAnimeComments: (animeId: number, episode?: number) => Promise<IA
         include: {
             user: true,
             childAnimeComments: true,
+            likes: true,
+            dislikes: true,
+        },
+        orderBy: {
+            createdAt: 'desc',
         },
     })
+
+    // For each comment, append either user is liking or disliking it and absolute likes (likes - dislikes)
 
     return animeComments as unknown as IAnimeComment[]
 }

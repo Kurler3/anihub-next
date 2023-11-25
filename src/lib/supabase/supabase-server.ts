@@ -31,15 +31,13 @@ export const getCurrentUser = async () => {
     } = await supabase.auth.getUser()
 
     // Get from db with id because need avatar as well.
-    if (user) {
+    if (user && user.id) {
         // Get from db
         const userFromDb = await prisma.user.findUnique({
             where: {
                 id: user.id,
             },
         })
-
-        console.log('userFromDb: ', userFromDb)
 
         if (!userFromDb) return null
 

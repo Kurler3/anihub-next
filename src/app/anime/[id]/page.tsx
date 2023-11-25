@@ -39,7 +39,7 @@ const AnimePage = async ({ params, searchParams }: Props) => {
     /////////////////////////////////////
 
     return (
-        <div className='w-full flexStartCenter flex-col p-4 gap-4'>
+        <div className='w-full flexStartCenter flex-col p-4 gap-4 h-full'>
 
             {/* HIGHLIGHTED ANIME CARD */}
             <HighlightedAnime

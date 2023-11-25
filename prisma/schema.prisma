@@ -11,32 +11,34 @@ datasource db {
 }
 
 model User {
-  id                String          @unique @id
-  avatarUrl         String?
-  username          String          @unique
-  email             String          @unique
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @default(now())
-  followers         Follows[]       @relation("following")
-  following         Follows[]       @relation("follower")
-  Post              Post[]
-  Comment           Comment[]
-  CommentLike       CommentLike[]
-  AnimeComments     AnimeComment[]
-  WatchList         WatchList[]
-  SharedWatchlists  WatchListUser[]
+  id                  String                @id @unique
+  avatarUrl           String?
+  username            String                @unique
+  email               String                @unique
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @default(now())
+  followers           Follows[]             @relation("following")
+  following           Follows[]             @relation("follower")
+  Post                Post[]
+  Comment             Comment[]
+  CommentLike         CommentLike[]
+  AnimeComments       AnimeComment[]
+  WatchList           WatchList[]
+  SharedWatchlists    WatchListUser[]
+  AnimeCommentLike    AnimeCommentLike[]
+  AnimeCommentDislike AnimeCommentDislike[]
+  CommentDislike      CommentDislike[]
 
   @@map("users")
 }
 
 model Follows {
-  follower    User @relation("follower", fields: [followerId], references: [id])
+  follower    User   @relation("follower", fields: [followerId], references: [id])
   followerId  String
-  following   User @relation("following", fields: [followingId], references: [id])
+  following   User   @relation("following", fields: [followingId], references: [id])
   followingId String
 
   @@id([followerId, followingId])
-
   @@map("follows")
 }
 
@@ -54,55 +56,97 @@ model Post {
 }
 
 model Comment {
-  id              Int           @id @default(autoincrement())
+  id              Int       @id @default(autoincrement())
   userId          String
-  user            User          @relation(fields: [userId], references: [id])
+  user            User      @relation(fields: [userId], references: [id])
   postId          Int
-  post            Post          @relation(fields: [postId], references: [id])
-  likes           CommentLike[]
+  post            Post      @relation(fields: [postId], references: [id])
   parentCommentId Int? // Nullable field to reference the parent comment
-  parentComment   Comment?      @relation("ChildComments", fields: [parentCommentId], references: [id])
-  childComments   Comment[]     @relation("ChildComments")
+  parentComment   Comment?  @relation("ChildComments", fields: [parentCommentId], references: [id])
+  childComments   Comment[] @relation("ChildComments")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now())
+  CommentLike CommentLike[]
 
   @@map("comments")
 }
 
 model CommentLike {
-  commentId Int
-  comment   Comment @relation(fields: [commentId], references: [id])
+  id        Int     @id @default(autoincrement())
   userId    String
   user      User    @relation(fields: [userId], references: [id])
+  commentId Int
+  comment   Comment @relation(fields: [commentId], references: [id])
 
-  @@id([commentId, userId])
+  createdAt DateTime @default(now())
 
-  @@map("comment_likes")
+  @@map("comments_likes")
+}
+
+model CommentDislike {
+  id        Int          @id @default(autoincrement())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  commentId Int
+  comment   AnimeComment @relation(fields: [commentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("comments_dislikes")
 }
 
 model AnimeComment {
-  id        Int    @id @default(autoincrement())
-  userId    String
-  user      User   @relation(fields: [userId], references: [id])
-  animeId   Int
+  id      Int    @id @default(autoincrement())
+  userId  String
+  user    User   @relation(fields: [userId], references: [id])
+  animeId Int
   episode Int?
-  content   String
+  content String
 
   parentAnimeCommentId Int?
   parentAnimeComment   AnimeComment?  @relation("ChildAnimeComments", fields: [parentAnimeCommentId], references: [id])
   childAnimeComments   AnimeComment[] @relation("ChildAnimeComments")
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  // Likes and Dislikes relationships
+  likes    AnimeCommentLike[]
+  dislikes AnimeCommentDislike[]
+
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @default(now())
+  CommentDislike CommentDislike[]
 
   @@map("anime_comments")
 }
 
+model AnimeCommentLike {
+  id             Int          @id @default(autoincrement())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  animeCommentId Int
+  animeComment   AnimeComment @relation(fields: [animeCommentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("anime_comments_likes")
+}
+
+model AnimeCommentDislike {
+  id             Int          @id @default(autoincrement())
+  userId         String
+  user           User         @relation(fields: [userId], references: [id])
+  animeCommentId Int
+  animeComment   AnimeComment @relation(fields: [animeCommentId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@map("anime_comments_dislikes")
+}
+
 model WatchList {
   id             Int              @id @default(autoincrement())
-  name            String
-  description     String?
+  name           String
+  description    String?
   ownerId        String
   owner          User             @relation(fields: [ownerId], references: [id])
   watchlistUsers WatchListUser[]
@@ -118,7 +162,6 @@ model WatchListUser {
   watchlist   WatchList @relation(fields: [watchlistId], references: [id])
 
   @@id([userId, watchlistId])
-
   @@map("watchlist_users")
 }
 
@@ -128,6 +171,5 @@ model WatchlistAnime {
   animeId     Int
 
   @@id([watchListId, animeId])
-
   @@map("watchlist_animes")
 }

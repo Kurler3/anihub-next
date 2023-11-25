@@ -8,6 +8,7 @@ import { revalidatePath } from 'next/cache';
 import Image from 'next/image';
 import React from 'react'
 import SendIcon from '@mui/icons-material/Send';
+import AnimeComment from './AnimeComment';
 
 type Props = {
     animeId: number;
@@ -19,7 +20,7 @@ const AnimeComments = async ({ animeId, episode }: Props) => {
     // Get current user
     const user = await getCurrentUser();
 
-    const comments = await getAnimeComments(animeId);
+    const comments = await getAnimeComments(animeId, episode);
 
     /////////////////////////////////////
     // FUNCTIONS ////////////////////////
@@ -56,7 +57,7 @@ const AnimeComments = async ({ animeId, episode }: Props) => {
     /////////////////////////////////////
 
     return (
-        <div className='w-full flexStartStart flex-col gap-4'>
+        <div className='w-full flexStartStart flex-col gap-4 h-full'>
             {
                 user && (
 
@@ -68,7 +69,7 @@ const AnimeComments = async ({ animeId, episode }: Props) => {
                             height={40}
                             className='rounded-full'
                         />
-                        <textarea name='comment' className="textarea textarea-ghost resize-none focus:bg-transparent w-full focus:outline-none " placeholder="Share your thoughts..."></textarea>
+                        <textarea name='comment' className="textarea bg-bgLight textarea-ghost resize-none w-full focus:outline-none " placeholder="Share your thoughts..."></textarea>
                         <button type='submit' className="h-full">
                             <SendIcon />
                         </button>
@@ -77,46 +78,21 @@ const AnimeComments = async ({ animeId, episode }: Props) => {
                 )
             }
 
-            {
-                comments.map((comment) => {
+            <div className='h-full flexStartStart w-full flex-col gap-4'>
+                {
+                    comments.map((comment) => {
 
-                    return (
-                        <div
-                            key={`anime_${animeId}_comment_${comment.id}`}
-                            className='flexStartStart gap-2 w-full'
-                        >
+                        return (
+                            <AnimeComment
+                                key={`anime_${animeId}_comment_${comment.id}`}
+                                animeComment={comment}
+                                userId={user?.id}
+                            />
+                        )
+                    })
+                }
+            </div>
 
-                            {/* AVATAR + EXPAND LINE */}
-                            <div className='flexStartCenter flex-col h-full gap-1 min-w-fit' style={{ minHeight: '100%' }}>
-
-                                <Image
-                                    src={comment.user.avatarUrl}
-                                    alt='User pic'
-                                    width={40}
-                                    height={40}
-                                    className='rounded-full'
-                                />
-
-                                <div
-                                    className='bg-separatorColor flex-1 cursor-pointer hover:bg-slate-500 transition'
-                                    style={{
-                                        width: '2.5px',
-                                        minHeight: '20px'
-                                    }}
-                                >
-                                </div>
-                            </div>
-
-                            <div
-                                className="bg-transparent resize-none max-w-6xl border-red-100 break-all"
-                            >
-                                {comment.content}
-                            </div>
-
-                        </div>
-                    )
-                })
-            }
         </div>
     )
 }

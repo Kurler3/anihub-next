@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 
 import type { NextRequest } from 'next/server'
 import type { Database } from '@/types/database.types'
+import { NextApiRequestWithLocals } from './types'
 
 const NEED_LOGIN_PATHS = ['/watchlists', '/social', '/messages', '/notifications', '/reset-pwd']
 const CANNOT_BE_LOGGED_IN_PATHS = ['/sign-up', '/login', '/forgot-pwd']
@@ -35,6 +36,10 @@ export async function middleware(req: NextRequest) {
         // If logged in and path needs the user NOT to be logged in
     } else if (session && cannotBeLoggedIn) {
         return NextResponse.redirect(new URL('/', req.url))
+    }
+
+    ;(req as unknown as NextApiRequestWithLocals).locals = {
+        user: session,
     }
 
     // Return res
