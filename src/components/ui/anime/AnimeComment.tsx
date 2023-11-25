@@ -5,13 +5,15 @@ import moment from 'moment';
 
 import { IAnimeComment } from "@/types";
 import Image from "next/image";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import Link from "next/link";
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import { createAnimeLikeDislike } from '@/services';
+import { useRouter } from 'next/navigation';
+import { isUserDislikeComment, isUserLikeComment } from '@/lib/functions/animeComments.functions';
 
 interface IProps {
     animeComment: IAnimeComment;
@@ -23,6 +25,9 @@ const AnimeComment = ({
     userId,
 }: IProps) => {
 
+    const router = useRouter()
+
+
     /////////////////////////////////
     // STATE ////////////////////////
     /////////////////////////////////
@@ -33,17 +38,11 @@ const AnimeComment = ({
     // MEMO /////////////////////////
     /////////////////////////////////
 
-    const isLiked = useMemo(() => {
-        if (!userId) return false;
-        const likeFound = animeComment.likes.find((like) => like.userId === userId);
-        return likeFound !== undefined;
-    }, [animeComment.likes, userId]);
+    const [isLiked, setIsLiked] = useState<boolean>(isUserLikeComment(animeComment.likes, userId));
 
-    const isDisliked = useMemo(() => {
-        if (!userId) return false;
-        const likeFound = animeComment.dislikes.find((like) => like.userId === userId);
-        return likeFound !== undefined;
-    }, [animeComment.dislikes, userId]);
+    const [isDisliked, setIsDisliked] = useState<boolean>(isUserDislikeComment(animeComment.dislikes, userId));
+
+    const [absoluteLikes, setAbsoluteLikes] = useState<number>(animeComment.likes.length - animeComment.dislikes.length);
 
     /////////////////////////////////
     // FUNCTIONS ////////////////////
@@ -57,22 +56,40 @@ const AnimeComment = ({
 
         try {
 
-            const newLikeDislike = await createAnimeLikeDislike(animeComment.id, like);
+            if (like) {
 
-            animeComment[like ? 'likes' : 'dislikes'].push(newLikeDislike);
+                // If is liked => will remove like (decrease by 1)
+                // Otherwise, increase by 1
+                setAbsoluteLikes((prevAbsoluteLikes) => {
+                    if (isLiked) return prevAbsoluteLikes - 1;
+                    return prevAbsoluteLikes + 1;
+                })
+
+                setIsLiked(!isLiked);
+
+            } else {
+
+                // If is disliked => will remove disliked (increase by 1)
+                setAbsoluteLikes((prevAbsoluteLikes) => {
+                    if (isLiked) return prevAbsoluteLikes + 1;
+                    return prevAbsoluteLikes - 1;
+                })
+
+                // Otherwise, decrease by 1
+                setIsDisliked(!isDisliked);
+            }
+
+            await createAnimeLikeDislike(animeComment.id, like);
+
 
             // Refresh page
-            window.location.reload();
+            router.refresh()
 
         } catch (error) {
             // Toast
             console.error('Error liking/disliking comment: ', error);
             return;
         }
-
-
-
-
     }
 
     /////////////////////////////////
@@ -173,7 +190,7 @@ const AnimeComment = ({
 
                                 {/* ABSOLUTE LIKES */}
                                 <div className='text-white text-sm'>
-                                    {animeComment.likes.length - animeComment.dislikes.length}
+                                    {absoluteLikes}
                                 </div>
 
                                 {/* DISLIKE BTN */}
@@ -191,7 +208,6 @@ const AnimeComment = ({
                                     />
                                     <span>Reply</span>
                                 </div>
-
 
 
                             </div>

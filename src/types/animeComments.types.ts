@@ -19,20 +19,30 @@ export interface IAnimeComment {
     updatedAt: string
     user: IUser
     childAnimeComments: IAnimeComment[]
-    likes: IAnimeLike[]
-    dislikes: IAnimeDislike[]
+    likes: IAnimeCommentLike[]
+    dislikes: IAnimeCommentDislike[]
 }
 
-export interface IAnimeLike {
+export interface IAnimeCommentLike {
     id: number
     userId: string
     animeCommentId: number
-    createdAt: string
+    createdAt: Date
 }
 
-export interface IAnimeDislike {
+export interface IAnimeCommentDislike {
     id: number
     userId: string
     animeCommentId: number
-    createdAt: string
+    createdAt: Date
+}
+
+export interface IAnimeCommentLikeResponse {
+    commentLike: IAnimeCommentLike
+    action: 'delete' | 'create'
+}
+
+export interface IAnimeCommentDislikeResponse {
+    commentDislike: IAnimeCommentDislike
+    action: 'delete' | 'create'
 }

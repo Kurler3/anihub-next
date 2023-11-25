@@ -92,7 +92,7 @@ export const getAnimeComments = async (animeId: number, episode?: number) => {
     const animeComments = await prisma.animeComment.findMany({
         where: {
             animeId,
-            episode: episode,
+            episode: episode ?? null,
         },
         include: {
             user: true,

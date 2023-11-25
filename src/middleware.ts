@@ -38,9 +38,9 @@ export async function middleware(req: NextRequest) {
         return NextResponse.redirect(new URL('/', req.url))
     }
 
-    ;(req as unknown as NextApiRequestWithLocals).locals = {
-        user: session,
-    }
+    // ;(req as unknown as NextApiRequestWithLocals).locals = {
+    //     user: session,
+    // }
 
     // Return res
     return res
