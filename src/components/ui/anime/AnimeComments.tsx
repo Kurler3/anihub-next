@@ -70,8 +70,8 @@ const AnimeComments = async ({ animeId, episode }: Props) => {
                             className='rounded-full'
                         />
                         <textarea name='comment' className="textarea bg-bgLight textarea-ghost resize-none w-full focus:outline-none " placeholder="Share your thoughts..."></textarea>
-                        <button type='submit' className="h-full">
-                            <SendIcon />
+                        <button type='submit' className="h-full btn bg-highlightedColor text-white hover:bg-highlightedHover">
+                            Send
                         </button>
                     </form>
 

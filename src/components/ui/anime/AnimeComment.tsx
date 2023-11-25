@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import { IAnimeComment } from "@/types";
 import Image from "next/image";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import Link from "next/link";
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
@@ -27,22 +27,30 @@ const AnimeComment = ({
 
     const router = useRouter()
 
-
     /////////////////////////////////
     // STATE ////////////////////////
     /////////////////////////////////
 
+    // If entire comment is expanded
     const [isExpanded, setIsExpanded] = useState(true);
+
+    // If create comment is expanded
+    const [isCreateCommentExpanded, setIsCreateCommentExpanded] = useState(false);
+
+    const [likesData, setLikesData] = useState({
+        isLiked: isUserLikeComment(animeComment.likes, userId),
+        isDisliked: isUserDislikeComment(animeComment.dislikes, userId),
+        absoluteLikes: animeComment.likes.length - animeComment.dislikes.length,
+        isLoading: false,
+    });
 
     /////////////////////////////////
     // MEMO /////////////////////////
     /////////////////////////////////
 
-    const [isLiked, setIsLiked] = useState<boolean>(isUserLikeComment(animeComment.likes, userId));
 
-    const [isDisliked, setIsDisliked] = useState<boolean>(isUserDislikeComment(animeComment.dislikes, userId));
 
-    const [absoluteLikes, setAbsoluteLikes] = useState<number>(animeComment.likes.length - animeComment.dislikes.length);
+
 
     /////////////////////////////////
     // FUNCTIONS ////////////////////
@@ -51,36 +59,62 @@ const AnimeComment = ({
     // Handle like or dislike 
     const handleLikeOrDislike = async (like: boolean) => {
 
+        // If already liking/disliking => return (to wait for last call to finish)
+        if (likesData.isLoading) return;
+
         // If not logged in => redirect to need auth page.
-        if (!userId) return;
+        if (!userId) router.push('/need-auth');
 
         try {
 
-            if (like) {
+            // Set likes data
+            setLikesData((prevLikesData) => {
 
-                // If is liked => will remove like (decrease by 1)
-                // Otherwise, increase by 1
-                setAbsoluteLikes((prevAbsoluteLikes) => {
-                    if (isLiked) return prevAbsoluteLikes - 1;
-                    return prevAbsoluteLikes + 1;
-                })
+                let newAbsoluteLikes = prevLikesData.absoluteLikes;
+                let newIsLiked = prevLikesData.isLiked;
+                let newIsDisliked = prevLikesData.isDisliked;
 
-                setIsLiked(!isLiked);
+                // If liking 
+                if (like) {
 
-            } else {
+                    // Invert is liked
+                    newIsLiked = !newIsLiked;
 
-                // If is disliked => will remove disliked (increase by 1)
-                setAbsoluteLikes((prevAbsoluteLikes) => {
-                    if (isLiked) return prevAbsoluteLikes + 1;
-                    return prevAbsoluteLikes - 1;
-                })
+                    // If was liked (will not be liked after this click) => reduce one from the absolute likes
+                    if (prevLikesData.isLiked) newAbsoluteLikes -= 1;
+                    // Else => new like
+                    else newAbsoluteLikes += 1;
 
-                // Otherwise, decrease by 1
-                setIsDisliked(!isDisliked);
-            }
+                    // If disliking
+                } else {
+
+                    // Invert is disliked
+                    newIsDisliked = !newIsDisliked;
+
+                    // If was disliked => add new like to absolute likes
+                    if (prevLikesData.isDisliked) newAbsoluteLikes += 1;
+                    // ELse => remove from absolute likes
+                    else newAbsoluteLikes -= 1;
+
+                }
+
+                // Return new state
+                return {
+                    ...prevLikesData,
+                    isLiked: newIsLiked,
+                    isDisliked: newIsDisliked,
+                    absoluteLikes: newAbsoluteLikes,
+                    isLoading: true,
+                }
+
+            })
+
 
             await createAnimeLikeDislike(animeComment.id, like);
 
+
+            // Finished liking => set loading to false
+            setLikesData((prevLikesData) => ({ ...prevLikesData, isLoading: false }));
 
             // Refresh page
             router.refresh()
@@ -92,6 +126,11 @@ const AnimeComment = ({
         }
     }
 
+    // Handle reply to comment
+    const handleReplyToComment = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+    }
+
     /////////////////////////////////
     // RENDER ///////////////////////
     /////////////////////////////////
@@ -100,7 +139,7 @@ const AnimeComment = ({
     return (
         <div
             key={`anime_comment_${animeComment.id}`}
-            className='flexStartStart gap-2 w-full '
+            className='flexStartStart gap-2 w-full'
         >
 
             {/* AVATAR + EXPAND LINE */}
@@ -140,7 +179,7 @@ const AnimeComment = ({
 
 
             {/* RIGHT PART */}
-            <div className="flex justify-start items-start flex-col gap-2">
+            <div className="flex h-full w-full justify-start items-start flex-col gap-2">
 
                 {/* USERNAME + TIME CREATED */}
                 <div className="flex justify-start items-center gap-3">
@@ -183,26 +222,29 @@ const AnimeComment = ({
                                 {/* LIKE BTN */}
                                 <div onClick={() => handleLikeOrDislike(true)}>
                                     <ThumbUpAltOutlinedIcon
-                                        className={`cursor-pointer transition hover:text-red-400 ${isLiked ? 'text-red-400' : ''}`}
+                                        className={`cursor-pointer transition hover:text-red-400 ${likesData.isLiked ? 'text-red-400' : ''}`}
                                     />
                                 </div>
 
 
                                 {/* ABSOLUTE LIKES */}
                                 <div className='text-white text-sm'>
-                                    {absoluteLikes}
+                                    {likesData.absoluteLikes}
                                 </div>
 
                                 {/* DISLIKE BTN */}
                                 <div onClick={() => handleLikeOrDislike(false)}>
                                     <ThumbDownOutlinedIcon
-                                        className={`cursor-pointer transition hover:text-blue-400 ${isDisliked ? 'text-blue-400' : ''}`}
+                                        className={`cursor-pointer transition hover:text-blue-400 ${likesData.isDisliked ? 'text-blue-400' : ''}`}
                                     />
                                 </div>
 
 
                                 {/* ADD COMMENT TO COMMENT BTN */}
-                                <div className='flexCenterCenter gap-2 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'>
+                                <div
+                                    className='flexCenterCenter gap-2 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'
+                                    onClick={() => setIsCreateCommentExpanded(!isCreateCommentExpanded)}
+                                >
                                     <ChatBubbleOutlineOutlinedIcon
 
                                     />
@@ -213,6 +255,33 @@ const AnimeComment = ({
                             </div>
 
                             {/* ADD COMMENT FORM */}
+                            {
+                                isCreateCommentExpanded && (
+                                    <div className='flex justify-start items-start w-full gap-2'>
+                                        {/* EXPANSION THING */}
+                                        <div
+                                            className='bg-separatorColor h-full cursor-pointer hover:bg-slate-500 transition'
+                                            style={{
+                                                width: '2.5px',
+                                                minHeight: '20px',
+                                            }}
+                                            onClick={() => setIsCreateCommentExpanded(false)}
+                                        >
+                                        </div>
+                                        {/* CREATE COMMENT FORM */}
+                                        <form
+
+                                            onSubmit={handleReplyToComment}
+                                            className='h-full w-full flexCenterCenter gap-2'>
+                                            <textarea name='comment' className="textarea bg-bgLight textarea-ghost resize-none w-full focus:outline-none " placeholder="Share your thoughts..."></textarea>
+                                            <button type='submit' className="h-full btn bg-highlightedColor text-white hover:bg-highlightedHover">
+                                                Reply
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                )
+                            }
 
                             {/* CHILDREN COMMENTS */}
 
