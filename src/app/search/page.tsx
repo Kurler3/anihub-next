@@ -37,7 +37,7 @@ const SearchPage = async ({
   const animeTypeOptions = getSearchAnimeOptions(ANIME_TYPES);
 
   const animeStatusOptions = getSearchAnimeOptions(ANIME_STATUS);
-  console.log(searchParams.page);
+
   return (
     <div className='w-full h-full flexStartStart flex-col p-4 pl-12 gap-3'>
 

@@ -1,8 +1,6 @@
 import { JIKAN_API_URL } from '@/lib/constants'
 import { Genre, GetAnimeGenresResponse, IAnimeComment } from '@/types'
 import { AnimeItem, ApiResponse, GetAnimeApiResponse, ISearchAnimeParams } from '../types/anime.types'
-
-import { type Database } from '@/types'
 import prisma from '@/lib/prisma'
 
 export const fetchAnimeData: (endpoint: string, params?: ISearchAnimeParams) => Promise<ApiResponse> = async (
