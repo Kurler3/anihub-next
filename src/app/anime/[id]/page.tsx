@@ -6,19 +6,16 @@ import { getCurrentUser } from '@/lib/supabase/supabase-server';
 import { createAnimeComment, getAnimeById, getAnimeComments, searchAnimes } from '@/services'
 import Image from 'next/image';
 import React from 'react'
-import SendIcon from '@mui/icons-material/Send';
-import { ICreateAnimeComment } from '@/types';
-import { revalidatePath } from 'next/cache';
 import AnimeComments from '@/components/ui/anime/AnimeComments';
 
-export async function generateStaticParams() {
+// export async function generateStaticParams() {
 
-    const animeResponse = await searchAnimes();
+//     const animeResponse = await searchAnimes();
 
-    return animeResponse.data.map((anime) => ({
-        id: anime.mal_id.toString(),
-    }))
-}
+//     return animeResponse.data.map((anime) => ({
+//         id: anime.mal_id.toString(),
+//     }))
+// }
 
 type Props = {
     params: {

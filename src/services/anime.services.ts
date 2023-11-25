@@ -24,7 +24,8 @@ export const fetchAnimeData: (endpoint: string, params?: ISearchAnimeParams) => 
     const res = await fetch(`${JIKAN_API_URL}/${endpoint}?${queryString}`, { next: { revalidate: 60 * 10 } })
 
     if (!res.ok) {
-        throw new Error('Error fetching anime')
+        const errorMessage = await res.text()
+        throw new Error(`Error ANIME FETCH: ${errorMessage}`)
     }
 
     return (await res.json()) as ApiResponse
@@ -77,7 +78,9 @@ export const getAnimeById: (id: string) => Promise<AnimeItem> = async (id: strin
     const animeRes = await fetch(`${JIKAN_API_URL}/anime/${id}`, { next: { revalidate: 60 * 10 } })
 
     if (!animeRes.ok) {
-        throw new Error('Error fetching anime')
+        const errorMessage = await animeRes.text()
+
+        throw new Error(`Error fetching anime ${errorMessage}`)
     }
 
     const anime = (await animeRes.json()) as GetAnimeApiResponse

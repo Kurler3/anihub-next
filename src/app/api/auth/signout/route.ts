@@ -3,8 +3,8 @@ import { cookies } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
-    const cookieStore = cookies()
-    const supabase = createRouteHandlerClient({ cookies: () => cookieStore })
+    cookies().getAll()
+    const supabase = createRouteHandlerClient({ cookies })
 
     // Check if we have a session
     const {

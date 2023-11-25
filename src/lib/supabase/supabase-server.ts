@@ -9,6 +9,7 @@ let supabase: SupabaseClient
 
 export const createSupabaseServerSide = () => {
     if (!supabase) {
+        cookies().getAll()
         supabase = createServerComponentClient(
             {
                 cookies,
