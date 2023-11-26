@@ -300,8 +300,7 @@ const AnimeComment = ({
                             </div>
 
                             {/* CONTENT */}
-
-                            <div className={`${isExpanded ? '' : 'hideChildren'} h-full`}>
+                            <div className={`${isExpanded ? '' : 'hideChildren'} w-full flex h-full justify-start items-start flex-col gap-2`}>
 
                                 {/* CONTENT */}
                                 <div
@@ -319,7 +318,6 @@ const AnimeComment = ({
                                             className={`cursor-pointer transition hover:text-red-400 ${extraCommentData.isLiked ? 'text-red-400' : ''}`}
                                         />
                                     </div>
-
 
                                     {/* ABSOLUTE LIKES */}
                                     <div className='text-white text-sm'>
@@ -392,9 +390,6 @@ const AnimeComment = ({
                                 }
 
                             </div>
-
-
-
 
 
                         </div>
