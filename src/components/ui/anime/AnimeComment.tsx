@@ -16,6 +16,7 @@ import { useRouter } from 'next/navigation';
 import { isUserDislikeComment, isUserLikeComment } from '@/lib/functions/animeComments.functions';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import AnimeCommentSkeleton from './AnimeCommentSkeleton';
 
 interface IProps {
     animeComment: IAnimeComment;
@@ -228,6 +229,7 @@ const AnimeComment = ({
 
         try {
 
+            // Update the comment
             const response = await fetch('/api/anime-comment/update', {
                 method: 'PATCH',
                 headers: {
@@ -239,6 +241,7 @@ const AnimeComment = ({
                 }),
             })
 
+            // If some error
             if (!response.ok) throw new Error('Error creating comment')
 
             // Reset editing state
@@ -248,7 +251,11 @@ const AnimeComment = ({
             router.refresh();
 
         } catch (error) {
+
+            // Catch the error!
             console.error('Error while editing comment: ', error);
+
+
         }
 
     }, [animeComment.id, editingData.newCommentContent, router])
@@ -303,12 +310,11 @@ const AnimeComment = ({
     /////////////////////////////////
     return (
         <div
-            key={`anime_comment_${animeComment.id}`}
             className='flexStartStart gap-2 w-full'
         >
             {
 
-                extraCommentData.user && (
+                extraCommentData.user ? (
                     <>
                         {/* AVATAR + EXPAND LINE */}
                         <div className={`flex items-center gap-1 min-w-fit h-full ${isExpanded ? 'flex-col' : 'flex-row-reverse'}`}>
@@ -518,6 +524,8 @@ const AnimeComment = ({
 
                         </div>
                     </>
+                ) : (
+                    <AnimeCommentSkeleton />
                 )
             }
 

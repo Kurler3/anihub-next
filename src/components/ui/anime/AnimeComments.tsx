@@ -8,6 +8,7 @@ import { revalidatePath } from 'next/cache';
 import Image from 'next/image';
 import React from 'react'
 import AnimeComment from './AnimeComment';
+import AnimeCommentSkeleton from './AnimeCommentSkeleton';
 
 type Props = {
     animeId: number;
@@ -78,6 +79,7 @@ const AnimeComments = async ({ animeId, episode }: Props) => {
             }
 
             <div className='h-full flexStartStart w-full flex-col gap-4'>
+
                 {
                     comments.map((comment) => {
 

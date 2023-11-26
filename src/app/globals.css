@@ -23,6 +23,23 @@
     .flexStartStart {
         @apply flex justify-start items-start;
     }
+
+    /* AnimeCommentSkeleton.module.css */
+    @keyframes pulsate {
+        0% {
+            @apply bg-bgDarkColor;
+        }
+        50% {
+            @apply bg-bgLight;
+        }
+        100% {
+            @apply bg-bgDarkColor;
+        }
+    }
+
+    .pulsatingSkeleton {
+        animation: pulsate 2s infinite; /* Adjust the duration as needed */
+    }
 }
 
 .fullHighlightedShadow {
