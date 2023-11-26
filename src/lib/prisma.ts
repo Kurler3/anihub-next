@@ -16,13 +16,13 @@ if (process.env.NODE_ENV === 'production') {
     prisma = (global as IGlobal).prisma!
 }
 
-async function cleanup() {
-    if (process.env.NODE_ENV !== 'production') {
-        await prisma.$disconnect()
-    }
-}
+// async function cleanup() {
+//     if (process.env.NODE_ENV !== 'production') {
+//         await prisma.$disconnect()
+//     }
+// }
 
-process.on('beforeExit', cleanup)
-process.on('SIGINT', cleanup)
+// process.on('beforeExit', cleanup)
+// process.on('SIGINT', cleanup)
 
 export default prisma

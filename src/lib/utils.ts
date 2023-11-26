@@ -24,3 +24,5 @@ export function openModal(modalId: string) {
 export function closeModal(modalId: string) {
     ;(document.getElementById(modalId)! as HTMLDialogElement).close()
 }
+
+export const delay = (s: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, 1000 * s))

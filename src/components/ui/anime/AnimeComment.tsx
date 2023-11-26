@@ -110,6 +110,12 @@ const AnimeComment = ({
                     // Invert is liked
                     newIsLiked = !newIsLiked;
 
+                    // If new is liked is true (make new is disliked false!)
+                    if (newIsLiked && newIsDisliked) {
+                        newIsDisliked = false;
+                        newAbsoluteLikes += 1;
+                    }
+
                     // If was liked (will not be liked after this click) => reduce one from the absolute likes
                     if (prevExtraCommentData.isLiked) newAbsoluteLikes -= 1;
                     // Else => new like
@@ -120,6 +126,12 @@ const AnimeComment = ({
 
                     // Invert is disliked
                     newIsDisliked = !newIsDisliked;
+
+                    // If new is disliked is true (make new is liked false!)
+                    if (newIsDisliked && newIsLiked) {
+                        newIsLiked = false;
+                        newAbsoluteLikes -= 1;
+                    }
 
                     // If was disliked => add new like to absolute likes
                     if (prevExtraCommentData.isDisliked) newAbsoluteLikes += 1;

@@ -2,6 +2,7 @@ import { JIKAN_API_URL } from '@/lib/constants'
 import { Genre, GetAnimeGenresResponse, IAnimeComment } from '@/types'
 import { AnimeItem, ApiResponse, GetAnimeApiResponse, ISearchAnimeParams } from '../types/anime.types'
 import prisma from '@/lib/prisma'
+import { delay } from '@/lib/utils'
 
 export const fetchAnimeData: (endpoint: string, params?: ISearchAnimeParams) => Promise<ApiResponse> = async (
     endpoint: string,
@@ -32,10 +33,18 @@ export const fetchAnimeData: (endpoint: string, params?: ISearchAnimeParams) => 
 }
 
 export const getAnimeGenres: () => Promise<Genre[]> = async () => {
-    const genresResponse = await fetch(`${JIKAN_API_URL}/genres/anime`)
+    let genresResponse = await fetch(`${JIKAN_API_URL}/genres/anime?limit=14`)
 
     if (!genresResponse.ok) {
-        throw new Error('Error fetching anime genres')
+        const error = await genresResponse.json()
+
+        if ('type' in error && error.type === 'RateLimitException') {
+            // Wait 1 sec
+            await delay(1)
+            genresResponse = await fetch(`${JIKAN_API_URL}/genres/anime?limit=14`)
+        } else {
+            throw new Error(`Error fetching anime genres: ${error}`)
+        }
     }
 
     const genres = (await genresResponse.json()) as GetAnimeGenresResponse
