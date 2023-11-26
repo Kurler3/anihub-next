@@ -46,3 +46,8 @@ export interface IAnimeCommentDislikeResponse {
     commentDislike: IAnimeCommentDislike
     action: 'delete' | 'create'
 }
+
+export interface IUpdateAnimeComment {
+    newCommentContent: string
+    animeCommentId: number
+}
