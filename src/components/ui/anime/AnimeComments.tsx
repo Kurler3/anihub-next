@@ -7,7 +7,6 @@ import { ICreateAnimeComment } from '@/types';
 import { revalidatePath } from 'next/cache';
 import Image from 'next/image';
 import React from 'react'
-import SendIcon from '@mui/icons-material/Send';
 import AnimeComment from './AnimeComment';
 
 type Props = {

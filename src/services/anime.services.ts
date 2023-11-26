@@ -94,19 +94,40 @@ export const getAnimeComments = async (animeId: number, episode?: number) => {
         where: {
             animeId,
             episode: episode ?? null,
+            parentAnimeCommentId: null, // Only get top-level comments
         },
-        include: {
-            user: true,
-            childAnimeComments: true,
-            likes: true,
-            dislikes: true,
-        },
+        // include: {
+        //     user: true,
+        //     likes: true,
+        //     dislikes: true,
+        // },
         orderBy: {
             createdAt: 'desc',
         },
     })
 
     // For each comment, append either user is liking or disliking it and absolute likes (likes - dislikes)
-
     return animeComments as unknown as IAnimeComment[]
+}
+
+export const getAnimeCommentExtraData = async (animeCommentId: number) => {
+    const res = await fetch(`/api/anime-comment/getExtraData?animeCommentId=${animeCommentId}`)
+
+    if (!res.ok) throw new Error('Error while getting anime extra data')
+
+    const extraData = await res.json()
+
+    return extraData
+}
+
+export const getAnimeCommentChildrenComments = async (animeCommentId: number) => {
+    const res = await fetch(
+        `/api/anime-comment/getExtraData?animeCommentId=${animeCommentId}&fields=childAnimeComments`,
+    )
+
+    if (!res.ok) throw new Error('Error while getting anime extra data')
+
+    const extraData = await res.json()
+
+    return extraData
 }

@@ -12,15 +12,15 @@ export interface IAnimeComment {
     id: number
     userId: string
     animeId: number
-    episode?: number
+    episode?: number | null
     content: string
-    parentAnimeCommentId?: number
+    parentAnimeCommentId?: number | null
     createdAt: string
     updatedAt: string
-    user: IUser
-    childAnimeComments: IAnimeComment[]
-    likes: IAnimeCommentLike[]
-    dislikes: IAnimeCommentDislike[]
+    user?: IUser
+    childAnimeComments?: IAnimeComment[]
+    likes?: IAnimeCommentLike[]
+    dislikes?: IAnimeCommentDislike[]
 }
 
 export interface IAnimeCommentLike {

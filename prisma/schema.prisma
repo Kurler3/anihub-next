@@ -67,7 +67,8 @@ model Comment {
 
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @default(now())
-  CommentLike CommentLike[]
+  likes CommentLike[]
+  dislikes CommentDislike[]
 
   @@map("comments")
 }
@@ -89,7 +90,7 @@ model CommentDislike {
   userId    String
   user      User         @relation(fields: [userId], references: [id])
   commentId Int
-  comment   AnimeComment @relation(fields: [commentId], references: [id])
+  comment   Comment @relation(fields: [commentId], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -105,7 +106,7 @@ model AnimeComment {
   content String
 
   parentAnimeCommentId Int?
-  parentAnimeComment   AnimeComment?  @relation("ChildAnimeComments", fields: [parentAnimeCommentId], references: [id])
+  parentAnimeComment   AnimeComment?  @relation("ChildAnimeComments", fields: [parentAnimeCommentId], references: [id], onDelete: Cascade)
   childAnimeComments   AnimeComment[] @relation("ChildAnimeComments")
 
   // Likes and Dislikes relationships
@@ -114,7 +115,6 @@ model AnimeComment {
 
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @default(now())
-  CommentDislike CommentDislike[]
 
   @@map("anime_comments")
 }
