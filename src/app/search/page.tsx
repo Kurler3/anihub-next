@@ -7,6 +7,7 @@ import PaginationComponent from '@/components/ui/PaginationComponent'
 import AnimeCard from '@/components/ui/anime/AnimeCard'
 import { ANIME_STATUS, ANIME_TYPES, SEASONS } from '@/lib/constants'
 import { getSearchAnimeOptions } from '@/lib/functions'
+import { delay } from '@/lib/utils'
 import { getAnimeGenres, searchAnimes } from '@/services'
 import { ISearchAnimeParams } from '@/types'
 import React from 'react'
@@ -25,7 +26,7 @@ const SearchPage = async ({
   } = await searchAnimes(searchParams);
 
   // Get genres
-  const animeGenres = (await getAnimeGenres()).slice(0, 14).map((genre) => {
+  const animeGenres = (await getAnimeGenres()).map((genre) => {
     return {
       id: String(genre.mal_id),
       name: genre.name,

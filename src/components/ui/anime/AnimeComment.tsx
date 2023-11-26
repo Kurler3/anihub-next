@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import { IAnimeComment, IUser } from "@/types";
 import Image from "next/image";
-import { FormEvent, useEffect, useState } from "react";
+import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import Link from "next/link";
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
@@ -14,12 +14,16 @@ import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutline
 import { createAnimeLikeDislike, getAnimeCommentChildrenComments, getAnimeCommentExtraData } from '@/services';
 import { useRouter } from 'next/navigation';
 import { isUserDislikeComment, isUserLikeComment } from '@/lib/functions/animeComments.functions';
+import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import AnimeCommentSkeleton from './AnimeCommentSkeleton';
 
 interface IProps {
     animeComment: IAnimeComment;
     userId?: string;
 }
 
+// Interface for the extra comment data (user, likes, dislikes and children comments) to be fetched while rendering.
 interface IExtraCommentData {
     isLiked: boolean;
     isDisliked: boolean;
@@ -27,6 +31,12 @@ interface IExtraCommentData {
     user?: IUser;
     isLoading: boolean;
     absoluteLikes: number;
+}
+
+// Interface for the editing state of a comment.
+interface IEditCommentState {
+    isEditing: boolean;
+    newCommentContent: string;
 }
 
 const AnimeComment = ({
@@ -56,6 +66,22 @@ const AnimeComment = ({
         absoluteLikes: (animeComment.likes?.length ?? 0) - (animeComment.dislikes?.length ?? 0),
     })
 
+    // Editing data
+    const [editingData, setEditingData] = useState<IEditCommentState>({
+        isEditing: false,
+        newCommentContent: animeComment.content,
+    })
+
+    // Is deleting
+
+    /////////////////////////////////
+    // MEMO /////////////////////////
+    /////////////////////////////////
+
+    const isCommentOwner = useMemo(() => {
+        return userId === animeComment.userId;
+    }, [animeComment.userId, userId])
+
     /////////////////////////////////
     // FUNCTIONS ////////////////////
     /////////////////////////////////
@@ -84,6 +110,12 @@ const AnimeComment = ({
                     // Invert is liked
                     newIsLiked = !newIsLiked;
 
+                    // If new is liked is true (make new is disliked false!)
+                    if (newIsLiked && newIsDisliked) {
+                        newIsDisliked = false;
+                        newAbsoluteLikes += 1;
+                    }
+
                     // If was liked (will not be liked after this click) => reduce one from the absolute likes
                     if (prevExtraCommentData.isLiked) newAbsoluteLikes -= 1;
                     // Else => new like
@@ -94,6 +126,12 @@ const AnimeComment = ({
 
                     // Invert is disliked
                     newIsDisliked = !newIsDisliked;
+
+                    // If new is disliked is true (make new is liked false!)
+                    if (newIsDisliked && newIsLiked) {
+                        newIsLiked = false;
+                        newAbsoluteLikes -= 1;
+                    }
 
                     // If was disliked => add new like to absolute likes
                     if (prevExtraCommentData.isDisliked) newAbsoluteLikes += 1;
@@ -183,8 +221,66 @@ const AnimeComment = ({
     }
 
     //TODO Handle delete comment
+    const handleDeleteComment = useCallback(() => {
 
-    //TODO Handle edit comment
+    }, [])
+
+    // Handle edit comment
+    const handleEditComment = useCallback(() => {
+        // If not comment owner => return from func
+        if (!isCommentOwner) return;
+        // Set is editing or not
+        setEditingData((prevState) => ({ ...prevState, isEditing: !prevState.isEditing, newCommentContent: animeComment.content }));
+    }, [animeComment.content, isCommentOwner])
+
+    // Handle confirm edit comment
+    const handleConfirmEditComment = useCallback(async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        if (editingData.newCommentContent === '') return;
+
+        try {
+
+            // Update the comment
+            const response = await fetch('/api/anime-comment/update', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    newCommentContent: editingData.newCommentContent,
+                    animeCommentId: animeComment.id,
+                }),
+            })
+
+            // If some error
+            if (!response.ok) throw new Error('Error creating comment')
+
+            // Reset editing state
+            setEditingData((prevState) => ({ ...prevState, isEditing: false }));
+
+            // Refresh
+            router.refresh();
+
+        } catch (error) {
+
+            // Catch the error!
+            console.error('Error while editing comment: ', error);
+
+
+        }
+
+    }, [animeComment.id, editingData.newCommentContent, router])
+
+    // Handle change editing comment
+    const handleChangeEditingComment = useCallback((e: ChangeEvent<HTMLTextAreaElement>) => {
+        const newContent = e.target.value;
+        setEditingData((prevState) => ({
+            ...prevState,
+            newCommentContent: newContent,
+        }))
+    }, [])
+
 
     /////////////////////////////////
     // GET CHILDREN COMMENTS ////////
@@ -200,8 +296,6 @@ const AnimeComment = ({
             const handleFetchCommentExtraData = async () => {
 
                 const additionalCommentData = await getAnimeCommentExtraData(animeComment.id);
-
-                console.log('Additional comment data: ', additionalCommentData)
 
                 setExtraCommentData((prevExtraCommentData) => {
                     return {
@@ -226,16 +320,13 @@ const AnimeComment = ({
     /////////////////////////////////
     // RENDER ///////////////////////
     /////////////////////////////////
-
-
     return (
         <div
-            key={`anime_comment_${animeComment.id}`}
             className='flexStartStart gap-2 w-full'
         >
             {
 
-                extraCommentData.user && (
+                extraCommentData.user ? (
                     <>
                         {/* AVATAR + EXPAND LINE */}
                         <div className={`flex items-center gap-1 min-w-fit h-full ${isExpanded ? 'flex-col' : 'flex-row-reverse'}`}>
@@ -282,7 +373,7 @@ const AnimeComment = ({
                                 {/* USERNAME */}
                                 <Link href={`/user/${extraCommentData.user.id}`}>
                                     <div className='text-sm text-white hover:underline cursor-pointer'>
-                                        {extraCommentData.user.username}
+                                        {extraCommentData.user.username} {isCommentOwner ? '(You)' : ''}
                                     </div>
                                 </Link>
 
@@ -303,13 +394,31 @@ const AnimeComment = ({
                             <div className={`${isExpanded ? '' : 'hideChildren'} w-full flex h-full justify-start items-start flex-col gap-2`}>
 
                                 {/* CONTENT */}
-                                <div
-                                    className="bg-transparent resize-none max-w-8xl border-red-100 break-all text-sm"
-                                >
-                                    {animeComment.content}
-                                </div>
 
-                                {/* LIKE BTN + ABSOLUTE LIKES + DISLIKE BTN + COMMENT BTN */}
+                                {/* IF EDITING => SHOW FORM, ELSE SHOW NORMAL CONTENT */}
+                                {
+                                    editingData.isEditing ? (
+                                        <form
+                                            onSubmit={handleConfirmEditComment}
+                                            className='h-full w-full flexCenterCenter gap-2'>
+                                            <textarea onChange={handleChangeEditingComment} name='editComment' value={editingData.newCommentContent} className="textarea bg-bgLight textarea-ghost resize-none w-full focus:outline-none " placeholder="Edit this comment..."></textarea>
+                                            <button type='submit' className="h-full btn bg-highlightedColor text-white hover:bg-highlightedHover">
+                                                Save
+                                            </button>
+                                        </form>
+                                    ) : (
+                                        <div
+                                            className={`bg-transparent w-full p-2 rounded-md resize-none max-w-8xl border-red-100 break-all transition text-sm
+                                                        ${isCommentOwner ? 'hover:bg-bgLight' : ''}
+                                                    `}
+                                            onClick={handleEditComment}
+                                        >
+                                            {animeComment.content}
+                                        </div>
+                                    )
+                                }
+
+                                {/* LIKE BTN + ABSOLUTE LIKES + DISLIKE BTN + COMMENT BTN + EDIT AND DELETE BTNS */}
                                 <div className='flex justify-start items-center gap-2'>
 
                                     {/* LIKE BTN */}
@@ -342,6 +451,39 @@ const AnimeComment = ({
                                         />
                                         <span>Reply</span>
                                     </div>
+
+                                    {/* EDIT + DELETE BTNS */}
+                                    {
+                                        userId && animeComment.userId === userId && (
+                                            <>
+
+                                                {/* EDIT */}
+                                                <div
+                                                    onClick={handleEditComment}
+                                                    className={`
+                                                        flexCenterCenter gap-1 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md
+                                                        ${editingData.isEditing ? 'bg-info text-white hover:bg-info' : ''}
+
+                                                    `}
+                                                >
+
+                                                    <ModeEditOutlineIcon />
+
+                                                    <span>Edit</span>
+
+                                                </div>
+
+                                                {/* DELETE */}
+                                                <div
+                                                    onClick={handleDeleteComment}
+                                                    className='flexCenterCenter gap-1 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'
+                                                >
+                                                    <DeleteOutlineIcon />
+                                                    <span>Delete</span>
+                                                </div>
+                                            </>
+                                        )
+                                    }
 
 
                                 </div>
@@ -394,13 +536,15 @@ const AnimeComment = ({
 
                         </div>
                     </>
+                ) : (
+                    <AnimeCommentSkeleton />
                 )
             }
 
 
 
 
-        </div>
+        </div >
     )
 };
 
