@@ -73,6 +73,7 @@ const AnimeComment = ({
     })
 
     // Is deleting
+    const [isDeletingComment, setIsDeletingComment] = useState<boolean>(false);
 
     /////////////////////////////////
     // MEMO /////////////////////////
@@ -221,9 +222,32 @@ const AnimeComment = ({
     }
 
     //TODO Handle delete comment
-    const handleDeleteComment = useCallback(() => {
+    const handleDeleteComment = useCallback(async () => {
 
-    }, [])
+        try {
+
+            // Delete the comment
+            const response = await fetch('/api/anime-comment/delete', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ animeCommentId: animeComment.id })
+            })
+
+            // If response is not ok
+            if (!response.ok) {
+                throw new Error('Error deleting comment');
+            }
+
+            // Refresh the page
+            router.refresh();
+
+        } catch (error) {
+            console.error('Error deleting comment...', error);
+        }
+
+    }, [animeComment.id, router])
 
     // Handle edit comment
     const handleEditComment = useCallback(() => {
@@ -454,7 +478,7 @@ const AnimeComment = ({
 
                                     {/* EDIT + DELETE BTNS */}
                                     {
-                                        userId && animeComment.userId === userId && (
+                                        isCommentOwner && (
                                             <>
 
                                                 {/* EDIT */}
@@ -474,13 +498,34 @@ const AnimeComment = ({
                                                 </div>
 
                                                 {/* DELETE */}
-                                                <div
-                                                    onClick={handleDeleteComment}
-                                                    className='flexCenterCenter gap-1 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'
-                                                >
-                                                    <DeleteOutlineIcon />
-                                                    <span>Delete</span>
-                                                </div>
+                                                {
+                                                    isDeletingComment ? (
+                                                        <div className='flexCenterCenter gap-1'>
+
+                                                            {/* Confirm delete */}
+                                                            <div className='bg-red-500 rounded-md p-1 px-2 cursor-pointer hover:bg-red-600 transition text-sm text-white'
+                                                                onClick={handleDeleteComment}
+                                                            >
+                                                                Delete
+                                                            </div>
+
+                                                            {/* Cancel */}
+                                                            <div className='bg-bgLight rounded-md p-1 px-2 cursor-pointer text-sm' onClick={() => setIsDeletingComment(false)}>
+                                                                Cancel
+                                                            </div>
+
+                                                        </div>
+                                                    ) : (
+                                                        <div
+                                                            onClick={() => setIsDeletingComment(true)}
+                                                            className='flexCenterCenter gap-1 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'
+                                                        >
+                                                            <DeleteOutlineIcon />
+                                                            <span>Delete</span>
+                                                        </div>
+                                                    )
+                                                }
+
                                             </>
                                         )
                                     }

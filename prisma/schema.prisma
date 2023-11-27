@@ -110,8 +110,9 @@ model AnimeComment {
   childAnimeComments   AnimeComment[] @relation("ChildAnimeComments")
 
   // Likes and Dislikes relationships
-  likes    AnimeCommentLike[]
-  dislikes AnimeCommentDislike[]
+  likes              AnimeCommentLike[]  @relation("AnimeCommentLikes")
+  dislikes           AnimeCommentDislike[] @relation("AnimeCommentDislikes")
+
 
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @default(now())
@@ -124,7 +125,7 @@ model AnimeCommentLike {
   userId         String
   user           User         @relation(fields: [userId], references: [id])
   animeCommentId Int
-  animeComment   AnimeComment @relation(fields: [animeCommentId], references: [id])
+  animeComment   AnimeComment @relation("AnimeCommentLikes", fields: [animeCommentId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -136,7 +137,7 @@ model AnimeCommentDislike {
   userId         String
   user           User         @relation(fields: [userId], references: [id])
   animeCommentId Int
-  animeComment   AnimeComment @relation(fields: [animeCommentId], references: [id])
+  animeComment   AnimeComment @relation("AnimeCommentDislikes", fields: [animeCommentId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
