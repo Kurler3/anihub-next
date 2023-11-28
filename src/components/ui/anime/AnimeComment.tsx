@@ -38,6 +38,10 @@ interface IEditCommentState {
     isEditing: boolean;
     newCommentContent: string;
 }
+interface IDeleteCommentState {
+    isDeleting: boolean;
+    isDeleted: boolean;
+}
 
 const AnimeComment = ({
     animeComment,
@@ -73,7 +77,10 @@ const AnimeComment = ({
     })
 
     // Is deleting
-    const [isDeletingComment, setIsDeletingComment] = useState<boolean>(false);
+    const [deletingData, setDeletingData] = useState<IDeleteCommentState>({
+        isDeleted: false,
+        isDeleting: false,
+    });
 
     /////////////////////////////////
     // MEMO /////////////////////////
@@ -240,6 +247,9 @@ const AnimeComment = ({
                 throw new Error('Error deleting comment');
             }
 
+            // Set is deleted
+            setDeletingData((prevState) => ({ ...prevState, isDeleted: true }));
+
             // Refresh the page
             router.refresh();
 
@@ -346,14 +356,14 @@ const AnimeComment = ({
     /////////////////////////////////
     return (
         <div
-            className='flexStartStart gap-2 w-full'
+            className={`flexStartStart gap-2 w-full ${deletingData.isDeleted ? 'eraseAnimation' : ''}`}
         >
             {
 
                 extraCommentData.user ? (
                     <>
                         {/* AVATAR + EXPAND LINE */}
-                        <div className={`flex items-center gap-1 min-w-fit h-full ${isExpanded ? 'flex-col' : 'flex-row-reverse'}`}>
+                        <div className={`flex items-center justify-start gap-1 min-w-fit ${isExpanded ? 'flex-col h-full' : 'flex-row-reverse h-fit items-start'}`}>
 
                             <Image
                                 src={extraCommentData.user.avatarUrl}
@@ -499,7 +509,7 @@ const AnimeComment = ({
 
                                                 {/* DELETE */}
                                                 {
-                                                    isDeletingComment ? (
+                                                    deletingData.isDeleting ? (
                                                         <div className='flexCenterCenter gap-1'>
 
                                                             {/* Confirm delete */}
@@ -510,14 +520,14 @@ const AnimeComment = ({
                                                             </div>
 
                                                             {/* Cancel */}
-                                                            <div className='bg-bgLight rounded-md p-1 px-2 cursor-pointer text-sm' onClick={() => setIsDeletingComment(false)}>
+                                                            <div className='bg-bgLight rounded-md p-1 px-2 cursor-pointer text-sm' onClick={() => setDeletingData((prevState) => ({ ...prevState, isDeleting: false }))}>
                                                                 Cancel
                                                             </div>
 
                                                         </div>
                                                     ) : (
                                                         <div
-                                                            onClick={() => setIsDeletingComment(true)}
+                                                            onClick={() => setDeletingData((prevState) => ({ ...prevState, isDeleting: true }))}
                                                             className='flexCenterCenter gap-1 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'
                                                         >
                                                             <DeleteOutlineIcon />

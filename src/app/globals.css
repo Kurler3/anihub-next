@@ -47,8 +47,40 @@
 }
 
 .hideChildren {
-    display: none;
+    opacity: 1;
+    animation: fadeOut 0.5s linear forwards; /* Adjust the duration and timing function as needed */
 }
+
+@keyframes fadeOut {
+    to {
+        opacity: 0;
+        height: 0px;
+        display: none;
+    }
+}
+
 .hideChildren * {
-    display: none;
+    height: 100%;
+    animation: fadeOut 0.5s linear forwards;
+}
+
+.eraseAnimation {
+    position: relative;
+    animation: fade 0.5s ease-out forwards;
+}
+
+@keyframes fade {
+    0% {
+        /* transform: scale(1); */
+        opacity: 1;
+    }
+    50% {
+        /* transform: scale(0.3); */
+        opacity: 0.3;
+    }
+    100% {
+        /* transform: scale(0); */
+        opacity: 0;
+        display: none;
+    }
 }
