@@ -54,13 +54,11 @@
 @keyframes fadeOut {
     to {
         opacity: 0;
-        height: 0px;
         display: none;
     }
 }
 
 .hideChildren * {
-    height: 100%;
     animation: fadeOut 0.5s linear forwards;
 }
 

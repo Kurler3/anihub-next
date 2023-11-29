@@ -43,10 +43,18 @@ const Navbar = async () => {
       <div className='flex justify-end items-center gap-6 flex-1'>
 
         {/* LANGUAGE */}
-        <div className='flexCenterCenter cursor-pointer p-1 pl-2 rounded-md transition hover:bg-bgDarkColor text-white hidden md:flex'>
+        {/* <div className='flexCenterCenter cursor-pointer p-1 pl-2 rounded-md transition hover:bg-bgDarkColor text-white hidden md:flex'>
           <p>EN</p>
           <KeyboardArrowDownIcon />
-        </div>
+        </div> */}
+
+        {
+          user && (
+            <h2 className='hidden md:block'>
+              Welcome back, <b>{user.username}</b>
+            </h2>
+          )
+        }
 
         {/* SETTINGS */}
         <div className='flexCenterCenter cursor-pointer p-1 rounded-md transition hover:bg-bgDarkColor'>
@@ -66,9 +74,7 @@ const Navbar = async () => {
         {/* AVATAR */}
         {
           user ? (
-
             <NavbarAvatarButton user={user} />
-
           ) : (
             <div className='flexCenterCenter gap-2'>
 

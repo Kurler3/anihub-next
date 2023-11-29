@@ -26,6 +26,11 @@ const NavbarAvatarButton = ({
             /></label>
             <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
                 <li>
+                    <Link href={`/user/${user.id}`} className='flex justify-start items-center'>
+                        <button className='w-full'>
+                            View profile
+                        </button>
+                    </Link>
                     <form action='/api/auth/signout' method="POST" className='flex justify-start items-center'>
                         <button type='submit' className='w-full'>
                             Logout
