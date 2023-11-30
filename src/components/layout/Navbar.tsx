@@ -50,9 +50,23 @@ const Navbar = async () => {
 
         {
           user && (
-            <h2 className='hidden md:block'>
-              Welcome back, <b>{user.username}</b>
-            </h2>
+            <>
+
+              {/* WELCOME MSG */}
+              <h2 className='hidden md:block'>
+                Welcome, <b>{user.username}</b>
+              </h2>
+
+              {/* SEPARATOR */}
+              <div
+                className='bg-separatorColor h-[50px] w-[2px]'
+              >
+              </div>
+
+
+
+            </>
+
           )
         }
 

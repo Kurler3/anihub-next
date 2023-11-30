@@ -4,11 +4,10 @@ import React from 'react'
 import { Database } from '@/types/database.types';
 import Image from 'next/image';
 import Link from 'next/link';
-
-type User = Database['public']['Tables']['users']['Row'];
+import { IUser } from '@/types';
 
 type Props = {
-    user: User & { provider?: string }
+    user: IUser & { provider?: string }
 }
 
 const NavbarAvatarButton = ({

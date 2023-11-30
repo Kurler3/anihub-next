@@ -15,19 +15,20 @@ model User {
   avatarUrl           String?
   username            String                @unique
   email               String                @unique
+  bio                 String?
   createdAt           DateTime              @default(now())
   updatedAt           DateTime              @default(now())
   followers           Follows[]             @relation("following")
   following           Follows[]             @relation("follower")
-  Post                Post[]
-  Comment             Comment[]
-  CommentLike         CommentLike[]
-  AnimeComments       AnimeComment[]
-  WatchList           WatchList[]
-  SharedWatchlists    WatchListUser[]
-  AnimeCommentLike    AnimeCommentLike[]
-  AnimeCommentDislike AnimeCommentDislike[]
-  CommentDislike      CommentDislike[]
+  posts               Post[]
+  comments            Comment[]
+  commentLikes        CommentLike[]
+  animeComments       AnimeComment[]
+  watchlists          WatchList[]
+  sharedWatchlists    WatchListUser[]
+  animeCommentLikes    AnimeCommentLike[]
+  animeCommentDislikes AnimeCommentDislike[]
+  commentDislikes      CommentDislike[]
 
   @@map("users")
 }
@@ -149,14 +150,16 @@ model WatchList {
   name           String
   description    String?
   ownerId        String
+  isPrivate      Boolean
   owner          User             @relation(fields: [ownerId], references: [id])
   watchlistUsers WatchListUser[]
-  WatchlistAnime WatchlistAnime[]
+  watchlistAnime WatchlistAnime[]
 
   @@map("watchlists")
 }
 
 model WatchListUser {
+  role        String
   userId      String
   user        User      @relation(fields: [userId], references: [id])
   watchlistId Int

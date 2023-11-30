@@ -21,9 +21,10 @@ export interface LoginModalData extends SignUpModalData {}
 
 export interface IUser {
     id: string
-    avatarUrl: string
+    avatarUrl: string | null
     username: string
     email: string
-    createdAt: string
-    updatedAt: string
+    bio: string | null
+    createdAt: Date
+    updatedAt: Date
 }
