@@ -366,7 +366,7 @@ const AnimeComment = ({
                         <div className={`flex items-center justify-start gap-1 min-w-fit ${isExpanded ? 'flex-col h-full' : 'flex-row-reverse h-fit items-start'}`}>
 
                             <Image
-                                src={extraCommentData.user.avatarUrl}
+                                src={extraCommentData.user.avatarUrl!}
                                 alt='User pic'
                                 width={40}
                                 height={40}

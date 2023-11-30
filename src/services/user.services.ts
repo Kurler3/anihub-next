@@ -8,7 +8,12 @@ export const getUserById = async (id: string) => {
         include: {
             followers: true,
             following: true,
-            posts: true,
+            posts: {
+                include: {
+                    likes: true,
+                    dislikes: true,
+                },
+            },
             watchlists: {
                 include: {
                     watchlistAnime: true,

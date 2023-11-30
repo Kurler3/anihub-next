@@ -23,6 +23,7 @@ module.exports = {
                 bgColor: '#2B2A2A',
                 bgDarkColor: '#1E1E1E',
                 bgLight: '#424242',
+                bgLighter: '#6e6e6e',
                 placeholderColor: '#999999',
                 separatorColor: '#393939',
                 sideBarIconColor: '#555555',
