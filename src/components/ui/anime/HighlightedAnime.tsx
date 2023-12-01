@@ -1,3 +1,4 @@
+
 /* eslint-disable @next/next/no-img-element */
 import { AnimeItem, IAnimeLike } from '@/types/anime.types'
 import React from 'react'
@@ -5,14 +6,39 @@ import StarRating from '../StarRating';
 import Link from 'next/link';
 import { IUser } from '@/types';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import prisma from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
+
+
 type Props = {
     anime: AnimeItem;
     user: IUser | null;
-    likes: IAnimeLike[]
+    likes: IAnimeLike[];
 }
 
 const HighlightedAnime = ({ anime, user, likes }: Props) => {
 
+    const handleLikeAnime = async (e: FormData) => {
+        'use server';
+
+        if (!user) return;
+
+        try {
+
+            await prisma.animeLike.create({
+                data: {
+                    animeId: anime.mal_id.toString(),
+                    userId: user?.id
+                }
+            })
+
+            revalidatePath(window.location.origin);
+
+        } catch (error) {
+            console.error('Error whie liking anime');
+        }
+
+    }
 
     return (
         <Link href={`/anime/${anime.mal_id}`}>
@@ -47,11 +73,18 @@ const HighlightedAnime = ({ anime, user, likes }: Props) => {
                     />
 
                     {/* NUM PEOPLE LIKED THIS */}
+                    {
+                        likes.length > 0 && (
+                            <div className=''>
+                                {likes.length} People liked this
+                            </div>
+                        )
+                    }
 
                     {/* LIKE BTN */}
                     {
                         user && (
-                            <form className=''>
+                            <form action={handleLikeAnime} className=''>
                                 <FavoriteIcon
                                     className='text-2xl cursor-pointer hover:text-red-600 hover:scale-[1.4] transition'
                                 />
