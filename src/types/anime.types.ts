@@ -1,3 +1,5 @@
+import { IUser } from '.'
+
 export interface AnimeImage {
     image_url: string
     small_image_url: string
@@ -164,4 +166,11 @@ export interface ISearchAnimeParams {
 
 export interface GetAnimeApiResponse {
     data: AnimeItem
+}
+
+export interface IAnimeLike {
+    id: number
+    userId: string
+    user: IUser
+    animeId: string
 }

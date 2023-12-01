@@ -1,6 +1,14 @@
 import { JIKAN_API_URL } from '@/lib/constants'
-import { Genre, GetAnimeGenresResponse, IAnimeComment } from '@/types'
-import { AnimeItem, ApiResponse, GetAnimeApiResponse, ISearchAnimeParams } from '../types/anime.types'
+import {
+    Genre,
+    GetAnimeGenresResponse,
+    IAnimeComment,
+    IAnimeLike,
+    AnimeItem,
+    ApiResponse,
+    GetAnimeApiResponse,
+    ISearchAnimeParams,
+} from '@/types'
 import prisma from '@/lib/prisma'
 import { delay } from '@/lib/utils'
 
@@ -139,4 +147,23 @@ export const getAnimeCommentChildrenComments = async (animeCommentId: number) =>
     const extraData = await res.json()
 
     return extraData
+}
+
+export const getAnimeLikes = async (animeIds: string[]): Promise<Record<string, IAnimeLike[]>> => {
+    const likesByAnime: Record<string, IAnimeLike[]> = {}
+
+    // Create an array of promises for fetching likes for each anime
+    const fetchLikesPromises = animeIds.map(async (animeId) => {
+        const likes = await prisma.animeLike.findMany({
+            where: { animeId },
+            include: { user: true },
+        })
+
+        likesByAnime[animeId] = likes
+    })
+
+    // Wait for all promises to resolve using Promise.all
+    await Promise.all(fetchLikesPromises)
+
+    return likesByAnime
 }

@@ -1,17 +1,22 @@
 /* eslint-disable @next/next/no-img-element */
-import { AnimeItem } from '@/types/anime.types'
+import { AnimeItem, IAnimeLike } from '@/types/anime.types'
 import React from 'react'
 import StarRating from '../StarRating';
 import Link from 'next/link';
-
+import { IUser } from '@/types';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 type Props = {
     anime: AnimeItem;
+    user: IUser | null;
+    likes: IAnimeLike[]
 }
 
-const HighlightedAnime = ({ anime }: Props) => {
+const HighlightedAnime = ({ anime, user, likes }: Props) => {
+
+
     return (
         <Link href={`/anime/${anime.mal_id}`}>
-            <div className="flexStartStart w-full h-[350px] overflow-hidden p-4 bg-bgColor rounded-md shadow-lg cursor-pointer hover:bg-bgLight transition min-w-[254px]">
+            <div className="flexStartStart w-full h-[350px] relative overflow-hidden p-4 bg-bgColor rounded-md shadow-lg cursor-pointer hover:bg-bgLight transition min-w-[254px]">
 
                 {/* IMG */}
                 <img
@@ -41,7 +46,23 @@ const HighlightedAnime = ({ anime }: Props) => {
                         rating={anime.score}
                     />
 
+                    {/* NUM PEOPLE LIKED THIS */}
+
+                    {/* LIKE BTN */}
+                    {
+                        user && (
+                            <form className=''>
+                                <FavoriteIcon
+                                    className='text-2xl cursor-pointer hover:text-red-600 hover:scale-[1.4] transition'
+                                />
+                            </form>
+                        )
+                    }
+
                 </div>
+
+
+
 
             </div>
         </Link>

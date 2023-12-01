@@ -2,15 +2,23 @@
 /* eslint-disable @next/next/no-img-element */
 import AnimeCard from "@/components/ui/anime/AnimeCard";
 import HighlightedAnime from "@/components/ui/anime/HighlightedAnime";
-import { getTopAnime } from "@/services";
+import { getCurrentUser } from "@/lib/supabase/supabase-server";
+import { getAnimeLikes, getTopAnime } from "@/services";
 import Link from "next/link";
 
 export default async function Home() {
+
+  const user = await getCurrentUser();
 
   // Fetch data from your API or other source
   const responseResult = await getTopAnime({ limit: 7 });
 
   const animeData = responseResult.data;
+
+  // Get likes for each anime
+  const animeLikes = await getAnimeLikes(animeData.map(anime => anime.mal_id.toString()));
+
+  console.log('Anime likes: ', animeLikes);
 
   return (
     <main className='flex-1 border-red-300 h-full p-8 w-full flexStartStart flex-col gap-4'>
@@ -20,6 +28,8 @@ export default async function Home() {
         animeData.length > 0 && (
           <HighlightedAnime
             anime={animeData[0]}
+            user={user}
+            likes={animeLikes[animeData[0].mal_id.toString()]}
           />
         )
       }
