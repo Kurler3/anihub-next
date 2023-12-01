@@ -149,21 +149,12 @@ export const getAnimeCommentChildrenComments = async (animeCommentId: number) =>
     return extraData
 }
 
-export const getAnimeLikes = async (animeIds: string[]): Promise<Record<string, IAnimeLike[]>> => {
-    const likesByAnime: Record<string, IAnimeLike[]> = {}
-
-    // Create an array of promises for fetching likes for each anime
-    const fetchLikesPromises = animeIds.map(async (animeId) => {
-        const likes = await prisma.animeLike.findMany({
-            where: { animeId },
-            include: { user: true },
-        })
-
-        likesByAnime[animeId] = likes
+export const getAnimeLikes = async (animeId: string): Promise<IAnimeLike[]> => {
+    const likes = await prisma.animeLike.findMany({
+        where: {
+            animeId,
+        },
     })
 
-    // Wait for all promises to resolve using Promise.all
-    await Promise.all(fetchLikesPromises)
-
-    return likesByAnime
+    return likes as IAnimeLike[]
 }

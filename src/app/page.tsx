@@ -15,9 +15,7 @@ export default async function Home() {
 
   const animeData = responseResult.data;
 
-  const animeIds = animeData.map(anime => anime.mal_id.toString());
-
-  const animeLikesMap = await getAnimeLikes(animeIds);
+  const animeLikesMap = animeData.length > 0 ? await getAnimeLikes(animeData[0].mal_id.toString()) : [];
 
   return (
     <main className='flex-1 border-red-300 h-full p-8 w-full flexStartStart flex-col gap-4'>
@@ -28,7 +26,7 @@ export default async function Home() {
           <HighlightedAnime
             anime={animeData[0]}
             user={user}
-            likes={animeLikesMap[animeData[0].mal_id.toString()]}
+            likes={animeLikesMap}
           />
         )
       }

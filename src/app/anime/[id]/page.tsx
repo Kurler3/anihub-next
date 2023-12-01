@@ -3,7 +3,7 @@
 import AnimeEpisodesList from '@/components/ui/anime/AnimeEpisodesList';
 import HighlightedAnime from '@/components/ui/anime/HighlightedAnime';
 import { getCurrentUser } from '@/lib/supabase/supabase-server';
-import { createAnimeComment, getAnimeById, getAnimeComments, searchAnimes } from '@/services'
+import { createAnimeComment, getAnimeById, getAnimeComments, getAnimeLikes, searchAnimes } from '@/services'
 import Image from 'next/image';
 import React from 'react'
 import AnimeComments from '@/components/ui/anime/AnimeComments';
@@ -28,8 +28,13 @@ type Props = {
 
 const AnimePage = async ({ params, searchParams }: Props) => {
 
+    const user = await getCurrentUser();
+
     // Get anime
     const anime = await getAnimeById(params.id);
+
+    // Get likes
+    const animeLikesMap = await getAnimeLikes(params.id);
 
     /////////////////////////////////////
     // RENDER ///////////////////////////
@@ -41,6 +46,8 @@ const AnimePage = async ({ params, searchParams }: Props) => {
             {/* HIGHLIGHTED ANIME CARD */}
             <HighlightedAnime
                 anime={anime}
+                likes={animeLikesMap}
+                user={user}
             />
 
             {/* EPISODES (if more than 10 => show more then dropdown) */}
@@ -49,15 +56,11 @@ const AnimePage = async ({ params, searchParams }: Props) => {
                 selectedEpisode={searchParams.episode}
             />
 
-
             {/* COMMENTS */}
             <AnimeComments
                 animeId={parseInt(params.id)}
                 episode={searchParams.episode ? parseInt(searchParams.episode) : undefined}
             />
-
-
-
 
         </div>
     )

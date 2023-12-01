@@ -8,7 +8,8 @@ import { IUser } from '@/types';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-
+import Button from '../Button';
+import { getCurrentUser } from '@/lib/supabase/supabase-server';
 
 type Props = {
     anime: AnimeItem;
@@ -16,33 +17,16 @@ type Props = {
     likes: IAnimeLike[];
 }
 
-const HighlightedAnime = ({ anime, user, likes }: Props) => {
+const HighlightedAnime = async ({ anime, likes }: Props) => {
 
-    const handleLikeAnime = async (e: FormData) => {
-        'use server';
-
-        if (!user) return;
-
-        try {
-
-            await prisma.animeLike.create({
-                data: {
-                    animeId: anime.mal_id.toString(),
-                    userId: user?.id
-                }
-            })
-
-            revalidatePath(window.location.origin);
-
-        } catch (error) {
-            console.error('Error whie liking anime');
-        }
-
-    }
+    const user = await getCurrentUser();
 
     return (
-        <Link href={`/anime/${anime.mal_id}`}>
-            <div className="flexStartStart w-full h-[350px] relative overflow-hidden p-4 bg-bgColor rounded-md shadow-lg cursor-pointer hover:bg-bgLight transition min-w-[254px]">
+        <>
+
+            <div
+                className="flexStartStart w-full h-[350px] overflow-hidden p-4 bg-bgColor rounded-md shadow-lg transition min-w-[254px] relative"
+            >
 
                 {/* IMG */}
                 <img
@@ -74,7 +58,7 @@ const HighlightedAnime = ({ anime, user, likes }: Props) => {
 
                     {/* NUM PEOPLE LIKED THIS */}
                     {
-                        likes.length > 0 && (
+                        likes?.length > 0 && (
                             <div className=''>
                                 {likes.length} People liked this
                             </div>
@@ -84,21 +68,84 @@ const HighlightedAnime = ({ anime, user, likes }: Props) => {
                     {/* LIKE BTN */}
                     {
                         user && (
-                            <form action={handleLikeAnime} className=''>
-                                <FavoriteIcon
-                                    className='text-2xl cursor-pointer hover:text-red-600 hover:scale-[1.4] transition'
-                                />
-                            </form>
+                            <LikeForm
+                                user={user}
+                                anime={anime}
+                            />
                         )
                     }
 
+
+
                 </div>
 
+                <div className='absolute bottom-4 right-4 flexCenterCenter flex-col'>
 
-
+                    {/* VIEW FULL PAGE */}
+                    <Link href={`/anime/${anime.mal_id}`}>
+                        <Button
+                            title='View Anime'
+                            bgColor='highlightedColor'
+                            paddingX='8'
+                            bgHoverColor='highlightedHover'
+                        />
+                    </Link>
+                </div>
 
             </div>
-        </Link>
+        </>
+    )
+}
+
+interface ILikeFormProps {
+    user: IUser | null;
+    anime: AnimeItem;
+}
+
+const LikeForm = ({
+    anime,
+    user,
+}: ILikeFormProps) => {
+
+    const handleLikeAnime = async (e: FormData) => {
+        'use server'
+
+        try {
+
+            const animeId = e.get('animeId') as string;
+
+            console.log('Anime id: ', animeId);
+
+            // Make call to backend, because need to use props otherwise and that's not allowed in NextJS.
+            const res = await fetch('/api/anime/like', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ animeId })
+            })
+
+            if (!res.ok) throw new Error('Error while liking anime');
+
+            revalidatePath(window.location.origin);
+
+        } catch (error) {
+            console.error('Error whie liking anime', error);
+        }
+    }
+
+    return (
+        <form action={handleLikeAnime} className=''>
+
+            <button type='submit'>
+                <FavoriteIcon
+                    className='text-2xl cursor-pointer hover:text-red-600 hover:scale-[1.4] transition'
+                />
+            </button>
+            <input className='hidden' name='animeId' value={anime.mal_id.toString()} />
+
+
+        </form>
     )
 }
 
