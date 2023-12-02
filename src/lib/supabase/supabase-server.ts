@@ -1,6 +1,7 @@
 import { SupabaseClient, createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import prisma from '../prisma'
+import { IGetUserIncludeParams } from '@/types'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_KEY
@@ -24,7 +25,7 @@ export const createSupabaseServerSide = () => {
     return supabase
 }
 
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (includeParams?: IGetUserIncludeParams) => {
     const supabase = createSupabaseServerSide()
 
     const {
@@ -33,11 +34,26 @@ export const getCurrentUser = async () => {
 
     // Get from db with id because need avatar as well.
     if (user && user.id) {
+        const prismaInclude: Record<string, any> = {}
+
+        if (includeParams) {
+            if (includeParams.followers) {
+                prismaInclude.followers = { include: { followerUser: { include: { followers: true } } } }
+            }
+            if (includeParams.following) {
+                prismaInclude.following = { include: { followedUser: true } }
+            }
+            if (includeParams.followerRequests) {
+                prismaInclude.followerRequests = { include: { followerUser: true } }
+            }
+        }
+
         // Get from db
         const userFromDb = await prisma.user.findUnique({
             where: {
                 id: user.id,
             },
+            include: prismaInclude,
         })
 
         if (!userFromDb) return null

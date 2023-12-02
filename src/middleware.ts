@@ -4,7 +4,15 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 import type { Database } from '@/types/database.types'
 
-const NEED_LOGIN_PATHS = ['/watchlists', '/social', '/messages', '/notifications', '/reset-pwd', '/me/edit']
+const NEED_LOGIN_PATHS = [
+    '/watchlists',
+    '/social',
+    '/messages',
+    '/notifications',
+    '/reset-pwd',
+    '/me/edit',
+    '/me/connections',
+]
 const CANNOT_BE_LOGGED_IN_PATHS = ['/sign-up', '/login', '/forgot-pwd']
 
 export async function middleware(req: NextRequest) {

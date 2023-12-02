@@ -42,8 +42,6 @@ const UserPage = async ({
 
     const isRequestingFollow = currentUser && currentUser.id !== user.id ? user.followerRequests.some((followRequest) => followRequest.followerUserId === currentUser.id) : false;
 
-    console.log({ isRequestingFollow })
-
     const isOwner = currentUser && currentUser.id === user.id;
 
     ////////////////////////////
@@ -190,22 +188,28 @@ const UserPage = async ({
                     <div className='flexCenterCenter gap-16 w-full'>
 
                         {/* POSTS */}
-                        <div className='flexCenterCenter flex-col text-white px-8 cursor-pointer hover:bg-bgColor rounded-md transition'>
+                        <div className='flexCenterCenter flex-col text-white py-2 px-8 rounded-md transition'>
                             <div className='text-xl'>{user.posts.length}</div>
                             <h2 className='text-lg'>Posts</h2>
                         </div>
 
                         {/* FOLLOWERS */}
-                        <div className='flexCenterCenter flex-col text-white px-8 cursor-pointer hover:bg-bgColor rounded-md transition'>
+                        <Link
+                            href={`${isOwner ? '/me/connections?tab=followers' : `/user/${user.id}`}`}
+                            className={`flexCenterCenter flex-col text-white px-8 py-2 rounded-md transition ${isOwner ? 'cursor-pointer hover:bg-bgColor' : 'cursor-default'}`}
+                        >
                             <div className='text-xl'>{user.followers.length}</div>
                             <h2 className='text-lg'>Followers</h2>
-                        </div>
+                        </Link>
 
                         {/* FOLLOWING */}
-                        <div className='flexCenterCenter flex-col text-white px-8 cursor-pointer hover:bg-bgColor rounded-md transition'>
+                        <Link
+                            href={`${isOwner ? '/me/connections?tab=followers' : `/user/${user.id}`}`}
+                            className={`flexCenterCenter flex-col text-white px-8 py-2 rounded-md transition ${isOwner ? 'cursor-pointer hover:bg-bgColor' : 'cursor-default'}`}
+                        >
                             <div className='text-xl'>{user.following.length}</div>
                             <h2 className='text-lg'>Following</h2>
-                        </div>
+                        </Link>
 
                     </div>
 
@@ -215,14 +219,31 @@ const UserPage = async ({
                         {
                             currentUser ?
                                 isOwner ? (
-                                    <Link href='/me/edit'>
-                                        <Button
-                                            title='Edit'
-                                            bgColor='bgLight'
-                                            paddingX='12'
-                                            bgHoverColor='bgLighter'
-                                        />
-                                    </Link>
+                                    <div className='flexCenterCenter gap-3'>
+
+                                        {/* EDIT BTN */}
+                                        <Link href='/me/edit'>
+                                            <Button
+                                                title='Edit'
+                                                bgColor='bgLight'
+                                                paddingX='12'
+                                                bgHoverColor='bgLighter'
+                                            />
+                                        </Link>
+
+                                        {
+                                            user.followerRequests.length > 0 && (
+                                                <Link href='/me/connections'>
+                                                    <Button
+                                                        title={`View follow requests (${user.followerRequests.length})`}
+                                                        bgColor='highlightedColor'
+                                                        paddingX='12'
+                                                    />
+                                                </Link>
+                                            )
+                                        }
+                                    </div>
+
                                 ) :
                                     isRequestingFollow ? (
                                         <form action={handleCancelFollowRequest}>
