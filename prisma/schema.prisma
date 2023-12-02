@@ -19,8 +19,8 @@ model User {
   isProfilePublic      Boolean               @default(false) // Profiles are private by default
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @default(now())
-  followers            Follows[]             @relation("following")
-  following            Follows[]             @relation("follower")
+  following            Follow[]             @relation("follower")
+  followers            Follow[]             @relation("followed")
   posts                Post[]
   comments             Comment[]
   commentLikes         CommentLike[]
@@ -33,8 +33,8 @@ model User {
   postLikes            PostLike[]
   postDislikes         PostDislike[]
   animeLikes           AnimeLike[]
-  followRequests        FollowRequest[]     @relation("follower_request")
-  followingRequests     FollowRequest[]   @relation("following_request")
+  followingRequests        FollowRequest[]     @relation("follower_request")
+  followerRequests     FollowRequest[]   @relation("followed_request")
   @@map("users")
 }
 
@@ -43,25 +43,32 @@ model AnimeLike {
   userId    String      
   user      User  @relation(fields: [userId], references: [id])
   animeId   String
+  @@map("anime_likes")
 }
 
-model Follows {
-  follower    User   @relation("follower", fields: [followerId], references: [id])
-  followerId  String
-  following   User   @relation("following", fields: [followingId], references: [id])
-  followingId String
+model Follow {
 
-  @@id([followerId, followingId])
+  // User that is following.
+  followerUser   User   @relation("follower", fields: [followerUserId], references: [id])
+  followerUserId String
+
+  // User that is being followed.
+  followedUser    User   @relation("followed", fields: [followedUserId], references: [id])
+  followedUserId  String
+
+  @@id([followedUserId, followerUserId])
   @@map("follows")
 }
 
 model FollowRequest {
-    follower    User   @relation("follower_request", fields: [followerId], references: [id])
-    followerId  String
-    following   User   @relation("following_request", fields: [followingId], references: [id])
-    followingId String
+    followerUser    User   @relation("follower_request", fields: [followerUserId], references: [id])
+    followerUserId  String
+    followedUser   User   @relation("followed_request", fields: [followedUserId], references: [id])
+    followedUserId String
 
-    @@id([followerId, followingId])
+    createdAt   DateTime      @default(now())
+
+    @@id([followerUserId, followedUserId])
     @@map("follow_requests")
 }
 

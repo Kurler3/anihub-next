@@ -19,6 +19,7 @@ export const getUserById = async (id: string) => {
                     watchlistAnime: true,
                 },
             },
+            followerRequests: true,
         },
     })
 
