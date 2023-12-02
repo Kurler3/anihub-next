@@ -16,6 +16,7 @@ model User {
   username             String                @unique
   email                String                @unique
   bio                  String?
+  isProfilePublic      Boolean               @default(false) // Profiles are private by default
   createdAt            DateTime              @default(now())
   updatedAt            DateTime              @default(now())
   followers            Follows[]             @relation("following")
@@ -29,9 +30,11 @@ model User {
   animeCommentLikes    AnimeCommentLike[]
   animeCommentDislikes AnimeCommentDislike[]
   commentDislikes      CommentDislike[]
-  postLikes             PostLike[]
-  postDislikes          PostDislike[]
+  postLikes            PostLike[]
+  postDislikes         PostDislike[]
   animeLikes           AnimeLike[]
+  followRequests        FollowRequest[]     @relation("follower_request")
+  followingRequests     FollowRequest[]   @relation("following_request")
   @@map("users")
 }
 
@@ -50,6 +53,16 @@ model Follows {
 
   @@id([followerId, followingId])
   @@map("follows")
+}
+
+model FollowRequest {
+    follower    User   @relation("follower_request", fields: [followerId], references: [id])
+    followerId  String
+    following   User   @relation("following_request", fields: [followingId], references: [id])
+    followingId String
+
+    @@id([followerId, followingId])
+    @@map("follow_requests")
 }
 
 model Post {

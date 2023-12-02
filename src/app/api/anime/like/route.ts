@@ -3,7 +3,11 @@ import { getCurrentUser } from '@/lib/supabase/supabase-server'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(req: NextRequest) {
+    console.log('Like aniem: ')
+
     const user = await getCurrentUser()
+
+    console.log('User: ', user)
 
     if (!user) {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
@@ -11,6 +15,8 @@ export async function POST(req: NextRequest) {
 
     // Get body
     const body = await req.json()
+
+    console.log('Body: ', body)
 
     if (!body.animeId) {
         return NextResponse.json({ message: 'Missing animeId in body' }, { status: 400 })
@@ -25,6 +31,8 @@ export async function POST(req: NextRequest) {
             animeId,
         },
     })
+
+    console.log('Existing like: ', existingLike)
 
     try {
         // If existing like, delete it

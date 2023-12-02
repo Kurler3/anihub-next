@@ -28,8 +28,6 @@ type Props = {
 
 const AnimePage = async ({ params, searchParams }: Props) => {
 
-    const user = await getCurrentUser();
-
     // Get anime
     const anime = await getAnimeById(params.id);
 
@@ -47,7 +45,7 @@ const AnimePage = async ({ params, searchParams }: Props) => {
             <HighlightedAnime
                 anime={anime}
                 likes={animeLikesMap}
-                user={user}
+                isInAnimePage
             />
 
             {/* EPISODES (if more than 10 => show more then dropdown) */}

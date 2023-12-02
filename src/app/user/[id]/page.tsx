@@ -40,6 +40,20 @@ const UserPage = async ({
     const isOwner = currentUser && currentUser.id === user.id;
 
     ////////////////////////////
+    // SERVER ACTIONS //////////
+    ////////////////////////////
+
+    // Handle follow
+    const handleFollow = async () => {
+
+    }
+
+    // Handle unfollow
+    const handleUnfollow = async () => {
+
+    }
+
+    ////////////////////////////
     // RENDER //////////////////
     ////////////////////////////
 
@@ -118,6 +132,7 @@ const UserPage = async ({
                                                 bgColor='bgLight'
                                                 paddingX='12'
                                                 bgHoverColor='bgLighter'
+                                                type='submit'
                                             />
 
                                         </form>
@@ -127,7 +142,7 @@ const UserPage = async ({
                                                 title='Follow'
                                                 bgColor='highlightedColor'
                                                 paddingX='12'
-
+                                                type='submit'
                                             />
                                         </form>
                                     )
@@ -148,7 +163,7 @@ const UserPage = async ({
 
             {/* POSTS/WATCHLISTS TAB */}
             {
-                user.posts.map((post) => {
+                user.posts.length > 0 ? user.posts.map((post) => {
 
                     return (
                         <Link
@@ -274,7 +289,13 @@ const UserPage = async ({
 
                     )
 
-                })
+                }) : (
+                    <div className='text-lg mt-10'>
+                        {
+                            isOwner ? 'You haven\'t posted anything yet' : 'This user hasn\'t posted anything yet'
+                        }
+                    </div>
+                )
             }
 
 
