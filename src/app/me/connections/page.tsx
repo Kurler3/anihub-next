@@ -3,8 +3,7 @@ import { IConnectionsPageSearchParams, IFollow, IFollowRequest, IUserWithConnect
 import Link from "next/link";
 import FollowersList from "./components/FollowersList";
 import FollowRequestsList from "./components/FollowRequestsList";
-
-
+import FollowingList from "./components/FollowingList";
 
 const TABS = {
     FOLLOWERS: {
@@ -78,7 +77,9 @@ export default async function ConnectionsPage({
                             followers={user!.followers as unknown as IFollow[]}
                         />
                     ) : (
-                        'Following'
+                        <FollowingList
+                            following={user!.following as unknown as IFollow[]}
+                        />
                     )
                 }
             </div>

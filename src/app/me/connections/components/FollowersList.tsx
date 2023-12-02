@@ -1,6 +1,9 @@
 import Button from "@/components/ui/Button";
+import prisma from "@/lib/prisma";
 import { IFollow } from "@/types";
+import { revalidatePath } from "next/cache";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 
 interface IProps {
@@ -14,21 +17,97 @@ export default async function FollowersList({
     // Remove follower
     const removeFollower = async (e: FormData) => {
         'use server'
+
+        const followedUserId = e.get('followedUserId') as string;
+        const followerUserId = e.get('followerUserId') as string;
+
+        try {
+
+            // Delete follow.
+            await prisma.follow.delete({
+                where: {
+                    followedUserId_followerUserId: {
+                        followedUserId,
+                        followerUserId
+                    }
+                }
+            })
+
+            // Revalidate path.
+            revalidatePath('/me/connections')
+
+        } catch (error) {
+
+            // Log error
+            console.error('Error: ', error);
+
+            redirect('/error?message=Something went wrong while removing follower')
+
+        }
     }
 
     // Follow
     const followUser = async (e: FormData) => {
         'use server'
+
+        const followedUserId = e.get('followedUserId') as string;
+        const followerUserId = e.get('followerUserId') as string;
+
+        try {
+
+            // Create follow.
+            await prisma.follow.create({
+                data: {
+                    followedUserId: followerUserId,
+                    followerUserId: followedUserId,
+                }
+            });
+
+            // Revalidate path.
+            revalidatePath('/me/connections?tab=followers')
+
+        } catch (error) {
+            console.log('Error while following user: ', error);
+
+            redirect('/error?message=Something went wrong while following user');
+        }
     }
 
     // Unfollow
     const unfollowUser = async (e: FormData) => {
         'use server'
 
+        const followedUserId = e.get('followedUserId') as string;
+        const followerUserId = e.get('followerUserId') as string;
+
+        try {
+
+            // Create follow.
+            await prisma.follow.delete({
+                where: {
+                    followedUserId_followerUserId: {
+                        followedUserId: followerUserId,
+                        followerUserId: followedUserId,
+                    }
+                }
+            });
+
+            // Revalidate path.
+            revalidatePath('/me/connections?tab=followers')
+
+        } catch (error) {
+            console.log('Error while following user: ', error);
+
+            redirect('/error?message=Something went wrong while following user');
+        }
+
     }
 
 
     return followers.length > 0 ? followers.map((follower, index) => {
+
+        const isFollowing = follower.followerUser.followers.find((follow) => follow.followerUserId === follower.followedUserId) !== undefined;
+
         return (
             <div
                 key={`follower_${follower.followerUserId}_${index}`}
@@ -64,12 +143,14 @@ export default async function FollowersList({
                             className="text-xs"
                             type='submit'
                         />
+                        <input type="hidden" name="followedUserId" value={follower.followedUserId} />
+                        <input type="hidden" name="followerUserId" value={follower.followerUserId} />
                     </form>
 
                     {/* FOLLOW / UNFOLLOW */}
                     {
-                        follower.followerUser.followers.find((follow) => follow.followedUserId === follower.followedUserId) ? (
-                            <form action={followUser}>
+                        isFollowing ? (
+                            <form action={unfollowUser}>
                                 <Button
                                     title="Unfollow"
                                     bgColor="bgLight"
@@ -78,9 +159,11 @@ export default async function FollowersList({
                                     className="text-xs"
                                     type='submit'
                                 />
+                                <input type="hidden" name="followedUserId" value={follower.followedUserId} />
+                                <input type="hidden" name="followerUserId" value={follower.followerUserId} />
                             </form>
                         ) : (
-                            <form action={unfollowUser}>
+                            <form action={followUser}>
                                 <Button
                                     title="Follow"
                                     bgColor="highlightedColor"
@@ -89,6 +172,8 @@ export default async function FollowersList({
                                     className="text-xs"
                                     type='submit'
                                 />
+                                <input type="hidden" name="followedUserId" value={follower.followedUserId} />
+                                <input type="hidden" name="followerUserId" value={follower.followerUserId} />
                             </form>
                         )
                     }

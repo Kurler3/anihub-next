@@ -13,7 +13,7 @@ export interface IGetUserIncludeParams {
 export interface IFollow {
     followerUserId: string
     followerUser: IUserWithFollowers
-    followedUser: IUser
+    followedUser: IUserWithFollowing
     followedUserId: string
 }
 
@@ -24,6 +24,11 @@ export interface IFollowRequest extends IFollow {
 export interface IUserWithFollowers extends IUser {
     followers: IFollow[]
 }
+
+export interface IUserWithFollowing extends IUser {
+    following: IFollow[]
+}
+
 export interface IUserWithConnections extends IUser {
     followers: IFollow[]
     following: IFollow[]

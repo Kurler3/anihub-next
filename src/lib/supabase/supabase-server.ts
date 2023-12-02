@@ -41,7 +41,7 @@ export const getCurrentUser = async (includeParams?: IGetUserIncludeParams) => {
                 prismaInclude.followers = { include: { followerUser: { include: { followers: true } } } }
             }
             if (includeParams.following) {
-                prismaInclude.following = { include: { followedUser: true } }
+                prismaInclude.following = { include: { followedUser: { include: { following: true } } } }
             }
             if (includeParams.followerRequests) {
                 prismaInclude.followerRequests = { include: { followerUser: true } }

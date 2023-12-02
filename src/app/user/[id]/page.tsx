@@ -204,7 +204,7 @@ const UserPage = async ({
 
                         {/* FOLLOWING */}
                         <Link
-                            href={`${isOwner ? '/me/connections?tab=followers' : `/user/${user.id}`}`}
+                            href={`${isOwner ? '/me/connections?tab=following' : `/user/${user.id}`}`}
                             className={`flexCenterCenter flex-col text-white px-8 py-2 rounded-md transition ${isOwner ? 'cursor-pointer hover:bg-bgColor' : 'cursor-default'}`}
                         >
                             <div className='text-xl'>{user.following.length}</div>
@@ -233,7 +233,7 @@ const UserPage = async ({
 
                                         {
                                             user.followerRequests.length > 0 && (
-                                                <Link href='/me/connections'>
+                                                <Link href='/me/connections?tab=followRequests'>
                                                     <Button
                                                         title={`View follow requests (${user.followerRequests.length})`}
                                                         bgColor='highlightedColor'

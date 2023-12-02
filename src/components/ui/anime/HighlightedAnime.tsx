@@ -145,18 +145,22 @@ const HighlightedAnime = async ({ anime, likes, isInAnimePage }: Props) => {
 
                 </div>
 
-                <div className='absolute bottom-4 right-4 flexCenterCenter flex-col'>
+                {
+                    !isInAnimePage && (
+                        <div className='absolute bottom-4 right-4 flexCenterCenter flex-col'>
+                            {/* VIEW FULL PAGE */}
+                            <Link href={`/anime/${anime.mal_id}`}>
+                                <Button
+                                    title='View Anime'
+                                    bgColor='highlightedColor'
+                                    paddingX='8'
+                                    bgHoverColor='highlightedHover'
+                                />
+                            </Link>
+                        </div>
+                    )
+                }
 
-                    {/* VIEW FULL PAGE */}
-                    <Link href={`/anime/${anime.mal_id}`}>
-                        <Button
-                            title='View Anime'
-                            bgColor='highlightedColor'
-                            paddingX='8'
-                            bgHoverColor='highlightedHover'
-                        />
-                    </Link>
-                </div>
 
             </div>
         </div>

@@ -30,11 +30,7 @@ const NavbarAvatarButton = ({
                             View profile
                         </button>
                     </Link>
-                    <form action='/api/auth/signout' method="POST" className='flex justify-start items-center'>
-                        <button type='submit' className='w-full'>
-                            Logout
-                        </button>
-                    </form>
+
                 </li>
                 {
                     user.provider && user.provider === 'email' && (
@@ -48,6 +44,14 @@ const NavbarAvatarButton = ({
                         </li>
                     )
                 }
+                <li>
+                    <form action='/api/auth/signout' method="POST" className='flex justify-start items-center'>
+                        <button type='submit' className='w-full'>
+                            Logout
+                        </button>
+                    </form>
+                </li>
+
 
             </ul>
         </div >
