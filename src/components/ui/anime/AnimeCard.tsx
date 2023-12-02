@@ -9,6 +9,7 @@ type Props = {
 }
 
 const AnimeCard = ({ anime }: Props) => {
+    console.log(anime.episodes)
     return (
         <Link href={`/anime/${anime.mal_id}`}>
             <div
@@ -25,9 +26,14 @@ const AnimeCard = ({ anime }: Props) => {
                     <div className="w-full truncate text-sm">
                         {anime.title}
                     </div>
-                    <div className="text-xs">
-                        {anime.episodes} episodes
-                    </div>
+                    {
+                        anime.episodes && (
+                            <div className="text-xs">
+                                {anime.episodes} episodes
+                            </div>
+                        )
+                    }
+
                 </div>
             </div>
         </Link>

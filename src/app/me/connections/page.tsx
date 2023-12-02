@@ -17,7 +17,11 @@ const TABS = {
     FOLLOW_REQUESTS: {
         id: 'followRequests',
         label: 'Follow Requests',
-    }
+    },
+    FIND_PEOPLE: {
+        id: 'findPeople',
+        label: 'Find People',
+    },
 }
 
 const TAB_LIST = Object.values(TABS);
@@ -76,10 +80,15 @@ export default async function ConnectionsPage({
                         <FollowersList
                             followers={user!.followers as unknown as IFollow[]}
                         />
-                    ) : (
+                    ) : currentTab === TABS.FOLLOWING.id ? (
                         <FollowingList
                             following={user!.following as unknown as IFollow[]}
                         />
+                    ) : (
+                        <div>
+                            {/* //TODO */}
+                            Search people
+                        </div>
                     )
                 }
             </div>

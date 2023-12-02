@@ -26,7 +26,7 @@ const SearchPage = async ({
   } = await searchAnimes(searchParams);
 
   // Get genres
-  const animeGenres = (await getAnimeGenres()).map((genre) => {
+  const animeGenres = (await getAnimeGenres()).slice(0, 14).map((genre) => {
     return {
       id: String(genre.mal_id),
       name: genre.name,
