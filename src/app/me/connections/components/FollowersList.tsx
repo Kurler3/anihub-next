@@ -1,14 +1,14 @@
 import Button from "@/components/ui/Button";
 import prisma from "@/lib/prisma";
-import { IFollow } from "@/types";
+import { IFollow, IUserWithConnections } from "@/types";
 import { revalidatePath } from "next/cache";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 import UserInfo from "./UserInfo";
 
 
 interface IProps {
     followers: IFollow[];
+    currentUser: IUserWithConnections;
 }
 
 export default async function FollowersList({
@@ -56,13 +56,35 @@ export default async function FollowersList({
 
         try {
 
-            // Create follow.
-            await prisma.follow.create({
-                data: {
-                    followedUserId: followerUserId,
-                    followerUserId: followedUserId,
-                }
+            // Check if the followerUserId => User is public
+            const followerUser = await prisma.user.findUnique({
+                where: {
+                    id: followerUserId,
+                },
             });
+
+            if (followerUser?.isProfilePublic) {
+
+                // Create follow.
+                await prisma.follow.create({
+                    data: {
+                        followedUserId: followerUserId,
+                        followerUserId: followedUserId,
+                    }
+                });
+
+            } else {
+
+                // Create follow request
+                await prisma.followRequest.create({
+                    data: {
+                        followedUserId: followerUserId,
+                        followerUserId: followedUserId,
+                    }
+                })
+            }
+
+
 
             // Revalidate path.
             revalidatePath('/me/connections?tab=followers')
@@ -108,6 +130,8 @@ export default async function FollowersList({
     return followers.length > 0 ? followers.map((follower, index) => {
 
         const isFollowing = follower.followerUser.followers.find((follow) => follow.followerUserId === follower.followedUserId) !== undefined;
+
+        // const isCurrentUserRequestingToFollow = follower.followedUser.
 
         return (
             <div

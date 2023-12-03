@@ -10,6 +10,7 @@ export interface IGetUserIncludeParams {
     followers?: boolean
     following?: boolean
     followerRequests?: boolean
+    followingRequests?: boolean
 }
 
 export interface IFollow {
@@ -35,6 +36,7 @@ export interface IUserWithConnections extends IUser {
     followers: IFollow[]
     following: IFollow[]
     followerRequests: IFollowRequest[]
+    followingRequests: IFollowRequest[]
 }
 
 export interface ISearchUsersPagination {

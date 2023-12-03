@@ -43,10 +43,10 @@ export default async function ConnectionsPage({
         followers: true,
         following: true,
         followerRequests: true,
+        followingRequests: true,
     }) as unknown as IUserWithConnections;
 
     const currentTab = tab && TAB_LIST.find((t) => t.id === tab) ? tab : TABS.FOLLOWERS.id;
-
 
     return (
         <div className="w-full h-full flexStartCenter flex-col p-4 gap-3">
@@ -82,6 +82,7 @@ export default async function ConnectionsPage({
                     ) : currentTab === TABS.FOLLOWERS.id ? (
                         <FollowersList
                             followers={user!.followers as unknown as IFollow[]}
+                            currentUser={user!}
                         />
                     ) : currentTab === TABS.FOLLOWING.id ? (
                         <FollowingList

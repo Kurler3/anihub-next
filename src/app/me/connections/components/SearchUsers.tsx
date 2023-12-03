@@ -59,6 +59,10 @@ export default async function SearchUsers({
 
                         const isCurrentUserFollowingUser = currentUser.following.find((following) => following.followedUserId === user.id) !== undefined;
 
+                        const isCurrentUserRequestingToFollowUser = currentUser.followingRequests.find((followingRequest) => user.id === followingRequest.followedUserId)
+
+                        console.log(isCurrentUserRequestingToFollowUser)
+
                         return (
                             <div
                                 key={`search_user_${user.id}`}
