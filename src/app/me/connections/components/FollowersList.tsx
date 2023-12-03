@@ -4,6 +4,7 @@ import { IFollow } from "@/types";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import UserInfo from "./UserInfo";
 
 
 interface IProps {
@@ -114,21 +115,9 @@ export default async function FollowersList({
                 className="w-full bg-bgColor flex justify-between items-center p-2 rounded-md shadow-lg px-4"
             >
                 {/* USER INFO */}
-                <div className="flexCenterCenter gap-4">
-                    {/* AVATAR */}
-                    <Image
-                        src={follower.followerUser.avatarUrl ?? ''}
-                        alt='Follower avatar'
-                        width={50}
-                        height={50}
-                        className="rounded-full"
-                    />
-
-                    {/* NAME */}
-                    <div>
-                        {follower.followerUser.username}
-                    </div>
-                </div>
+                <UserInfo
+                    user={follower.followerUser}
+                />
 
                 {/* ACTIONS */}
                 <div className="flexCenterCenter gap-3">

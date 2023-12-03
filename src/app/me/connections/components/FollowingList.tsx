@@ -4,6 +4,7 @@ import { IFollow } from "@/types";
 import { revalidatePath } from "next/cache";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import UserInfo from "./UserInfo";
 
 interface IProps {
     following: IFollow[];
@@ -72,29 +73,15 @@ export default function FollowingList({
 
             const isBeingFollowed = following.followedUser.following.find((follow) => follow.followedUserId === following.followerUserId) !== undefined;
 
-            console.log(isBeingFollowed)
-
             return (
                 <div
                     key={`follower_${following.followedUserId}_${index}`}
                     className="w-full bg-bgColor flex justify-between items-center p-2 rounded-md shadow-lg px-4"
                 >
                     {/* USER INFO */}
-                    <div className="flexCenterCenter gap-4">
-                        {/* AVATAR */}
-                        <Image
-                            src={following.followedUser.avatarUrl ?? ''}
-                            alt='Follower avatar'
-                            width={50}
-                            height={50}
-                            className="rounded-full"
-                        />
-
-                        {/* NAME */}
-                        <div>
-                            {following.followedUser.username}
-                        </div>
-                    </div>
+                    <UserInfo
+                        user={following.followedUser}
+                    />
 
                     {/* ACTIONS */}
                     <div className="flexCenterCenter gap-3">

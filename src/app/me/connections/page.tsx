@@ -4,6 +4,7 @@ import Link from "next/link";
 import FollowersList from "./components/FollowersList";
 import FollowRequestsList from "./components/FollowRequestsList";
 import FollowingList from "./components/FollowingList";
+import SearchUsers from './components/SearchUsers';
 
 const TABS = {
     FOLLOWERS: {
@@ -32,7 +33,9 @@ interface IProps {
 
 export default async function ConnectionsPage({
     searchParams: {
-        tab
+        tab,
+        q,
+        page,
     },
 }: IProps) {
 
@@ -85,10 +88,11 @@ export default async function ConnectionsPage({
                             following={user!.following as unknown as IFollow[]}
                         />
                     ) : (
-                        <div>
-                            {/* //TODO */}
-                            Search people
-                        </div>
+                        <SearchUsers
+                            q={q}
+                            page={page}
+                            currentUser={user!}
+                        />
                     )
                 }
             </div>
