@@ -92,7 +92,7 @@ model PostLike {
   userId  String
   user    User   @relation(fields: [userId], references: [id])
   postId  Int
-  comment Post   @relation(fields: [postId], references: [id])
+  post Post   @relation(fields: [postId], references: [id])
 
   createdAt DateTime @default(now())
 
@@ -104,7 +104,7 @@ model PostDislike {
   userId  String
   user    User   @relation(fields: [userId], references: [id])
   postId  Int
-  comment Post   @relation(fields: [postId], references: [id])
+  post Post   @relation(fields: [postId], references: [id])
 
   createdAt DateTime @default(now())
 

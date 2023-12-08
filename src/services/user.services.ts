@@ -14,6 +14,9 @@ export const getUserById = async (id: string): Promise<IFullUser | null> => {
                     likes: true,
                     dislikes: true,
                 },
+                orderBy: {
+                    createdAt: 'desc',
+                },
             },
             watchlists: {
                 include: {

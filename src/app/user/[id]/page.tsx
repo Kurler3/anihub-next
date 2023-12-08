@@ -17,6 +17,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LockIcon from '@mui/icons-material/Lock';
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import UserPostsList from './components/UserPostsList';
+import { IUser } from '@/types';
 
 type Props = {
     params: {
@@ -331,139 +333,13 @@ const UserPage = async ({
             {/* POSTS TAB */}
             {
                 user.isProfilePublic || isOwner || isCurrentUserFollowing ?
-                    user.posts.length > 0 ? user.posts.map((post) => {
 
-                        return (
-                            <Link
-                                key={`post_${post.id}`}
-                                href={`/post/${post.id}`}
-                                className='w-[90%] flexStartStart flex-col bg-bgLight p-4 rounded-md gap-2 shadow-xl'
-                            >
-
-
-                                {/* AVATAR + TITLE */}
-                                <div className='flexStartCenter gap-4'>
-
-                                    <Image
-                                        src={user.avatarUrl!}
-                                        alt="Profile Pic"
-                                        width={50}
-                                        height={50}
-                                        className='rounded-full'
-                                    />
-
-                                    <div className='flexCenterStart flex-col gap-4'>
-
-                                        {/* USERNAME + CREATED AT */}
-                                        <div className='flexCenterCenter gap-2'>
-
-                                            {/* USERNAME */}
-                                            <Link href={`/user/${user.id}`}>
-                                                <div className='text-white hover:underline cursor-pointer text-xs'>
-                                                    {user.username} {isOwner ? '(You)' : ''}
-                                                </div>
-                                            </Link>
-
-
-                                            {/* BULLET */}
-                                            <div className='text-smallInfoColor text-center'>
-                                                &#8226;
-                                            </div>
-
-                                            {/* CREATED AT */}
-                                            <div className='text-smallInfoColor text-center text-sm'>
-                                                {moment(post.createdAt).fromNow()}
-
-                                            </div>
-                                        </div>
-
-                                        {/* TITLE */}
-                                        <div className='text-white text-xl'>
-                                            {post.title}
-                                        </div>
-
-                                    </div>
-
-                                </div>
-
-                                {/* BODY */}
-                                <div className='w-full p-2 resize-none max-w-8xl border-red-100 break-all transition text-sm'>
-                                    {
-                                        post.body
-                                    }
-                                </div>
-
-                                {/* ACTIONS (like, dislike, comment, edit (for owner only), delete (for owner only)) */}
-                                <div className='flex justify-start items-center gap-2'>
-
-                                    {/* LIKE BTN */}
-
-                                    <ThumbUpAltOutlinedIcon
-
-                                    />
-
-
-                                    {/* ABSOLUTE LIKES */}
-                                    <div className='text-white text-sm'>
-                                        {post.likes.length - post.dislikes.length}
-                                    </div>
-
-                                    {/* DISLIKE BTN */}
-
-                                    <ThumbDownOutlinedIcon
-
-                                    />
-
-
-
-                                    {/* ADD COMMENT TO COMMENT BTN */}
-                                    <div
-                                        className='flexCenterCenter gap-2 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'
-                                    >
-                                        <ChatBubbleOutlineOutlinedIcon
-
-                                        />
-                                        <span>Reply</span>
-                                    </div>
-
-
-                                    {/* EDIT + DELETE BTNS */}
-                                    {
-                                        isOwner && (
-                                            <>
-
-                                                {/* EDIT */}
-                                                <div className='flexCenterCenter gap-1 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'>
-
-                                                    <ModeEditOutlineIcon />
-
-                                                    <span>Edit</span>
-                                                </div>
-
-                                                {/* DELETE */}
-                                                <div className='flexCenterCenter gap-1 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'>
-                                                    <DeleteOutlineIcon />
-                                                    <span>Delete</span>
-                                                </div>
-
-                                            </>
-                                        )
-                                    }
-
-                                </div>
-
-
-                            </Link>
-
-                        )
-
-                    }) : (
-                        <div className='text-lg mt-10'>
-                            {
-                                isOwner ? 'You haven\'t posted anything yet' : 'This user hasn\'t posted anything yet'
-                            }
-                        </div>
-                    ) :
+                    <UserPostsList
+                        user={user}
+                        isOwner={isOwner ?? false}
+                        currentUser={currentUser as IUser}
+                    />
+                    :
 
                     <div className='flexCenterCenter flex-col m-auto p-8 rounded-md shadow-lg gap-8 bg-bgColor'>
 
