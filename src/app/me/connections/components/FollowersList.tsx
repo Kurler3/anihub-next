@@ -13,6 +13,7 @@ interface IProps {
 
 export default async function FollowersList({
     followers,
+    currentUser,
 }: IProps) {
 
     // Remove follower
@@ -131,7 +132,7 @@ export default async function FollowersList({
 
         const isFollowing = follower.followerUser.followers.find((follow) => follow.followerUserId === follower.followedUserId) !== undefined;
 
-        // const isCurrentUserRequestingToFollow = follower.followedUser.
+        const isCurrentUserRequestingToFollow = currentUser.followingRequests.find((followingRequest) => follower.followerUserId === followingRequest.followedUserId) !== undefined;
 
         return (
             <div
