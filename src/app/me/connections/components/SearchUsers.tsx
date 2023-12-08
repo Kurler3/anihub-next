@@ -5,6 +5,9 @@ import React from "react";
 import UserInfo from "./UserInfo";
 import { IUserWithConnections } from "@/types";
 import Button from "@/components/ui/Button";
+import { redirect } from "next/navigation";
+import { revalidatePath } from "next/cache";
+import prisma from "@/lib/prisma";
 
 
 
@@ -26,24 +29,128 @@ export default async function SearchUsers({
         pagination
     } = await searchUsers({ q, page });
 
-    //TODO
     const removeFollower = async (e: FormData) => {
         'use server'
+
+        const followedUserId = e.get('followedUserId') as string;
+        const followerUserId = e.get('followerUserId') as string;
+
+        try {
+
+            // Remove follower.
+            await prisma.follow.delete({
+                where: {
+                    followedUserId_followerUserId: {
+                        followedUserId,
+                        followerUserId
+                    }
+                }
+            })
+
+            // Revalidate path.
+            revalidatePath('/me/connections?tab=findPeople')
+
+        } catch (error) {
+            console.error('Error removing follower: ', error);
+            redirect('/error?message=Something went wrong while removing the follower');
+        }
+
     }
 
-    //TODO
     const unfollowUser = async (e: FormData) => {
         'use server'
+
+        const followedUserId = e.get('followedUserId') as string;
+        const followerUserId = e.get('followerUserId') as string;
+
+        try {
+            // Remove follow.
+            await prisma.follow.delete({
+                where: {
+                    followedUserId_followerUserId: {
+                        followedUserId,
+                        followerUserId
+                    }
+                }
+            })
+
+            // Revalidate path.
+            revalidatePath('/me/connections?tab=findPeople')
+        } catch (error) {
+            console.error('Error unfollowing: ', error);
+            redirect('/error?message=Something went wrong while removing the follower');
+        }
     }
 
-    //TODO
     const followUser = async (e: FormData) => {
         'use server'
+
+        const followedUserId = e.get('followedUserId') as string;
+        const followerUserId = e.get('followerUserId') as string;
+
+        try {
+
+            const userToFollow = await prisma.user.findUnique({
+                where: {
+                    id: followedUserId
+                }
+            });
+
+            if (!userToFollow) {
+                throw new Error('User to follow not found');
+            }
+
+            if (userToFollow.isProfilePublic) {
+                // Create follow.
+                await prisma.follow.create({
+                    data: {
+                        followedUserId,
+                        followerUserId
+                    }
+                })
+            } else {
+                await prisma.followRequest.create({
+                    data: {
+                        followedUserId,
+                        followerUserId
+                    }
+                })
+            }
+
+
+
+            // Revalidate path.
+            revalidatePath('/me/connections?tab=findPeople')
+        } catch (error) {
+            console.error('Error following: ', error);
+            redirect('/error?message=Something went wrong while following a user');
+        }
     }
 
-    //TODO 
     const cancelFollowRequest = async (e: FormData) => {
+        'use server'
 
+        const followedUserId = e.get('followedUserId') as string;
+        const followerUserId = e.get('followerUserId') as string;
+
+        try {
+
+            // Remove follow request.
+            await prisma.followRequest.delete({
+                where: {
+                    followerUserId_followedUserId: {
+                        followedUserId,
+                        followerUserId
+                    },
+                }
+            })
+
+            // Revalidate path.
+            revalidatePath('/me/connections?tab=findPeople')
+        } catch (error) {
+            console.error('Error canceling follow request: ', error);
+            redirect('/error?message=Something went wrong while canceling a follow request');
+        }
     }
 
     return (
@@ -59,9 +166,7 @@ export default async function SearchUsers({
 
                         const isCurrentUserFollowingUser = currentUser.following.find((following) => following.followedUserId === user.id) !== undefined;
 
-                        const isCurrentUserRequestingToFollowUser = currentUser.followingRequests.find((followingRequest) => user.id === followingRequest.followedUserId)
-
-                        console.log(isCurrentUserRequestingToFollowUser)
+                        const isCurrentUserRequestingToFollowUser = currentUser.followingRequests.find((followingRequest) => user.id === followingRequest.followedUserId) !== undefined;
 
                         return (
                             <div
@@ -100,33 +205,47 @@ export default async function SearchUsers({
 
                                             {/* FOLLOW/UNFOLLOW */}
                                             {
-                                                isCurrentUserFollowingUser ? (
-                                                    <form action={unfollowUser}>
+                                                isCurrentUserRequestingToFollowUser ? (
+                                                    <form action={cancelFollowRequest}>
                                                         <Button
-                                                            title="Unfollow"
-                                                            bgColor="bgLight"
-                                                            bgHoverColor="bgLighter"
+                                                            title='Cancel follow request'
+                                                            bgColor='red-500'
                                                             paddingX="8"
                                                             className="text-xs"
+                                                            bgHoverColor='red-600'
                                                             type='submit'
                                                         />
                                                         <input type="hidden" name="followedUserId" value={user.id} />
                                                         <input type="hidden" name="followerUserId" value={currentUser.id} />
                                                     </form>
-                                                ) : (
-                                                    <form action={followUser}>
-                                                        <Button
-                                                            title="Follow"
-                                                            bgColor="highlightedColor"
-                                                            bgHoverColor="highlightedHover"
-                                                            paddingX="8"
-                                                            className="text-xs"
-                                                            type='submit'
-                                                        />
-                                                        <input type="hidden" name="followedUserId" value={user.id} />
-                                                        <input type="hidden" name="followerUserId" value={currentUser.id} />
-                                                    </form>
-                                                )
+                                                ) :
+                                                    isCurrentUserFollowingUser ? (
+                                                        <form action={unfollowUser}>
+                                                            <Button
+                                                                title="Unfollow"
+                                                                bgColor="bgLight"
+                                                                bgHoverColor="bgLighter"
+                                                                paddingX="8"
+                                                                className="text-xs"
+                                                                type='submit'
+                                                            />
+                                                            <input type="hidden" name="followedUserId" value={user.id} />
+                                                            <input type="hidden" name="followerUserId" value={currentUser.id} />
+                                                        </form>
+                                                    ) : (
+                                                        <form action={followUser}>
+                                                            <Button
+                                                                title="Follow"
+                                                                bgColor="highlightedColor"
+                                                                bgHoverColor="highlightedHover"
+                                                                paddingX="8"
+                                                                className="text-xs"
+                                                                type='submit'
+                                                            />
+                                                            <input type="hidden" name="followedUserId" value={user.id} />
+                                                            <input type="hidden" name="followerUserId" value={currentUser.id} />
+                                                        </form>
+                                                    )
                                             }
 
                                         </div>

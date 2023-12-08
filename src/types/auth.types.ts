@@ -23,6 +23,7 @@ export interface IUser {
     id: string
     avatarUrl: string | null
     username: string
+    isProfilePublic: boolean
     email: string
     bio: string | null
     createdAt: Date

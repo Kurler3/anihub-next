@@ -249,9 +249,9 @@ const UserPage = async ({
                                         <form action={handleCancelFollowRequest}>
                                             <Button
                                                 title='Cancel follow request'
-                                                bgColor='bgLight'
+                                                bgColor='red-500'
                                                 paddingX='12'
-                                                bgHoverColor='bgLighter'
+                                                bgHoverColor='red-600'
                                                 type='submit'
                                             />
                                             <input

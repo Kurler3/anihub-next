@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma'
-import { ISearchUsersPagination, ISearchUsersResponse } from '@/types'
+import { IFullUser, ISearchUsersPagination, ISearchUsersResponse, IUser } from '@/types'
 
-export const getUserById = async (id: string) => {
+export const getUserById = async (id: string): Promise<IFullUser | null> => {
     const user = await prisma.user.findUnique({
         where: {
             id,
@@ -24,7 +24,7 @@ export const getUserById = async (id: string) => {
         },
     })
 
-    return user
+    return user as unknown as IFullUser
 }
 
 export async function searchUsers({
