@@ -90,9 +90,9 @@ model Post {
 model PostLike {
   id      Int    @id @default(autoincrement())
   userId  String
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   postId  Int
-  post Post   @relation(fields: [postId], references: [id])
+  post Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -102,9 +102,9 @@ model PostLike {
 model PostDislike {
   id      Int    @id @default(autoincrement())
   userId  String
-  user    User   @relation(fields: [userId], references: [id])
+  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   postId  Int
-  post Post   @relation(fields: [postId], references: [id])
+  post Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -118,7 +118,7 @@ model Comment {
   postId          Int
   post            Post      @relation(fields: [postId], references: [id])
   parentCommentId Int? // Nullable field to reference the parent comment
-  parentComment   Comment?  @relation("ChildComments", fields: [parentCommentId], references: [id])
+  parentComment   Comment?  @relation("ChildComments", fields: [parentCommentId], references: [id], onDelete: Cascade)
   childComments   Comment[] @relation("ChildComments")
 
   createdAt DateTime         @default(now())
@@ -132,9 +132,9 @@ model Comment {
 model CommentLike {
   id        Int     @id @default(autoincrement())
   userId    String
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   commentId Int
-  comment   Comment @relation(fields: [commentId], references: [id])
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -144,9 +144,9 @@ model CommentLike {
 model CommentDislike {
   id        Int     @id @default(autoincrement())
   userId    String
-  user      User    @relation(fields: [userId], references: [id])
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   commentId Int
-  comment   Comment @relation(fields: [commentId], references: [id])
+  comment   Comment @relation(fields: [commentId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
 
@@ -216,7 +216,7 @@ model WatchListUser {
   userId      String
   user        User      @relation(fields: [userId], references: [id])
   watchlistId Int
-  watchlist   WatchList @relation(fields: [watchlistId], references: [id])
+  watchlist   WatchList @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
 
   @@id([userId, watchlistId])
   @@map("watchlist_users")
@@ -224,7 +224,7 @@ model WatchListUser {
 
 model WatchlistAnime {
   watchListId Int
-  watchlist   WatchList @relation(fields: [watchListId], references: [id])
+  watchlist   WatchList @relation(fields: [watchListId], references: [id], onDelete: Cascade)
   animeId     Int
 
   @@id([watchListId, animeId])

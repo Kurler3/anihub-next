@@ -1,3 +1,5 @@
+import { IUser } from '.'
+
 export interface IPost {
     body: string
     createdAt: string
@@ -7,6 +9,7 @@ export interface IPost {
     userId: string
     likes: IPostLike[]
     dislikes: IPostDislike[]
+    user: IUser
 }
 
 export interface IPostLike {

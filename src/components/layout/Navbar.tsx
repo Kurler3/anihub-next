@@ -48,6 +48,17 @@ const Navbar = async () => {
           <KeyboardArrowDownIcon />
         </div> */}
 
+        {/* SETTINGS */}
+        <div className='flexCenterCenter cursor-pointer p-1 rounded-md transition hover:bg-bgDarkColor'>
+          <SettingsIcon className='text-white w-[28px] h-[28px]' />
+        </div>
+
+        {/* SEPARATOR */}
+        <div
+          className='bg-separatorColor h-[50px] w-[2px]'
+        >
+        </div>
+
         {
           user && (
             <>
@@ -58,10 +69,10 @@ const Navbar = async () => {
               </h2>
 
               {/* SEPARATOR */}
-              <div
+              {/* <div
                 className='bg-separatorColor h-[50px] w-[2px]'
               >
-              </div>
+              </div> */}
 
 
 
@@ -70,18 +81,14 @@ const Navbar = async () => {
           )
         }
 
-        {/* SETTINGS */}
-        <div className='flexCenterCenter cursor-pointer p-1 rounded-md transition hover:bg-bgDarkColor'>
-          <SettingsIcon className='text-white w-[28px] h-[28px]' />
-        </div>
 
 
-        {/* NOTIFICATIONS */}
+        {/* NOTIFICATIONS
         {
           user && <div className='flexCenterCenter cursor-pointer p-1 rounded-md transition hover:bg-bgDarkColor'>
             <NotificationsActiveIcon className='text-white w-[28px] h-[28px]' />
           </div>
-        }
+        } */}
 
 
 
