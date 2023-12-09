@@ -10,6 +10,16 @@ export interface IPost {
     likes: IPostLike[]
     dislikes: IPostDislike[]
     user: IUser
+    comments: IPostComment[]
+}
+
+export interface IPostComment {
+    id: string
+    userId: string
+    postId: string
+    createdAt: string
+    content: string
+    user: IUser
 }
 
 export interface IPostLike {

@@ -8,9 +8,9 @@ import React from 'react'
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
-import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { redirect } from 'next/navigation';
+import { deletePost, dislikePost, likePost } from '@/services';
 
 type Props = {
     post: IPost;
@@ -24,94 +24,60 @@ const Post = ({
     currentUser
 }: Props) => {
 
+    //////////////////////////////////////
+    // VARS //////////////////////////////
+    //////////////////////////////////////
+
+    // Is liking
+    const isLiking = currentUser ? post.likes.find((like) => like.userId === currentUser.id) : false;
+
+    // Is disliking
+    const isDisliking = currentUser ? post.dislikes.find((dislike) => dislike.userId === currentUser.id) : false;
+
+    //////////////////////////////////////
+    // FUNCTIONS /////////////////////////
+    //////////////////////////////////////
+
     // Handle like post
     const handleLikePost = async (e: FormData) => {
         'use server'
-
         const currentUserId = e.get('currentUserId') as string;
-
-        if (!currentUserId) {
-            redirect('/need-auth');
-        }
-
-        try {
-
-            // Get existing like.
-
-            // Get existing dislike.
-
-            // If was liking => remove the like.
-
-            // Else create like.
-
-            // If has dislike => remove dislike.
-
-
-            // Revalidate page.
-
-        } catch (error) {
-            console.error('Error trying to like post...', error);
-        }
-
+        const postId = e.get('postId') as string;
+        const numPostId = parseInt(postId)
+        // Like post
+        await likePost({
+            postId: numPostId,
+            userId: currentUserId,
+        })
     }
 
     // Handle dislike post
     const handleDislikePost = async (e: FormData) => {
         'use server'
-
         const currentUserId = e.get('currentUserId') as string;
-
-        if (!currentUserId) {
-            redirect('/need-auth');
-        }
-
-        try {
-
-            // Get existing like.
-
-            // Get existing dislike.
-
-            // If was disliking => remove the dislike.
-
-            // Else create dislike.
-
-            // If has like => remove like.
-
-            // Revalidate page.
-
-        } catch (error) {
-            console.error('Error trying to dislike post...', error);
-        }
+        const postId = e.get('postId') as string;
+        const numPostId = parseInt(postId)
+        await dislikePost({
+            postId: numPostId,
+            userId: currentUserId,
+        })
     }
 
     // Handle delete post
     const handleDeletePost = async (e: FormData) => {
         'use server'
-
-        const currentUserId = e.get('currentUserId') as string;
-
-        if (!currentUserId) {
-            redirect('/need-auth');
-        }
-
-        try {
-
-            // Delete post.
-
-            // Revalidate page.
-
-
-        } catch (error) {
-            console.error('Error trying to delete post...', error);
-        }
-
+        const postId = e.get('postId') as string;
+        await deletePost(parseInt(postId));
     }
 
-    // Return html
+    /////////////////////////////////////////////
+    // RETURN HTML //////////////////////////////
+    /////////////////////////////////////////////
+
     return (
         (
             <div
-                className='w-[90%] min-h-[200px] flex justify-between items-start flex-col bg-bgLight p-4 rounded-md gap-2 shadow-xl  transition'
+                className='w-full min-h-[300px] flex justify-between items-start flex-col bg-bgLight p-4 rounded-md gap-2 shadow-xl  transition'
             >
 
                 {/* AVATAR + TITLE + BODY */}
@@ -169,7 +135,6 @@ const Post = ({
                     </div>
                 </div>
 
-
                 {/* ACTIONS (like, dislike, comment, edit (for owner only), delete (for owner only)) */}
                 <div className='flex justify-start items-center gap-2'>
 
@@ -177,11 +142,20 @@ const Post = ({
                     <form action={handleLikePost}>
                         <button type='submit'>
                             <ThumbUpAltOutlinedIcon
+                                className={`${isLiking ? 'text-red-400' : 'hover:text-red-400'}`}
                             />
                         </button>
+                        <input
+                            type='hidden'
+                            name='currentUserId'
+                            value={currentUser?.id}
+                        />
+                        <input
+                            type='hidden'
+                            name='postId'
+                            value={post.id}
+                        />
                     </form>
-
-
 
                     {/* ABSOLUTE LIKES */}
                     <div className='text-white text-sm'>
@@ -189,21 +163,34 @@ const Post = ({
                     </div>
 
                     {/* DISLIKE BTN */}
-
-                    <ThumbDownOutlinedIcon
-                    />
-
+                    <form action={handleDislikePost}>
+                        <button type='submit'>
+                            <ThumbDownOutlinedIcon
+                                className={`${isDisliking ? 'text-blue-400' : 'hover:text-blue-400'}`}
+                            />
+                        </button>
+                        <input
+                            type='hidden'
+                            name='currentUserId'
+                            value={currentUser?.id}
+                        />
+                        <input
+                            type='hidden'
+                            name='postId'
+                            value={post.id}
+                        />
+                    </form>
 
 
                     {/* ADD COMMENT TO COMMENT BTN */}
-                    <div
-                        className='flexCenterCenter gap-2 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'
+                    {/* <div
+                        className='flexCenterCenter gap-2 hover:bg-bgLighter transition cursor-pointer p-1 text-sm rounded-md'
                     >
                         <ChatBubbleOutlineOutlinedIcon
 
                         />
                         <span>Reply</span>
-                    </div>
+                    </div> */}
 
 
                     {/* EDIT + DELETE BTNS */}
@@ -221,12 +208,17 @@ const Post = ({
 
                                 {/* DELETE */}
                                 <form action={handleDeletePost}>
-                                    <div className='flexCenterCenter gap-1 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'>
+                                    <div className='flexCenterCenter gap-1 hover:bg-bgLighter hover:text-red-400 transition cursor-pointer p-1 text-sm rounded-md'>
                                         <button type='submit'>
                                             <DeleteOutlineIcon />
                                         </button>
                                         <span>Delete</span>
                                     </div>
+                                    <input
+                                        type='hidden'
+                                        name='postId'
+                                        value={post.id}
+                                    />
                                 </form>
 
 

@@ -113,6 +113,7 @@ model PostDislike {
 
 model Comment {
   id              Int       @id @default(autoincrement())
+  content         String
   userId          String
   user            User      @relation(fields: [userId], references: [id])
   postId          Int
