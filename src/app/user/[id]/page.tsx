@@ -4,16 +4,10 @@ import HorizontalSeparator from '@/components/HorizontalSeparator';
 import Button from '@/components/ui/Button';
 import { getCurrentUser } from '@/lib/supabase/supabase-server';
 import { getUserById } from '@/services';
-import moment from 'moment';
 import Image from 'next/image';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import React from 'react'
-import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
-import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
-import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
-import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import LockIcon from '@mui/icons-material/Lock';
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
