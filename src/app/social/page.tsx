@@ -3,6 +3,7 @@ import { IUserWithFollowing } from '@/types';
 import Image from 'next/image';
 import React from 'react'
 import SocialPagePosts from './components/SocialPagePosts';
+import prisma from '@/lib/prisma';
 
 type Props = {
   searchParams: {
@@ -26,9 +27,27 @@ const SocialPage = async ({
   // FUNCTIONS //////////////////////
   ///////////////////////////////////
 
-  //TODO Handle create post
+  // Handle create post
   const handleCreatePost = async (e: FormData) => {
     'use server'
+
+    const title = e.get('title') as string;
+    const body = e.get('body') as string;
+    const userId = e.get('currentUserId') as string;
+
+    try {
+
+      await prisma.post.create({
+        data: {
+          userId,
+          title,
+          body,
+        }
+      })
+
+    } catch (error) {
+      console.error('Error while creating post');
+    }
 
   }
 
@@ -65,7 +84,6 @@ const SocialPage = async ({
                 />
                 <textarea name='body' className="textarea bg-bgLight textarea-ghost resize-none w-full focus:outline-none " placeholder="Share your thoughts..."></textarea>
               </div>
-
               <button type='submit' className="h-full btn bg-highlightedColor text-white hover:bg-highlightedHover">
                 Send
               </button>
