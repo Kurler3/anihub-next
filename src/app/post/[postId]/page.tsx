@@ -8,6 +8,7 @@ import { IPost, IUser } from '@/types';
 import Image from 'next/image';
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
+import PostComment from '@/components/ui/post/PostComment';
 
 type Props = {
     params: {
@@ -106,13 +107,11 @@ const PostPage = async ({
                     post.comments.map((comment) => {
 
                         return (
-                            <div
-                                key={`post_${post.id}_comment_${comment.id}`}
-                            >
-                                {
-                                    comment.content
-                                }
-                            </div>
+                            <PostComment
+                                key={`post_comment_${comment.id}`}
+                                postComment={comment}
+                                userId={currentUser?.id}
+                            />
                         )
                     })
                 }

@@ -96,6 +96,12 @@ const UserPostsList = ({ user, isOwner, currentUser }: Props) => {
             {
                 user.posts.length > 0 ? user.posts.map((post) => {
 
+                    // Is current user liking post
+                    const isCurrentUserLikingPost = currentUser ? post.likes.find((like) => like.userId === currentUser.id) : false;
+
+                    // Is current user disliking post
+                    const isCurrentUserDislikingPost = currentUser ? post.dislikes.find((dislike) => dislike.userId === currentUser.id) : false;
+
                     return (
                         <Link
                             key={`post_${post.id}`}
@@ -162,6 +168,7 @@ const UserPostsList = ({ user, isOwner, currentUser }: Props) => {
                                 {/* LIKE BTN */}
 
                                 <ThumbUpAltOutlinedIcon
+                                    className={`${isCurrentUserLikingPost ? 'text-red-400' : ''}`}
                                 />
 
 
@@ -173,13 +180,14 @@ const UserPostsList = ({ user, isOwner, currentUser }: Props) => {
                                 {/* DISLIKE BTN */}
 
                                 <ThumbDownOutlinedIcon
+                                    className={`${isCurrentUserDislikingPost ? 'text-blue-400' : ''}`}
                                 />
 
 
 
                                 {/* ADD COMMENT TO COMMENT BTN */}
                                 <div
-                                    className='flexCenterCenter gap-2 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'
+                                    className='flexCenterCenter gap-2  transition cursor-pointer p-1 text-sm rounded-md'
                                 >
                                     <ChatBubbleOutlineOutlinedIcon
 
@@ -194,15 +202,15 @@ const UserPostsList = ({ user, isOwner, currentUser }: Props) => {
                                         <>
 
                                             {/* EDIT */}
-                                            <div className='flexCenterCenter gap-1 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'>
+                                            {/* <div className='flexCenterCenter gap-1  transition cursor-pointer p-1 text-sm rounded-md'>
 
                                                 <ModeEditOutlineIcon />
 
                                                 <span>Edit</span>
-                                            </div>
+                                            </div> */}
 
                                             {/* DELETE */}
-                                            <div className='flexCenterCenter gap-1 hover:bg-bgLight transition cursor-pointer p-1 text-sm rounded-md'>
+                                            <div className='flexCenterCenter gap-1  transition cursor-pointer p-1 text-sm rounded-md'>
                                                 <DeleteOutlineIcon />
                                                 <span>Delete</span>
                                             </div>

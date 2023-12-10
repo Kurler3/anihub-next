@@ -14,6 +14,9 @@ export const getPostById = async (postId: string) => {
                 orderBy: {
                     createdAt: 'desc',
                 },
+                where: {
+                    parentCommentId: null,
+                },
             },
             likes: true,
             dislikes: true,
