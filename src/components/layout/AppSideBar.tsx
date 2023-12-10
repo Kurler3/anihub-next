@@ -33,11 +33,11 @@ const AppSideBar = (props: Props) => {
             />
 
             {/* MESSAGES */}
-            <AppSideBarOption
+            {/* <AppSideBarOption
                 IconComponent={MessageIcon}
                 title='Messages'
                 urlValue='messages'
-            />
+            /> */}
 
             {/* SEPARATOR */}
             <HorizontalSeparator />

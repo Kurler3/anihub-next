@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma'
-import { IFullUser, ISearchUsersPagination, ISearchUsersResponse, IUser } from '@/types'
+import { IFullUser, ISearchUsersResponse, IUserWithConnections, IUserWithFollowing, Pagination } from '@/types'
 
 export const getUserById = async (id: string): Promise<IFullUser | null> => {
     const user = await prisma.user.findUnique({
@@ -70,7 +70,7 @@ export async function searchUsers({
         const lastVisiblePage = Math.ceil(totalUsersCount / perPage)
         const hasNextPage = pageNumber < lastVisiblePage
 
-        const pagination: ISearchUsersPagination = {
+        const pagination: Pagination = {
             last_visible_page: lastVisiblePage,
             has_next_page: hasNextPage,
             items: {
@@ -91,3 +91,10 @@ export async function searchUsers({
         throw new Error('Internal Server Error')
     }
 }
+
+// Get social page people
+// export const getSocialPagePeople = async ({
+//     currentUser,
+// }: {
+//     currentUser?: IUserWithFollowing
+// }): Promise<IUserWithConnections> => {}

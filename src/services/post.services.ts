@@ -1,5 +1,13 @@
 import prisma from '@/lib/prisma'
-import { IPostCommentDislikeResponse, IPostCommentLikeResponse } from '@/types'
+import {
+    IGetSocialPagePosts,
+    IPost,
+    IPostCommentDislikeResponse,
+    IPostCommentLikeResponse,
+    IUser,
+    IUserWithFollowing,
+    Pagination,
+} from '@/types'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -195,4 +203,76 @@ export const createPostCommentLikeDislike = async (commentId: number, like: bool
     const responseData = (await response.json()) as IPostCommentLikeResponse | IPostCommentDislikeResponse
 
     return responseData
+}
+
+// Get posts
+export const getSocialPagePosts = async ({
+    currentUser,
+    page = 1,
+}: {
+    currentUser?: IUserWithFollowing
+    page?: number
+}): Promise<IGetSocialPagePosts> => {
+    try {
+        const perPage = 5 // Adjust as needed
+
+        const posts = await prisma.post.findMany({
+            where: currentUser
+                ? {
+                      OR: [
+                          { userId: currentUser.id }, // User's own posts
+                          { userId: { in: currentUser.following.map((follow) => follow.followedUserId) } }, // Posts from users they follow
+                          { user: { isProfilePublic: true } }, // Posts from users with public profiles
+                      ],
+                  }
+                : { user: { isProfilePublic: true } },
+            take: perPage,
+            skip: perPage * (page - 1),
+            include: {
+                user: true,
+                likes: true,
+                dislikes: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        })
+
+        // Count total posts (without pagination) for calculating pagination information
+        const totalPostsCount = await prisma.post.count({
+            where: currentUser
+                ? {
+                      OR: [
+                          { userId: currentUser.id },
+                          { userId: { in: currentUser.following.map((follow) => follow.followedUserId) } },
+                          { user: { isProfilePublic: true } },
+                      ],
+                  }
+                : { user: { isProfilePublic: true } },
+        })
+
+        // Calculate pagination information
+        const lastVisiblePage = Math.ceil(totalPostsCount / perPage)
+        const hasNextPage = page < lastVisiblePage
+
+        const pagination: Pagination = {
+            last_visible_page: lastVisiblePage,
+            has_next_page: hasNextPage,
+            items: {
+                count: posts.length,
+                total: totalPostsCount,
+                per_page: perPage,
+            },
+        }
+
+        const apiResponse: IGetSocialPagePosts = {
+            posts: posts as unknown as IPost[],
+            pagination,
+        }
+
+        return apiResponse
+    } catch (error) {
+        console.error(error)
+        throw new Error('Internal Server Error')
+    }
 }

@@ -1,4 +1,4 @@
-import { IUser } from '.'
+import { IUser, Pagination } from '.'
 
 export interface IPost {
     body: string
@@ -56,4 +56,9 @@ export interface IPostCommentDislikeResponse {
 export interface IUpdatePostComment {
     newCommentContent: string
     commentId: number
+}
+
+export interface IGetSocialPagePosts {
+    posts: IPost[]
+    pagination: Pagination
 }

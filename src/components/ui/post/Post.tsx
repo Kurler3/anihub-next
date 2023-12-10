@@ -7,26 +7,24 @@ import Link from 'next/link'
 import React from 'react'
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
-import ChatBubbleOutlineOutlinedIcon from '@mui/icons-material/ChatBubbleOutlineOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { redirect } from 'next/navigation';
 import { deletePost, dislikePost, likePost } from '@/services';
 
 type Props = {
     post: IPost;
-    isOwner: boolean;
     currentUser?: IUser;
 }
 
 const Post = ({
     post,
-    isOwner,
     currentUser
 }: Props) => {
 
     //////////////////////////////////////
     // VARS //////////////////////////////
     //////////////////////////////////////
+
+    const isOwner = currentUser ? post.userId === currentUser.id : false;
 
     // Is liking
     const isLiking = currentUser ? post.likes.find((like) => like.userId === currentUser.id) : false;
@@ -77,64 +75,66 @@ const Post = ({
     return (
         (
             <div
-                className='w-full min-h-[300px] flex justify-between items-start flex-col bg-bgLight p-4 rounded-md gap-2 shadow-xl  transition'
+                className='w-full min-h-[300px] flex justify-between items-start flex-col bg-[#3b3b3b] p-4 rounded-md gap-2 shadow-xl  transition'
             >
 
                 {/* AVATAR + TITLE + BODY */}
-                <div className='flex flex-col justify-start items-start w-full gap-2'>
+                <Link href={`/post/${post.id}`} className='flex-1 w-full hover:bg-bgLight p-2 rounded-md transition'>
 
-                    {/* AVATAR + TITLE */}
-                    <div className='flexStartCenter gap-4'>
+                    <div className='flex flex-col justify-start items-start w-full gap-2'>
 
-                        <Image
-                            src={post.user.avatarUrl!}
-                            alt="Profile Pic"
-                            width={50}
-                            height={50}
-                            className='rounded-full'
-                        />
+                        {/* AVATAR + TITLE */}
+                        <div className='flexStartCenter gap-4'>
 
-                        <div className='flexCenterStart flex-col gap-4'>
+                            <Image
+                                src={post.user.avatarUrl!}
+                                alt="Profile Pic"
+                                width={50}
+                                height={50}
+                                className='rounded-full'
+                            />
 
-                            {/* USERNAME + CREATED AT */}
-                            <div className='flexCenterCenter gap-2'>
+                            <div className='flexCenterStart flex-col gap-4'>
 
-                                {/* USERNAME */}
-                                <Link href={`/user/${post.user.id}`}>
-                                    <div className='text-white hover:underline cursor-pointer text-xs'>
-                                        {post.user.username} {isOwner ? '(You)' : ''}
+                                {/* USERNAME + CREATED AT */}
+                                <div className='flexCenterCenter gap-2'>
+
+                                    {/* USERNAME */}
+                                    <Link href={`/user/${post.user.id}`}>
+                                        <div className='text-white hover:underline cursor-pointer text-xs'>
+                                            {post.user.username} {isOwner ? '(You)' : ''}
+                                        </div>
+                                    </Link>
+
+                                    {/* BULLET */}
+                                    <div className='text-smallInfoColor text-center'>
+                                        &#8226;
                                     </div>
-                                </Link>
 
-                                {/* BULLET */}
-                                <div className='text-smallInfoColor text-center'>
-                                    &#8226;
+                                    {/* CREATED AT */}
+                                    <div className='text-smallInfoColor text-center text-sm'>
+                                        {moment(post.createdAt).fromNow()}
+
+                                    </div>
                                 </div>
 
-                                {/* CREATED AT */}
-                                <div className='text-smallInfoColor text-center text-sm'>
-                                    {moment(post.createdAt).fromNow()}
-
+                                {/* TITLE */}
+                                <div className='text-white text-xl'>
+                                    {post.title}
                                 </div>
-                            </div>
 
-                            {/* TITLE */}
-                            <div className='text-white text-xl'>
-                                {post.title}
                             </div>
 
                         </div>
 
+                        {/* BODY */}
+                        <div className='w-full  p-2 resize-none max-w-8xl border-red-100 break-all transition text-sm'>
+                            {
+                                post.body
+                            }
+                        </div>
                     </div>
-
-                    {/* BODY */}
-                    <div className='w-full p-2 resize-none max-w-8xl border-red-100 break-all transition text-sm'>
-                        {
-                            post.body
-                        }
-                    </div>
-                </div>
-
+                </Link>
                 {/* ACTIONS (like, dislike, comment, edit (for owner only), delete (for owner only)) */}
                 <div className='flex justify-start items-center gap-2'>
 

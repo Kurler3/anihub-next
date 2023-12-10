@@ -1,4 +1,4 @@
-import { IPost, IUser } from '.'
+import { IPost, IUser, Pagination } from '.'
 
 export interface IConnectionsPageSearchParams {
     tab?: 'followers' | 'following' | 'follow_requests'
@@ -55,5 +55,5 @@ export interface ISearchUsersPagination {
 }
 export interface ISearchUsersResponse {
     users: IUser[]
-    pagination: ISearchUsersPagination
+    pagination: Pagination
 }

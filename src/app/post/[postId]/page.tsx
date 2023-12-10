@@ -30,9 +30,6 @@ const PostPage = async ({
     // Get current user (could be null)
     const currentUser = await getCurrentUser() as unknown as IUser;
 
-    // If post owner or not
-    const isOwner = currentUser?.id === post.userId;
-
     ////////////////////////////////////////////
     // FUNCTIONS ///////////////////////////////
     ////////////////////////////////////////////
@@ -73,7 +70,6 @@ const PostPage = async ({
             {/* POST */}
             <Post
                 post={post}
-                isOwner={isOwner}
                 currentUser={currentUser}
             />
 
