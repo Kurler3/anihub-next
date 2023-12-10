@@ -1,4 +1,5 @@
 import prisma from '@/lib/prisma'
+import { IPostCommentDislikeResponse, IPostCommentLikeResponse } from '@/types'
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
@@ -149,4 +150,46 @@ export const deletePost = async (postId: number) => {
         console.error('Error trying to delete post...', error)
         redirect('/error?message=Error while deleting post')
     }
+}
+
+export const getPostCommentExtraData = async (postCommentId: number) => {
+    const res = await fetch(`/api/post-comment/getExtraData?postCommentId=${postCommentId}`)
+
+    if (!res.ok) throw new Error('Error while getting post comment extra data')
+
+    const extraData = await res.json()
+
+    return extraData
+}
+
+export const getPostCommentChildrenComments = async (postCommentId: number) => {
+    const res = await fetch(`/api/post-comment/getExtraData?postCommentId=${postCommentId}&fields=childComments`)
+
+    if (!res.ok) throw new Error('Error while getting post comment extra data')
+
+    const extraData = await res.json()
+
+    return extraData
+}
+
+// Create post comment like / dislike
+export const createPostCommentLikeDislike = async (commentId: number, like: boolean) => {
+    const url = `/api/post-comment/${like ? 'like' : 'dislike'}`
+
+    // Make request to server.
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            commentId,
+        }),
+    })
+
+    if (!response.ok) throw new Error("Couldn't like/dislike comment")
+
+    const responseData = (await response.json()) as IPostCommentLikeResponse | IPostCommentDislikeResponse
+
+    return responseData
 }
