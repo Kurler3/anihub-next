@@ -1,9 +1,11 @@
 import { getCurrentUser } from '@/lib/supabase/supabase-server'
-import { IUserWithFollowing } from '@/types';
+import { IUserWithConnections, IUserWithFollowing } from '@/types';
 import Image from 'next/image';
 import React from 'react'
 import SocialPagePosts from './components/SocialPagePosts';
 import prisma from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
+import SocialPagePeople from './components/SocialPagePeople';
 
 type Props = {
   searchParams: {
@@ -21,7 +23,12 @@ const SocialPage = async ({
   // DATA ///////////////////////////
   ///////////////////////////////////
 
-  const currentUser = await getCurrentUser({ following: true }) as unknown as IUserWithFollowing;
+  const currentUser = await getCurrentUser({
+    following: true,
+    followers: true,
+    followerRequests: true,
+    followingRequests: true,
+  }) as unknown as IUserWithConnections;
 
   ///////////////////////////////////
   // FUNCTIONS //////////////////////
@@ -44,6 +51,11 @@ const SocialPage = async ({
           body,
         }
       })
+
+      e.set('title', '');
+      e.set('body', '');
+
+      revalidatePath('/social')
 
     } catch (error) {
       console.error('Error while creating post');
@@ -82,7 +94,7 @@ const SocialPage = async ({
                   className="input bg-bgLight input-ghost w-full focus:outline-none"
                   placeholder='Title'
                 />
-                <textarea name='body' className="textarea bg-bgLight textarea-ghost resize-none w-full focus:outline-none " placeholder="Share your thoughts..."></textarea>
+                <textarea name='body' className="textarea bg-bgLight textarea-ghost resize-none min-h-[100px] w-full focus:outline-none " placeholder="Share your thoughts..."></textarea>
               </div>
               <button type='submit' className="h-full btn bg-highlightedColor text-white hover:bg-highlightedHover">
                 Send
@@ -107,16 +119,14 @@ const SocialPage = async ({
 
       {/* SEPARATOR */}
       <div
-        className='bg-separatorColor h-[70%] w-[2px]'
+        className='bg-separatorColor h-[80%] w-[2px]'
       >
       </div>
 
       {/* PEOPLE */}
-      <div className='border border-blue-400 h-full p-4 min-w-[30%]'>
-        <h1 className='text-lg'>
-          People
-        </h1>
-      </div>
+      <SocialPagePeople
+        currentUser={currentUser}
+      />
 
     </div>
   )

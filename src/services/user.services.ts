@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma'
-import { IFullUser, ISearchUsersResponse, IUserWithConnections, IUserWithFollowing, Pagination } from '@/types'
+import { IFullUser, ISearchUsersResponse, IUser, IUserWithConnections, IUserWithFollowing, Pagination } from '@/types'
 
 export const getUserById = async (id: string): Promise<IFullUser | null> => {
     const user = await prisma.user.findUnique({
@@ -93,8 +93,42 @@ export async function searchUsers({
 }
 
 // Get social page people
-// export const getSocialPagePeople = async ({
-//     currentUser,
-// }: {
-//     currentUser?: IUserWithFollowing
-// }): Promise<IUserWithConnections> => {}
+export const getSocialPagePeople = async ({
+    currentUser,
+}: {
+    currentUser?: IUserWithConnections
+}): Promise<IUser[]> => {
+    let usersList: IUser[]
+
+    if (currentUser) {
+        // Extract the followed users
+        const followedUsers = currentUser.following.map((following) => following.followedUser)
+
+        // If the current user is not following at least 10 users,
+        // fill in the rest with users that the current user is not following
+        if (followedUsers.length < 10) {
+            const remainingUsersCount = 10 - followedUsers.length
+            const remainingUsers = await prisma.user.findMany({
+                take: remainingUsersCount,
+                where: {
+                    NOT: {
+                        id: {
+                            in: followedUsers.map((user) => user.id),
+                        },
+                    },
+                },
+            })
+
+            usersList = [...followedUsers, ...remainingUsers]
+        } else {
+            usersList = followedUsers
+        }
+    } else {
+        // If there is no current user, get the first 10 users from the database
+        usersList = await prisma.user.findMany({
+            take: 10,
+        })
+    }
+
+    return usersList
+}
