@@ -1,10 +1,11 @@
+'use server'
+
 import prisma from '@/lib/prisma'
 import {
     IGetSocialPagePosts,
     IPost,
     IPostCommentDislikeResponse,
     IPostCommentLikeResponse,
-    IUser,
     IUserWithFollowing,
     Pagination,
 } from '@/types'
@@ -34,7 +35,15 @@ export const getPostById = async (postId: string) => {
 }
 
 // Handle like post
-export const likePost = async ({ postId, userId }: { postId: number; userId?: string }) => {
+export const likePost = async ({
+    postId,
+    userId,
+    currentPath,
+}: {
+    postId: number
+    userId?: string
+    currentPath?: string
+}) => {
     if (!userId) {
         redirect('/need-auth')
     }
@@ -84,7 +93,7 @@ export const likePost = async ({ postId, userId }: { postId: number; userId?: st
         }
 
         // Revalidate page.
-        revalidatePath(`/post/${postId}`)
+        revalidatePath(currentPath ?? `/post/${postId}`)
     } catch (error) {
         console.error('Error trying to like post...', error)
         redirect('/error?message=Error while liking post')
@@ -92,7 +101,15 @@ export const likePost = async ({ postId, userId }: { postId: number; userId?: st
 }
 
 // Handle dislike post
-export const dislikePost = async ({ postId, userId }: { postId: number; userId?: string }) => {
+export const dislikePost = async ({
+    postId,
+    userId,
+    currentPath,
+}: {
+    postId: number
+    userId?: string
+    currentPath?: string
+}) => {
     if (!userId) redirect('/need-auth')
 
     try {
@@ -140,7 +157,7 @@ export const dislikePost = async ({ postId, userId }: { postId: number; userId?:
         }
 
         // Revalidate page.
-        revalidatePath(`/post/${postId}`)
+        revalidatePath(currentPath ?? `/post/${postId}`)
     } catch (error) {
         console.error('Error trying to dislike post...', error)
         redirect('/error?message=Error while disliking post')
@@ -148,7 +165,7 @@ export const dislikePost = async ({ postId, userId }: { postId: number; userId?:
 }
 
 // Handle delete post
-export const deletePost = async (postId: number) => {
+export const deletePost = async (postId: number, currentPath?: string) => {
     try {
         await prisma.post.delete({
             where: {
@@ -156,7 +173,11 @@ export const deletePost = async (postId: number) => {
             },
         })
 
-        redirect('/')
+        if (currentPath) {
+            revalidatePath(currentPath)
+        } else {
+            redirect('/')
+        }
     } catch (error) {
         console.error('Error trying to delete post...', error)
         redirect('/error?message=Error while deleting post')

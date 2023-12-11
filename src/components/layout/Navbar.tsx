@@ -3,9 +3,7 @@ import React from 'react'
 import title from '@/images/title.svg'
 import Link from 'next/link'
 import SearchBar from '../inputs/SearchBar'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SettingsIcon from '@mui/icons-material/Settings';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { getCurrentUser } from '@/lib/supabase/supabase-server'
 import NavbarAvatarButton from './NavbarAvatarButton'
 
@@ -15,7 +13,7 @@ const Navbar = async () => {
   const user = await getCurrentUser();
 
   return (
-    <div className='w-100 flex justify-between items-center'>
+    <div className='w-full flex justify-between items-center sticky top-0 bg-bgColor'>
 
       {/* TITLE + SEARCH BAR */}
       <div className='flex justify-start items-center gap-8 flex-1'>

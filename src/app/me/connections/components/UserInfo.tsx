@@ -10,8 +10,9 @@ interface IProps {
 
 export default function UserInfo({ user, currentUser }: IProps) {
     return (
-        <Link href={`/user/${user.id}`} className='hover:bg-bgLight rounded-md p-1 transition'>
-            <div className="flexCenterCenter gap-4">
+        <Link href={`/user/${user.id}`} className='hover:bg-bgLight rounded-md p-1 transition flex-1'>
+            <div className="flexStartCenter gap-4">
+
                 {/* AVATAR */}
                 <Image
                     src={user.avatarUrl ?? ''}

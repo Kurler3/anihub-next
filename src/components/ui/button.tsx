@@ -5,8 +5,8 @@ import React, { ButtonHTMLAttributes } from 'react'
 type Props = {
     title: string;
     onClick?: () => void;
-    bgColor: string;
-    paddingX: string;
+    bgColor?: string;
+    paddingX?: string;
     type?: "button" | "submit" | "reset";
     bgHoverColor?: string;
     className?: string;

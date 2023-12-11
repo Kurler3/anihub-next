@@ -24,35 +24,48 @@ const SocialPagePosts = async ({
         page,
     })
 
-
     return (
         <div className='flex justify-between items-center flex-col gap-4 w-full h-full'>
 
             {/* POSTS */}
-            <div className='flexStartStart gap-4 flex-col w-full'>
-                {
-                    posts.map((post) => {
+            {
+                posts.length > 0 ? (
+                    <div className='flexStartStart gap-4 flex-col w-full flex-1'>
 
-                        return (
-                            <Post
-                                key={`post_${post.id}`}
-                                post={post}
-                                currentUser={currentUser}
-                            />
-                        )
+                        {
+                            posts.map((post) => {
 
-                    })
-                }
-            </div>
+                                return (
+                                    <Post
+                                        key={`post_${post.id}`}
+                                        post={post}
+                                        currentUser={currentUser}
+                                        currentPath='/social'
+                                    />
+                                )
 
+                            })
+                        }
+                    </div>
+                ) : (
+                    <h1 className='mt-20 text-xl'>
+                        No posts yet! 😢
+                    </h1>
+                )
+            }
 
             {/* PAGINATION */}
-            <PaginationComponent
-                currentPage={
-                    page ? typeof page === 'string' ? parseInt(page) : page : 1
-                }
-                data={pagination}
-            />
+            {
+                (!page || page === 1) && posts.length === 0 ? null : (
+                    <PaginationComponent
+                        currentPage={
+                            page ? typeof page === 'string' ? parseInt(page) : page : 1
+                        }
+                        data={pagination}
+                    />
+                )
+            }
+
 
         </div>
     )

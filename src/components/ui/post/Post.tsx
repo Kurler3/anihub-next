@@ -8,16 +8,21 @@ import React from 'react'
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { deletePost, dislikePost, likePost } from '@/services';
+import { dislikePost, likePost } from '@/services';
+import prisma from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 
 type Props = {
     post: IPost;
     currentUser?: IUser;
+    currentPath?: string;
 }
 
 const Post = ({
     post,
-    currentUser
+    currentUser,
+    currentPath
 }: Props) => {
 
     //////////////////////////////////////
@@ -46,6 +51,7 @@ const Post = ({
         await likePost({
             postId: numPostId,
             userId: currentUserId,
+            currentPath,
         })
     }
 
@@ -58,6 +64,7 @@ const Post = ({
         await dislikePost({
             postId: numPostId,
             userId: currentUserId,
+            currentPath,
         })
     }
 
@@ -65,7 +72,18 @@ const Post = ({
     const handleDeletePost = async (e: FormData) => {
         'use server'
         const postId = e.get('postId') as string;
-        await deletePost(parseInt(postId));
+
+        await prisma.post.delete({
+            where: {
+                id: +postId,
+            },
+        })
+
+        if (currentPath) {
+            revalidatePath(currentPath)
+        } else {
+            redirect('/')
+        }
     }
 
     /////////////////////////////////////////////
@@ -208,16 +226,20 @@ const Post = ({
 
                                 {/* DELETE */}
                                 <form action={handleDeletePost}>
-                                    <div className='flexCenterCenter gap-1 hover:bg-bgLighter hover:text-red-400 transition cursor-pointer p-1 text-sm rounded-md'>
-                                        <button type='submit'>
-                                            <DeleteOutlineIcon />
-                                        </button>
+
+                                    <button type='submit' className='flexCenterCenter gap-1 hover:bg-bgLighter hover:text-red-400 transition cursor-pointer p-1 text-sm rounded-md'>
+                                        <DeleteOutlineIcon />
                                         <span>Delete</span>
-                                    </div>
+                                    </button>
                                     <input
                                         type='hidden'
                                         name='postId'
                                         value={post.id}
+                                    />
+                                    <input
+                                        type='hidden'
+                                        name='currentPath'
+                                        value={currentPath}
                                     />
                                 </form>
 
