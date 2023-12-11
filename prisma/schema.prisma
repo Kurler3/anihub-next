@@ -208,6 +208,7 @@ model WatchList {
   owner          User             @relation(fields: [ownerId], references: [id])
   watchlistUsers WatchListUser[]
   watchlistAnime WatchlistAnime[]
+  createdAt DateTime @default(now())
 
   @@map("watchlists")
 }
@@ -219,6 +220,8 @@ model WatchListUser {
   watchlistId Int
   watchlist   WatchList @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
 
+  createdAt DateTime @default(now())
+
   @@id([userId, watchlistId])
   @@map("watchlist_users")
 }
@@ -227,6 +230,8 @@ model WatchlistAnime {
   watchListId Int
   watchlist   WatchList @relation(fields: [watchListId], references: [id], onDelete: Cascade)
   animeId     Int
+
+  createdAt DateTime @default(now())
 
   @@id([watchListId, animeId])
   @@map("watchlist_animes")
