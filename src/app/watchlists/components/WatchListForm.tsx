@@ -33,7 +33,7 @@ function WatchListForm({
         watchlistUsers,
         setWatchlistUsers,
     ] = useState<ICreateWatchListUsersState>({
-        admins: [currentUser, currentUser], // By default, creator is the watchlist admin.
+        admins: [currentUser], // By default, creator is the watchlist admin.
         editors: [],
         viewers: []
     })
@@ -118,6 +118,7 @@ function WatchListForm({
                         {/* USERS */}
                         <WatchListUsersAvatars
                             users={watchlistUsers.admins}
+                            currentUserId={currentUser.id}
                         />
 
                         {/* NUM USERS */}
@@ -161,6 +162,7 @@ function WatchListForm({
                             watchlistUsers.editors.length > 0 ? (
                                 <WatchListUsersAvatars
                                     users={watchlistUsers.viewers}
+                                    currentUserId={currentUser.id}
                                 />
                             ) : (
                                 <div className='text-placeholderColor'>
@@ -210,6 +212,7 @@ function WatchListForm({
                             watchlistUsers.editors.length > 0 ? (
                                 <WatchListUsersAvatars
                                     users={watchlistUsers.viewers}
+                                    currentUserId={currentUser.id}
                                 />
                             ) : (
                                 <div className='text-placeholderColor'>

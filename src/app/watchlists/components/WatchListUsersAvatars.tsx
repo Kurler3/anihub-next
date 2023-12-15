@@ -4,10 +4,12 @@ import React from 'react'
 
 type Props = {
     users: IUser[];
+    currentUserId: string;
 }
 
 const WatchListUsersAvatars = ({
     users,
+    currentUserId
 }: Props) => {
     return (
         <div className='flexStartCenter h-full'>
@@ -18,7 +20,7 @@ const WatchListUsersAvatars = ({
                     return (
                         <div
                             key={`watch_user_${user.id}_${index}`}
-                            title={user.username}
+                            title={`${user.username} ${currentUserId === user.id ? '(You)' : ''}`}
                             style={{
                                 marginLeft: index === 0 ? 0 : -30,
                             }}
