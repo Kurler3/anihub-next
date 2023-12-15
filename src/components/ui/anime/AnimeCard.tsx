@@ -9,7 +9,7 @@ type Props = {
 }
 
 const AnimeCard = ({ anime }: Props) => {
-    console.log(anime.episodes)
+
     return (
         <Link href={`/anime/${anime.mal_id}`}>
             <div

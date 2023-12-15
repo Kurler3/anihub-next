@@ -36,3 +36,14 @@ export interface IGetWatchlistsProps {
     page: number
     user: IUser
 }
+
+export interface ICreateWatchlistFormData {
+    title: string
+    description: string
+}
+
+export interface ICreateWatchListUsersState {
+    admins: IUser[]
+    editors: IUser[]
+    viewers: IUser[]
+}
