@@ -29,7 +29,6 @@ const WatchlistsPage = async ({
     user: currentUser!,
   });
 
-
   return (
     <div className='w-full h-full flexStartStart flex-col p-4 pl-12 gap-3'>
 

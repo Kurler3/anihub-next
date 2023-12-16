@@ -13,6 +13,7 @@ import { LOADING_MODAL_ID } from '@/lib/constants/common.constants';
 import { redirect } from 'next/navigation';
 import Alert from '@/components/ui/Alert';
 import { useRouter } from 'next/navigation'
+import { revalidatePath } from 'next/cache';
 
 type Props = {
     availableUsers: IUser[];
@@ -150,8 +151,9 @@ function WatchListForm({
             router.push('/error?message=Couldn\'t create watchlist! try again :)');
         }
 
+
         // Redirect to watchlists
-        router.push('/watchlists');
+        router.replace('/watchlists');
 
 
     }, [isCreatingWatchlist, router, watchlistUsers.admins, watchlistUsers.editors, watchlistUsers.viewers])

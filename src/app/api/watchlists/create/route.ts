@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
                     return {
                         userId,
                         watchlistId: watchlist.id,
-                        role,
+                        role: role.substring(0, role.length - 1),
                     }
                 })
 
