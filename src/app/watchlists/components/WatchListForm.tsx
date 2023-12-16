@@ -2,9 +2,15 @@
 
 import Button from '@/components/ui/Button';
 import { ICreateWatchListUsersState, ICreateWatchlistFormData, IUser } from '@/types'
-import React, { useState } from 'react'
-import { useForm } from 'react-hook-form';
+import React, { useCallback, useMemo, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form';
 import WatchListUsersAvatars from './WatchListUsersAvatars';
+import Modal from '@/components/ui/Modal';
+import { MANAGE_WATCHILIST_USERS_MODAL_ID } from '@/lib/constants';
+import WatchListUsersModal from './WatchListUsersModal';
+import { closeModal, openModal } from '@/lib/utils';
+import { LOADING_MODAL_ID } from '@/lib/constants/common.constants';
+import { redirect } from 'next/navigation';
 
 type Props = {
     availableUsers: IUser[];
@@ -35,16 +41,113 @@ function WatchListForm({
     ] = useState<ICreateWatchListUsersState>({
         admins: [currentUser], // By default, creator is the watchlist admin.
         editors: [],
-        viewers: []
+        viewers: [],
+        currentType: 'admins',
     })
+
+    const [
+        isCreatingWatchlist,
+        setIsCreatingWatchlist,
+    ] = useState<boolean>(false);
+
+    ////////////////////////////
+    // MEMO ////////////////////
+    ////////////////////////////
+
+    const filteredAvailableUsers = useMemo(() => {
+
+        // Get all picked users
+        const allPickedUsers =
+            [
+                ...watchlistUsers.admins,
+                ...watchlistUsers.editors,
+                ...watchlistUsers.viewers
+            ].map((user) => user.id);
+
+        // Filter the available users (users that mutually follow the current user) such that they are not yet picked
+        return availableUsers.filter((user) => !allPickedUsers.includes(user.id));
+
+    }, [availableUsers, watchlistUsers.admins, watchlistUsers.editors, watchlistUsers.viewers])
 
     ////////////////////////////
     // FUNCTIONS ///////////////
     ////////////////////////////
 
-    // Add/Remove user from watchlist
+    // Edit users
+    const editUsers = useCallback((type: 'admins' | 'editors' | 'viewers') => {
+
+        // Set the current type
+        setWatchlistUsers((prevWatchlistUsers) => {
+            return {
+                ...prevWatchlistUsers,
+                currentType: type,
+            }
+        })
+
+        // Open modal
+        openModal(MANAGE_WATCHILIST_USERS_MODAL_ID)
+
+    }, [])
+
+    // Confirm edit users
+    const confirmEditUsers = useCallback((users: IUser[]) => {
+
+        // Update state
+        setWatchlistUsers((prevWatchlistUsers) => {
+            return {
+                ...prevWatchlistUsers,
+                [watchlistUsers.currentType]: users,
+            }
+        });
+
+        // Close modal
+        closeModal(MANAGE_WATCHILIST_USERS_MODAL_ID)
+
+    }, [watchlistUsers.currentType])
+
 
     // Create watchlist
+    const createWatchlist: SubmitHandler<ICreateWatchlistFormData> = useCallback(async (formData) => {
+
+        // If already loading => skip
+        if (isCreatingWatchlist) return;
+
+        // Set loading  
+        setIsCreatingWatchlist(true);
+
+        // Loading modal
+        openModal(LOADING_MODAL_ID);
+
+        const data = {
+            ...formData,
+            admins: watchlistUsers.admins.map((user) => user.id),
+            editors: watchlistUsers.editors.map((user) => user.id),
+            viewers: watchlistUsers.viewers.map((user) => user.id),
+        };
+
+        // Send request to backend
+        const response = await fetch('/api/watchlists/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
+
+        // Close loading modal
+        closeModal(LOADING_MODAL_ID);
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error(errorData.error)
+            redirect('/error?message=Couldn\'t create watchlist! try again :)');
+        }
+
+        // Redirect to watchlists
+        redirect('/watchlists');
+
+
+    }, [isCreatingWatchlist, watchlistUsers.admins, watchlistUsers.editors, watchlistUsers.viewers])
 
 
 
@@ -55,7 +158,7 @@ function WatchListForm({
         <div className='flexStartCenter gap-4 flex-col'>
 
             {/* FORM */}
-            <form className='flexStartCenter gap-4 flex-col mt-10'>
+            <form className='flexStartCenter gap-4 flex-col mt-10' onSubmit={handleSubmit(createWatchlist)}>
 
                 {/* TITLE */}
                 <div className='flexStartStart flex-col gap-2'>
@@ -94,7 +197,10 @@ function WatchListForm({
                     {/* LABEL */}
                     <h2>Admins</h2>
 
-                    <div className={`
+                    <div
+
+                        onClick={() => editUsers('admins')}
+                        className={`
                         bg-bgLight 
                             p-3 
                             rounded-md 
@@ -112,7 +218,7 @@ function WatchListForm({
                             border
                             border-bgColor
                             ${watchlistUsers.admins.length > 0 ? 'fullHighlightedShadow' : 'hover:border-highlightedColor'
-                        }
+                            }
                     `}>
 
                         {/* USERS */}
@@ -136,7 +242,11 @@ function WatchListForm({
                     {/* LABEL */}
                     <h2>Editors</h2>
 
-                    <div className={`
+                    <div
+
+                        onClick={() => editUsers('editors')}
+
+                        className={`
                         bg-bgLight 
                             p-3 
                             rounded-md 
@@ -154,7 +264,7 @@ function WatchListForm({
                             border
                             border-bgColor
                             ${watchlistUsers.editors.length > 0 ? 'fullHighlightedShadow' : 'hover:border-highlightedColor'
-                        }
+                            }
                     `}>
 
                         {/* USERS */}
@@ -186,7 +296,10 @@ function WatchListForm({
                     {/* LABEL */}
                     <h2>Viewers</h2>
 
-                    <div className={`
+                    <div
+
+                        onClick={() => editUsers('viewers')}
+                        className={`
                         bg-bgLight 
                             p-3 
                             rounded-md 
@@ -204,7 +317,7 @@ function WatchListForm({
                             border
                             border-bgColor
                             ${watchlistUsers.viewers.length > 0 ? 'fullHighlightedShadow' : 'hover:border-highlightedColor'
-                        }
+                            }
                     `}>
 
                         {/* USERS */}
@@ -244,8 +357,19 @@ function WatchListForm({
             </form>
 
 
-
             {/* MODAL */}
+            <Modal
+                title='Manage watchlist users'
+                modalId={MANAGE_WATCHILIST_USERS_MODAL_ID}
+            >
+                <WatchListUsersModal
+                    availableUsers={filteredAvailableUsers}
+                    pickedUsers={watchlistUsers[watchlistUsers.currentType]}
+                    onConfirm={confirmEditUsers}
+                    currentUserId={currentUser.id}
+                    type={watchlistUsers.currentType}
+                />
+            </Modal>
 
         </div>
     )

@@ -39,11 +39,18 @@ export interface IGetWatchlistsProps {
 
 export interface ICreateWatchlistFormData {
     title: string
-    description: string
+    description?: string
 }
 
 export interface ICreateWatchListUsersState {
     admins: IUser[]
     editors: IUser[]
     viewers: IUser[]
+    currentType: 'admins' | 'editors' | 'viewers'
+}
+
+export interface ICreateWatchlistData extends ICreateWatchlistFormData {
+    admins: string[]
+    editors: string[]
+    viewers: string[]
 }
