@@ -46,7 +46,7 @@ export interface ICreateWatchListUsersState {
     admins: IUser[]
     editors: IUser[]
     viewers: IUser[]
-    currentType: 'admins' | 'editors' | 'viewers'
+    currentType: 'admins' | 'editors' | 'viewers' | null
 }
 
 export interface ICreateWatchlistData extends ICreateWatchlistFormData {

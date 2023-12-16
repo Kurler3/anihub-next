@@ -1,10 +1,10 @@
-//TODO Login type
+// Login type
 export type LoginFormData = {
     email: string
     password: string
 }
 
-//TODO Sign up Type
+// Sign up Type
 export type SignUpFormData = {
     email: string
     username: string

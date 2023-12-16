@@ -1,3 +1,4 @@
+import prisma from '@/lib/prisma'
 import { getCurrentUser } from '@/lib/supabase/supabase-server'
 import { createWatchlistSchema } from '@/schemas'
 import { ICreateWatchlistData } from '@/types'
@@ -13,8 +14,6 @@ export async function POST(req: NextRequest) {
     // Get body
     const body = await req.json()
 
-    console.log(body)
-
     // Init new watchlist
     let newWatchlist: ICreateWatchlistData
 
@@ -26,12 +25,42 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-        //TODO Create watchlist
-        //TODO Create watchlist users
+        // Create watchlist
+        const watchlist = await prisma.watchList.create({
+            data: {
+                name: newWatchlist.title,
+                description: newWatchlist.description,
+                ownerId: user.id,
+            },
+        })
+
+        const userRoles = ['admins', 'editors', 'viewers'] as (keyof ICreateWatchlistData)[]
+
+        // Create watchlist users
+        await Promise.all(
+            userRoles.map(async (role) => {
+                const watchlistUsers = (newWatchlist[role]! as string[]).map((userId) => {
+                    return {
+                        userId,
+                        watchlistId: watchlist.id,
+                        role,
+                    }
+                })
+
+                if (watchlistUsers.length > 0) {
+                    await prisma.watchListUser.createMany({
+                        data: watchlistUsers,
+                    })
+                }
+            }),
+        )
     } catch (error) {
-        //TODO Log error
-        //TODO Redirect to error page
+        // Log error
+        console.error('Error while creating watchlist...', error)
+        // Redirect to error page
+        return NextResponse.json({ message: 'Error while creating watchlist' }, { status: 500 })
     }
 
     // Return res
+    return NextResponse.json({ message: 'Watchlist created' }, { status: 200 })
 }

@@ -11,6 +11,8 @@ import WatchListUsersModal from './WatchListUsersModal';
 import { closeModal, openModal } from '@/lib/utils';
 import { LOADING_MODAL_ID } from '@/lib/constants/common.constants';
 import { redirect } from 'next/navigation';
+import Alert from '@/components/ui/Alert';
+import { useRouter } from 'next/navigation'
 
 type Props = {
     availableUsers: IUser[];
@@ -22,6 +24,8 @@ function WatchListForm({
     availableUsers,
 }: Props) {
 
+    const router = useRouter();
+
     ////////////////////////////
     // FORM STATE //////////////
     ////////////////////////////
@@ -29,6 +33,7 @@ function WatchListForm({
     const {
         register,
         handleSubmit,
+        formState: { errors },
     } = useForm<ICreateWatchlistFormData>();
 
     ////////////////////////////
@@ -42,8 +47,9 @@ function WatchListForm({
         admins: [currentUser], // By default, creator is the watchlist admin.
         editors: [],
         viewers: [],
-        currentType: 'admins',
+        currentType: null,
     })
+
 
     const [
         isCreatingWatchlist,
@@ -96,7 +102,8 @@ function WatchListForm({
         setWatchlistUsers((prevWatchlistUsers) => {
             return {
                 ...prevWatchlistUsers,
-                [watchlistUsers.currentType]: users,
+                [watchlistUsers.currentType!]: users,
+                currentType: null,
             }
         });
 
@@ -140,20 +147,21 @@ function WatchListForm({
         if (!response.ok) {
             const errorData = await response.json();
             console.error(errorData.error)
-            redirect('/error?message=Couldn\'t create watchlist! try again :)');
+            router.push('/error?message=Couldn\'t create watchlist! try again :)');
         }
 
         // Redirect to watchlists
-        redirect('/watchlists');
+        router.push('/watchlists');
 
 
-    }, [isCreatingWatchlist, watchlistUsers.admins, watchlistUsers.editors, watchlistUsers.viewers])
+    }, [isCreatingWatchlist, router, watchlistUsers.admins, watchlistUsers.editors, watchlistUsers.viewers])
 
 
 
     ////////////////////////////
     // RENDER //////////////////
     ////////////////////////////
+    console.log(errors)
     return (
         <div className='flexStartCenter gap-4 flex-col'>
 
@@ -174,6 +182,7 @@ function WatchListForm({
                         {...register('title', { required: true, maxLength: 20 })}
                     />
 
+                    {errors.title && <Alert message={errors.title.message!.length > 0 ? errors.title.message! : errors.title.type} />}
                 </div>
 
                 {/* DESCRIPTION */}
@@ -189,6 +198,7 @@ function WatchListForm({
                         {...register('description', { required: false })}
                     ></textarea>
 
+                    {errors.description && <Alert message={errors.description.message!} />}
                 </div>
 
                 {/* ADMINS */}
@@ -271,7 +281,7 @@ function WatchListForm({
                         {
                             watchlistUsers.editors.length > 0 ? (
                                 <WatchListUsersAvatars
-                                    users={watchlistUsers.viewers}
+                                    users={watchlistUsers.editors}
                                     currentUserId={currentUser.id}
                                 />
                             ) : (
@@ -322,7 +332,7 @@ function WatchListForm({
 
                         {/* USERS */}
                         {
-                            watchlistUsers.editors.length > 0 ? (
+                            watchlistUsers.viewers.length > 0 ? (
                                 <WatchListUsersAvatars
                                     users={watchlistUsers.viewers}
                                     currentUserId={currentUser.id}
@@ -362,13 +372,18 @@ function WatchListForm({
                 title='Manage watchlist users'
                 modalId={MANAGE_WATCHILIST_USERS_MODAL_ID}
             >
-                <WatchListUsersModal
-                    availableUsers={filteredAvailableUsers}
-                    pickedUsers={watchlistUsers[watchlistUsers.currentType]}
-                    onConfirm={confirmEditUsers}
-                    currentUserId={currentUser.id}
-                    type={watchlistUsers.currentType}
-                />
+                {
+                    watchlistUsers.currentType && (
+                        <WatchListUsersModal
+                            availableUsers={filteredAvailableUsers}
+                            pickedUsers={watchlistUsers[watchlistUsers.currentType]}
+                            onConfirm={confirmEditUsers}
+                            currentUserId={currentUser.id}
+                            type={watchlistUsers.currentType}
+                        />
+                    )
+                }
+
             </Modal>
 
         </div>

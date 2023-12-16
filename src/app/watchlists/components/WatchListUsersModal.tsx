@@ -2,7 +2,7 @@
 
 import { IUser } from '@/types';
 import Image from 'next/image';
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import HorizontalSeparator from '@/components/HorizontalSeparator';
 import Button from '@/components/ui/Button';
@@ -24,6 +24,7 @@ const WatchListUsersModal = ({
     currentUserId,
     type,
 }: Props) => {
+
 
     ////////////////////////////////
     // STATE ///////////////////////
@@ -79,6 +80,14 @@ const WatchListUsersModal = ({
             }
         })
     }
+
+    ////////////////////////////////
+    // USE EFFECT //////////////////
+    ////////////////////////////////
+
+    useEffect(() => {
+        setCurrentPickedUsers(pickedUsers)
+    }, [pickedUsers])
 
     ////////////////////////////////
     // RENDER //////////////////////
