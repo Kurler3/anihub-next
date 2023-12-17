@@ -70,3 +70,21 @@ export const getWatchLists = async ({ q, page, user }: IGetWatchlistsProps) => {
         pagination,
     }
 }
+
+// Get watchlist by id
+export const getWatchlistById = async (id: number) => {
+    return (await prisma.watchList.findUnique({
+        where: {
+            id,
+        },
+        include: {
+            owner: true,
+            watchlistUsers: {
+                include: {
+                    user: true,
+                },
+            },
+            watchlistAnime: true,
+        },
+    })) as IWatchList
+}

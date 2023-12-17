@@ -30,7 +30,7 @@ const WatchListUsersAvatars = ({
                                 alt="Profile Pic"
                                 width={55}
                                 height={50}
-                                className='rounded-full cursor-pointer border p-1 bg-white'
+                                className='rounded-full cursor-pointer p-1 '
                             />
                         </div>
                     )
