@@ -14,12 +14,12 @@ const CreateWatchListCard = (props: Props) => {
                     flexCenterCenter 
                     overflow-hidden 
                     rounded-md 
-                    w-[225px] 
                     cursor-pointer 
                     bg-bgLight 
-                    h-[200px] 
+                    w-[250px] h-[350px]
                     fullHighlightedShadow
                     transition
+                    hover:scale-105
                 '
             >
                 <AddIcon

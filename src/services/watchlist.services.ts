@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma'
-import { IGetWatchlistsProps } from '@/types'
+import { IGetWatchlistsProps, IWatchList } from '@/types'
 
 // Get watch lists
 export const getWatchLists = async ({ q, page, user }: IGetWatchlistsProps) => {
@@ -29,7 +29,13 @@ export const getWatchLists = async ({ q, page, user }: IGetWatchlistsProps) => {
                 : {}),
         },
         include: {
-            watchlistUsers: true,
+            watchlistUsers: {
+                include: {
+                    user: true,
+                },
+            },
+            watchlistAnime: true,
+            owner: true,
         },
         skip: (page - 1) * perPage,
         take: perPage + 1,
@@ -60,7 +66,7 @@ export const getWatchLists = async ({ q, page, user }: IGetWatchlistsProps) => {
 
     // Return
     return {
-        watchlists,
+        watchlists: watchlists as IWatchList[],
         pagination,
     }
 }

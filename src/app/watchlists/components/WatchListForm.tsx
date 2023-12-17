@@ -151,10 +151,8 @@ function WatchListForm({
             router.push('/error?message=Couldn\'t create watchlist! try again :)');
         }
 
-
         // Redirect to watchlists
         router.replace('/watchlists');
-
 
     }, [isCreatingWatchlist, router, watchlistUsers.admins, watchlistUsers.editors, watchlistUsers.viewers])
 

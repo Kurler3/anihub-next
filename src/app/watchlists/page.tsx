@@ -6,6 +6,7 @@ import { getWatchLists } from '@/services';
 import { ISearchWatchlistsParams } from '@/types';
 import React from 'react'
 import CreateWatchListCard from './components/CreateWatchListCard';
+import WatchlistCard from './components/WatchlistCard';
 
 interface IProps {
 
@@ -55,7 +56,7 @@ const WatchlistsPage = async ({
       </form>
 
       {/* WATCHLISTS */}
-      <div className='flex gap-10 flex-wrap flex-1'>
+      <div className='flex flex-wrap gap-4 flex-1 mt-5'>
 
         {/* CREATE WATCHLIST CARD */}
         <CreateWatchListCard />
@@ -65,13 +66,15 @@ const WatchlistsPage = async ({
           watchlists.map((watchlist, index) => {
 
             return (
-              <div key={index} className='w-[300px] h-[200px] bg-white rounded-md flexCenterCenter'>
-                <h1>Watchlist {watchlist.name}</h1>
-              </div>
+              <WatchlistCard
+                key={index}
+                watchlist={watchlist}
+                currentUserId={currentUser!.id}
+              />
             )
           })
         }
-      </div>
+      </div >
 
       {/* PAGINATION */}
       <PaginationComponent
@@ -81,7 +84,7 @@ const WatchlistsPage = async ({
         data={pagination}
       />
 
-    </div>
+    </div >
   )
 }
 

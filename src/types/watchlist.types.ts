@@ -13,7 +13,7 @@ export interface IWatchList {
     owner: IUser
     watchlistUsers: IWatchListUser[]
     watchlistAnime: IWatchListAnime[]
-    createdAt: string
+    createdAt: Date
 }
 
 export interface IWatchListUser {
@@ -21,14 +21,15 @@ export interface IWatchListUser {
     watchlistId: number
     watchlist?: IWatchList
     user?: IUser
-    createdAt: string
+    role: string
+    createdAt: Date
 }
 
 export interface IWatchListAnime {
-    watchlistId: number
+    watchListId: number
     watchlist?: IWatchList
     animeId: number
-    createdAt: string
+    createdAt: Date
 }
 
 export interface IGetWatchlistsProps {
