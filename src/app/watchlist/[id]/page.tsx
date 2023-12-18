@@ -2,14 +2,21 @@
 
 import WatchListUsersAvatars from '@/app/watchlists/components/WatchListUsersAvatars';
 import HorizontalSeparator from '@/components/HorizontalSeparator';
+import TextInput from '@/components/inputs/TextInput';
 import Button from '@/components/ui/Button';
+import PaginationComponent from '@/components/ui/PaginationComponent';
+import AnimeCard from '@/components/ui/anime/AnimeCard';
 import { getCurrentUser } from '@/lib/supabase/supabase-server';
-import { getWatchlistById } from '@/services';
+import { filterAndPaginateWatchlistAnimes, getManyAnimeByIds, getWatchlistById } from '@/services';
 import moment from 'moment';
 import { redirect } from 'next/navigation';
 import React from 'react'
 
 type Props = {
+    searchParams: {
+        q?: string
+        page?: number
+    };
     params: {
         id: string;
     };
@@ -19,6 +26,10 @@ const WatchlistPage = async ({
     params: {
         id: watchlistId,
     },
+    searchParams: {
+        q,
+        page,
+    }
 }: Props) => {
 
     // Get current user
@@ -47,6 +58,19 @@ const WatchlistPage = async ({
     }
 
     const role = watchlistUser.role;
+
+    // Get the animes from the watchlist
+    const watchlistAnimes = await getManyAnimeByIds(watchlist.watchlistAnime.map((wa) => wa.animeId.toString()));
+
+    // Get filtered animes (depending on the page and the search term.)
+    const {
+        filteredAnimeList,
+        pagination
+    } = filterAndPaginateWatchlistAnimes(
+        watchlistAnimes,
+        q,
+        page,
+    )
 
     ////////////////////////
     // RENDER //////////////
@@ -116,11 +140,65 @@ const WatchlistPage = async ({
             <HorizontalSeparator width={100} />
 
             {/* ANIME */}
-            <div className='flex-1 w-full border border-red-500'>
+            <div className='flex-1 w-full border border-red-500 flexStartCenter flex-col gap-4 p-2'>
+
+                {/* SEARCH + FILTER */}
+                <form className='w-full flexCenterCenter gap-3 flex-wrap'>
+
+                    {/* SEARCH INPUT */}
+                    <TextInput
+                        name='q'
+                        placeholder='Search...'
+                        initialValue={q ?? ''}
+                    />
+
+                    {/* SUBMIT */}
+                    <Button
+                        title='Filter'
+                        type='submit'
+                        bgColor='highlightedColor'
+                        bgHoverColor='highlightedColorHover'
+                        paddingX='8'
+                        className='text-sm'
+                    />
+
+                </form>
+
+                {/* ANIME LIST + PAGINATION */}
+                <div className='flex-1 w-full flex flex-col justify-between items-center'>
+
+                    {/* ANIME LIST */}
+                    <div className={`flex-1 w-full flex ${filteredAnimeList.length > 0 ? 'flex-wrap' : 'justify-center items-center'}`}>
+                        {
+                            filteredAnimeList.length > 0 ? (
+                                filteredAnimeList.map((anime) => {
+                                    return (
+                                        <AnimeCard
+                                            key={`watchlist_${watchlist.id}_anime_${anime.mal_id}`}
+                                            anime={anime}
+                                        />
+                                    )
+                                })
+                            ) : (
+                                <div className='text-2xl'>
+                                    No animes added yet
+                                </div>
+                            )
+                        }
+                    </div>
+
+
+                    {/* PAGINATION  */}
+                    <PaginationComponent
+                        currentPage={page ?? 1}
+                        data={pagination}
+                    />
+                </div>
+
 
 
             </div>
-        </div>
+        </div >
     )
 }
 

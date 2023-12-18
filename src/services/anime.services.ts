@@ -90,6 +90,10 @@ export const searchAnimes: (params?: ISearchAnimeParams) => Promise<ApiResponse>
     return res
 }
 
+export const getManyAnimeByIds: (ids: string[]) => Promise<AnimeItem[]> = async (ids: string[]) => {
+    return await Promise.all(ids.map(getAnimeById))
+}
+
 // Get anime by id
 export const getAnimeById: (id: string) => Promise<AnimeItem> = async (id: string) => {
     const animeRes = await fetch(`${JIKAN_API_URL}/anime/${id}`, { next: { revalidate: 60 * 10 } })

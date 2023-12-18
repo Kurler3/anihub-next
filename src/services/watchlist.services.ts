@@ -1,5 +1,5 @@
 import prisma from '@/lib/prisma'
-import { IGetWatchlistsProps, IWatchList } from '@/types'
+import { AnimeItem, IGetWatchlistsProps, IWatchList, Pagination } from '@/types'
 
 // Get watch lists
 export const getWatchLists = async ({ q, page, user }: IGetWatchlistsProps) => {
@@ -87,4 +87,39 @@ export const getWatchlistById = async (id: number) => {
             watchlistAnime: true,
         },
     })) as IWatchList
+}
+
+// Filter and paginate watchlist animes
+export const filterAndPaginateWatchlistAnimes = (
+    animeList: AnimeItem[],
+    q?: string,
+    page?: number,
+): { filteredAnimeList: AnimeItem[]; pagination: Pagination } => {
+    // Filter by search term
+    const filteredAnimeList = q
+        ? animeList.filter((anime) => anime.title.toLowerCase().includes(q.toLowerCase()))
+        : animeList
+
+    // Paginate
+    const perPage = 10 // Number of items per page
+    const totalItems = filteredAnimeList.length
+    const totalPages = Math.ceil(totalItems / perPage)
+    const currentPage = page || 1
+
+    const startIdx = (currentPage - 1) * perPage
+    const endIdx = startIdx + perPage
+    const paginatedAnimeList = filteredAnimeList.slice(startIdx, endIdx)
+
+    // Pagination object
+    const pagination: Pagination = {
+        last_visible_page: totalPages,
+        has_next_page: currentPage < totalPages,
+        items: {
+            count: paginatedAnimeList.length,
+            total: totalItems,
+            per_page: perPage,
+        },
+    }
+
+    return { filteredAnimeList: paginatedAnimeList, pagination }
 }
