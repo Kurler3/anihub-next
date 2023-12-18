@@ -11,14 +11,15 @@ import { useSpring, animated } from 'react-spring';
 import AddIcon from '@mui/icons-material/Add';
 import LaunchIcon from '@mui/icons-material/Launch';
 import HorizontalSeparator from '@/components/HorizontalSeparator';
+import { IWatchList } from '@/types';
 
 type Props = {
     anime: AnimeItem;
+    isLoggedIn: boolean;
 }
 
-const AnimeCard = ({ anime }: Props) => {
-
-    const router = useRouter();
+const AnimeCard = ({ anime, isLoggedIn }: Props) => {
+    const router = useRouter()
     const [contextMenuVisible, setContextMenuVisible] = useState(false);
     const [contextMenuPosition, setContextMenuPosition] = useState({ top: 0, left: 0 });
 
@@ -39,22 +40,21 @@ const AnimeCard = ({ anime }: Props) => {
         setContextMenuVisible(false);
     };
 
-    //TODO
     const handleAddToWatchlist = () => {
         // Add your logic for adding to the watchlist
-        handleCloseContextMenu();
+        router.push(`/anime/${anime.mal_id}/watchlists`);
     };
 
-    //TODO
     const handleViewOfficialPage = () => {
-        // Add your logic for viewing the official page
+        const officialPageUrl = anime.url;
+        window.open(officialPageUrl, '_blank');
         handleCloseContextMenu();
     };
 
     return (
         <div
             onContextMenu={handleContextMenu}
-            className='flexCenterCenter flex-col overflow-hidden rounded-md w-[225px] cursor-pointer hover:shadow-2xl transition'
+            className={`flexCenterCenter flex-col overflow-hidden rounded-md w-[225px] cursor-pointer hover:shadow-2xl transition border border-bgColor ${contextMenuVisible ? 'border-highlightedColor' : ''}`}
         >
             <Link href={`/anime/${anime.mal_id}`} className='w-full'>
 
@@ -93,14 +93,19 @@ const AnimeCard = ({ anime }: Props) => {
                     style={{ top: contextMenuPosition.top, left: contextMenuPosition.left, ...fadeInOutAnimation }}
                 >
                     {/* Add your context menu items here */}
-                    <div className="flex items-center w-full transition rounded-md hover:shadow-xl text-white hover:bg-bgLighter pr-2" onClick={handleAddToWatchlist}>
-                        <IconButton className='text-white'>
-                            <AddIcon />
-                        </IconButton>
-                        <span className="text-sm">Add to Watchlist</span>
-                    </div>
-
-                    <HorizontalSeparator width={100} />
+                    {
+                        isLoggedIn && (
+                            <>
+                                <div className="flex items-center w-full transition rounded-md hover:shadow-xl text-white hover:bg-bgLighter pr-2" onClick={handleAddToWatchlist}>
+                                    <IconButton className='text-white'>
+                                        <AddIcon />
+                                    </IconButton>
+                                    <span className="text-sm">Add to Watchlist</span>
+                                </div>
+                                <HorizontalSeparator width={100} />
+                            </>
+                        )
+                    }
 
                     <div
                         className="flex items-center w-full transition rounded-md hover:shadow-xl text-white hover:bg-bgLighter pr-2"

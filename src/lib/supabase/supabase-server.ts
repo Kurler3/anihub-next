@@ -37,6 +37,14 @@ export const getCurrentUser = async (includeParams?: IGetUserIncludeParams) => {
         const prismaInclude: Record<string, any> = {}
 
         if (includeParams) {
+            if (includeParams.sharedWatchlists) {
+                prismaInclude.sharedWatchlists = {
+                    include: {
+                        watchlist: true,
+                    },
+                }
+            }
+
             if (includeParams.followers) {
                 prismaInclude.followers = {
                     include: {

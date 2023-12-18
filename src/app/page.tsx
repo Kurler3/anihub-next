@@ -2,13 +2,14 @@
 /* eslint-disable @next/next/no-img-element */
 import AnimeCard from "@/components/ui/anime/AnimeCard";
 import HighlightedAnime from "@/components/ui/anime/HighlightedAnime";
-// import { getCurrentUser } from "@/lib/supabase/supabase-server";
+import { getCurrentUser } from "@/lib/supabase/supabase-server";
 import { getAnimeLikes, getTopAnime } from "@/services";
+import { IUserWithWatchlists } from "@/types";
 import Link from "next/link";
 
 export default async function Home() {
 
-  // const user = await getCurrentUser();
+  const user = await getCurrentUser();
 
   // Fetch data from your API or other source
   const responseResult = await getTopAnime({ limit: 7 });
@@ -52,12 +53,13 @@ export default async function Home() {
       <div className="flex gap-10 flex-wrap">
 
         {
-          animeData.slice(1, 7).map((anime, index) => {
+          animeData.slice(1, 7).map((anime, index: number) => {
 
             return (
               <AnimeCard
                 key={`anime_card_${anime.mal_id}_${index}`}
                 anime={anime}
+                isLoggedIn={!!user}
               />
             )
 

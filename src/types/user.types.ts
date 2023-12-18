@@ -1,4 +1,4 @@
-import { IPost, IUser, Pagination } from '.'
+import { IPost, IUser, IWatchListUser, Pagination } from '.'
 
 export interface IConnectionsPageSearchParams {
     tab?: 'followers' | 'following' | 'follow_requests'
@@ -11,6 +11,7 @@ export interface IGetUserIncludeParams {
     following?: boolean
     followerRequests?: boolean
     followingRequests?: boolean
+    sharedWatchlists?: boolean
 }
 
 export interface IFollow {
@@ -56,4 +57,8 @@ export interface ISearchUsersPagination {
 export interface ISearchUsersResponse {
     users: IUser[]
     pagination: Pagination
+}
+
+export interface IUserWithWatchlists extends IUser {
+    sharedWatchlists: IWatchListUser[]
 }
