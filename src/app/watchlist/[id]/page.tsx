@@ -201,7 +201,7 @@ const WatchlistPage = async ({
                                                     key={`watchlist_${watchlist.id}_anime_${anime.mal_id}`}
                                                     anime={anime}
                                                     isLoggedIn
-                                                    isInWatchlist
+                                                    isInWatchlist={role === 'admin'}
                                                 />
                                             )
                                         })
