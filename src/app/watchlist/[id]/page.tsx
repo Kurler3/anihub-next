@@ -140,7 +140,7 @@ const WatchlistPage = async ({
             <HorizontalSeparator width={100} />
 
             {/* ANIME */}
-            <div className='flex-1 w-full border border-red-500 flexStartCenter flex-col gap-4 p-2'>
+            <div className='flex-1 w-full  flexStartCenter flex-col gap-4 p-2'>
 
                 {/* SEARCH + FILTER */}
                 <form className='w-full flexCenterCenter gap-3 flex-wrap'>
@@ -172,10 +172,12 @@ const WatchlistPage = async ({
                         {
                             filteredAnimeList.length > 0 ? (
                                 filteredAnimeList.map((anime) => {
+
                                     return (
                                         <AnimeCard
                                             key={`watchlist_${watchlist.id}_anime_${anime.mal_id}`}
                                             anime={anime}
+                                            isLoggedIn
                                         />
                                     )
                                 })

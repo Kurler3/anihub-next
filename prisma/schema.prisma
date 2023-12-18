@@ -229,7 +229,8 @@ model WatchListUser {
 model WatchlistAnime {
   watchListId Int
   watchlist   WatchList @relation(fields: [watchListId], references: [id], onDelete: Cascade)
-  animeId     Int
+  animeId     String
+  animeImgUrl  String
 
   createdAt DateTime @default(now())
 

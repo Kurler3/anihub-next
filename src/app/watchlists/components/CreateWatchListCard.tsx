@@ -16,7 +16,7 @@ const CreateWatchListCard = (props: Props) => {
                     rounded-md 
                     cursor-pointer 
                     bg-bgLight 
-                    w-[250px] h-[350px]
+                    w-[250px] h-[400px]
                     fullHighlightedShadow
                     transition
                     hover:scale-105

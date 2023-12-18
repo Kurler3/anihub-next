@@ -19,6 +19,7 @@ type Props = {
 }
 
 const AnimeCard = ({ anime, isLoggedIn }: Props) => {
+
     const router = useRouter()
     const [contextMenuVisible, setContextMenuVisible] = useState(false);
     const [contextMenuPosition, setContextMenuPosition] = useState({ top: 0, left: 0 });
@@ -54,7 +55,10 @@ const AnimeCard = ({ anime, isLoggedIn }: Props) => {
     return (
         <div
             onContextMenu={handleContextMenu}
-            className={`flexCenterCenter flex-col overflow-hidden rounded-md w-[225px] cursor-pointer hover:shadow-2xl transition border border-bgColor ${contextMenuVisible ? 'border-highlightedColor' : ''}`}
+            className={`
+                flexCenterCenter flex-col overflow-hidden rounded-md w-[225px] cursor-pointer hover:shadow-2xl transition border border-bgColor ${contextMenuVisible ? 'border-highlightedColor' : ''}
+                hover:border-highlightedColor
+            `}
         >
             <Link href={`/anime/${anime.mal_id}`} className='w-full'>
 
@@ -100,7 +104,7 @@ const AnimeCard = ({ anime, isLoggedIn }: Props) => {
                                     <IconButton className='text-white'>
                                         <AddIcon />
                                     </IconButton>
-                                    <span className="text-sm">Add to Watchlist</span>
+                                    <span className="text-sm">Add to Watchlists</span>
                                 </div>
                                 <HorizontalSeparator width={100} />
                             </>

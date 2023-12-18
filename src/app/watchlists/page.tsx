@@ -9,10 +9,7 @@ import CreateWatchListCard from './components/CreateWatchListCard';
 import WatchlistCard from './components/WatchlistCard';
 
 interface IProps {
-
   searchParams: ISearchWatchlistsParams
-
-
 }
 
 const WatchlistsPage = async ({

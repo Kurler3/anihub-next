@@ -2,7 +2,7 @@ import prisma from '@/lib/prisma'
 import { AnimeItem, IGetWatchlistsProps, IWatchList, Pagination } from '@/types'
 
 // Get watch lists
-export const getWatchLists = async ({ q, page, user }: IGetWatchlistsProps) => {
+export const getWatchLists = async ({ q, page, user, roles }: IGetWatchlistsProps) => {
     const perPage = 10 // Adjust as needed
 
     // Build the base query
@@ -16,6 +16,9 @@ export const getWatchLists = async ({ q, page, user }: IGetWatchlistsProps) => {
                     watchlistUsers: {
                         some: {
                             userId: user.id,
+                            role: {
+                                in: roles,
+                            },
                         },
                     },
                 },

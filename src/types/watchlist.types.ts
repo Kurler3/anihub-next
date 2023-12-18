@@ -28,7 +28,8 @@ export interface IWatchListUser {
 export interface IWatchListAnime {
     watchListId: number
     watchlist?: IWatchList
-    animeId: number
+    animeId: string
+    animeImgUrl: string
     createdAt: Date
 }
 
@@ -36,6 +37,7 @@ export interface IGetWatchlistsProps {
     q?: string
     page: number
     user: IUser
+    roles?: string[]
 }
 
 export interface ICreateWatchlistFormData {
