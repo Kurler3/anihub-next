@@ -57,3 +57,7 @@ export interface ICreateWatchlistData extends ICreateWatchlistFormData {
     editors: string[]
     viewers: string[]
 }
+
+export interface IUpdateWatchlistData extends ICreateWatchlistFormData {
+    id: number
+}

@@ -170,7 +170,14 @@ function WatchListForm({
 
         // Send request to backend
         if (existingWatchlist) {
-            //TODO Update watchlist call!
+            // Update watchlist call!
+            response = await fetch('/api/watchlists/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
         } else {
             response = await fetch('/api/watchlists/create', {
                 method: 'POST',
