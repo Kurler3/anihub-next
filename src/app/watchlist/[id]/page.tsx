@@ -9,6 +9,7 @@ import AnimeCard from '@/components/ui/anime/AnimeCard';
 import { getCurrentUser } from '@/lib/supabase/supabase-server';
 import { filterAndPaginateWatchlistAnimes, getManyAnimeByIds, getWatchlistById } from '@/services';
 import moment from 'moment';
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import React from 'react'
 
@@ -72,6 +73,8 @@ const WatchlistPage = async ({
         page,
     )
 
+
+
     ////////////////////////
     // RENDER //////////////
     ////////////////////////
@@ -83,7 +86,7 @@ const WatchlistPage = async ({
             <div className='w-full flexStartStart rounded-md shadow-md bg-bgLight p-4 min-h-[200px] gap-4'>
 
                 {/* NAME + DESCRIPTION */}
-                <div className='flexStartStart flex-col flex-1 gap-4'>
+                <div className='flexStartStart flex-col flex-1 gap-4 h-full'>
 
                     {/* NAME */}
                     <div className='flexStartCenter gap-2'>
@@ -103,9 +106,23 @@ const WatchlistPage = async ({
 
 
                     {/* DESCRIPTION */}
-                    <div className='text-sm'>
+                    <div className='text-sm flex-1'>
                         {watchlist.description}
                     </div>
+
+                    {
+                        role === 'admin' && (
+                            <Link href={`/watchlist/${watchlist.id}/edit`}>
+                                <Button
+                                    title='Edit'
+                                    bgColor='highlightedColor'
+                                    className='text-xs p-2'
+                                />
+                            </Link>
+
+                        )
+                    }
+
                 </div>
 
                 {/* WATCHLIST USERS */}
@@ -114,10 +131,14 @@ const WatchlistPage = async ({
                     {/* MANAGE USERS */}
                     {
                         role === 'admin' && (
-                            <Button
-                                title='Manage people'
-                                bgColor='highlightedColor'
-                            />
+                            <Link href={`/watchlist/${watchlist.id}/edit`}>
+                                <Button
+                                    title='Manage people'
+                                    bgColor='highlightedColor'
+                                    className='text-xs p-2'
+                                />
+                            </Link>
+
                         )
                     }
 
@@ -168,19 +189,25 @@ const WatchlistPage = async ({
                 <div className='flex-1 w-full flex flex-col justify-between items-center'>
 
                     {/* ANIME LIST */}
-                    <div className={`flex-1 w-full flex ${filteredAnimeList.length > 0 ? 'flex-wrap' : 'justify-center items-center'}`}>
+                    <div className={`flex-1 w-full flex ${filteredAnimeList.length > 0 ? '' : 'justify-center items-center'}`}>
+
                         {
                             filteredAnimeList.length > 0 ? (
-                                filteredAnimeList.map((anime) => {
+                                <div className='flex flex-wrap items-center'>
+                                    {
+                                        filteredAnimeList.map((anime) => {
+                                            return (
+                                                <AnimeCard
+                                                    key={`watchlist_${watchlist.id}_anime_${anime.mal_id}`}
+                                                    anime={anime}
+                                                    isLoggedIn
+                                                    isInWatchlist
+                                                />
+                                            )
+                                        })
+                                    }
+                                </div>
 
-                                    return (
-                                        <AnimeCard
-                                            key={`watchlist_${watchlist.id}_anime_${anime.mal_id}`}
-                                            anime={anime}
-                                            isLoggedIn
-                                        />
-                                    )
-                                })
                             ) : (
                                 <div className='text-2xl'>
                                     No animes added yet

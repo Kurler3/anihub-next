@@ -11,14 +11,15 @@ import { useSpring, animated } from 'react-spring';
 import AddIcon from '@mui/icons-material/Add';
 import LaunchIcon from '@mui/icons-material/Launch';
 import HorizontalSeparator from '@/components/HorizontalSeparator';
-import { IWatchList } from '@/types';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type Props = {
     anime: AnimeItem;
     isLoggedIn: boolean;
+    isInWatchlist?: boolean;
 }
 
-const AnimeCard = ({ anime, isLoggedIn }: Props) => {
+const AnimeCard = ({ anime, isLoggedIn, isInWatchlist }: Props) => {
 
     const router = useRouter()
     const [contextMenuVisible, setContextMenuVisible] = useState(false);
@@ -96,15 +97,29 @@ const AnimeCard = ({ anime, isLoggedIn }: Props) => {
                     "
                     style={{ top: contextMenuPosition.top, left: contextMenuPosition.left, ...fadeInOutAnimation }}
                 >
+
                     {/* Add your context menu items here */}
                     {
                         isLoggedIn && (
                             <>
+
                                 <div className="flex items-center w-full transition rounded-md hover:shadow-xl text-white hover:bg-bgLighter pr-2" onClick={handleAddToWatchlist}>
-                                    <IconButton className='text-white'>
-                                        <AddIcon />
+                                    <IconButton className={`${isInWatchlist ? 'text-red-500' : 'text-white'}`}>
+
+                                        {
+                                            isInWatchlist ? (
+                                                <DeleteIcon />
+                                            ) : (
+                                                <AddIcon />
+                                            )
+                                        }
+
                                     </IconButton>
-                                    <span className="text-sm">Add to Watchlists</span>
+                                    <span className="text-sm">
+                                        {
+                                            isInWatchlist ? 'Delete from watchlist' : 'Add to watchlists'
+                                        }
+                                    </span>
                                 </div>
                                 <HorizontalSeparator width={100} />
                             </>

@@ -1,7 +1,7 @@
 'use client'
 
 import Button from '@/components/ui/Button';
-import { ICreateWatchListUsersState, ICreateWatchlistFormData, IUser } from '@/types'
+import { ICreateWatchListUsersState, ICreateWatchlistFormData, IUser, IWatchList } from '@/types'
 import React, { useCallback, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';
 import WatchListUsersAvatars from './WatchListUsersAvatars';
@@ -10,19 +10,40 @@ import { MANAGE_WATCHILIST_USERS_MODAL_ID } from '@/lib/constants';
 import WatchListUsersModal from './WatchListUsersModal';
 import { closeModal, openModal } from '@/lib/utils';
 import { LOADING_MODAL_ID } from '@/lib/constants/common.constants';
-import { redirect } from 'next/navigation';
+
 import Alert from '@/components/ui/Alert';
 import { useRouter } from 'next/navigation'
-import { revalidatePath } from 'next/cache';
 
 type Props = {
     availableUsers: IUser[];
     currentUser: IUser;
+    existingWatchlist?: IWatchList;
+}
+
+function getExistingWatchlistUsers(watchlist: IWatchList, availableUsers: IUser[]) {
+
+    const filterUsersByRole = (role: string) => {
+        const userRoleIds = watchlist.watchlistUsers
+            .filter((watchlistUser) => watchlistUser.role === role)
+            .map((user) => user.userId);
+
+        return availableUsers.filter((user) => userRoleIds.includes(user.id));
+    };
+    const admins = filterUsersByRole('admin');
+    const editors = filterUsersByRole('editor');
+    const viewers = filterUsersByRole('viewer');
+    return {
+        admins,
+        editors,
+        viewers,
+        currentType: null,
+    };
 }
 
 function WatchListForm({
     currentUser,
     availableUsers,
+    existingWatchlist,
 }: Props) {
 
     const router = useRouter();
@@ -35,7 +56,12 @@ function WatchListForm({
         register,
         handleSubmit,
         formState: { errors },
-    } = useForm<ICreateWatchlistFormData>();
+    } = useForm<ICreateWatchlistFormData>({
+        defaultValues: {
+            title: existingWatchlist ? existingWatchlist.name : '',
+            description: existingWatchlist ? existingWatchlist.description : ''
+        }
+    });
 
     ////////////////////////////
     // STATE ///////////////////
@@ -44,13 +70,20 @@ function WatchListForm({
     const [
         watchlistUsers,
         setWatchlistUsers,
-    ] = useState<ICreateWatchListUsersState>({
-        admins: [currentUser], // By default, creator is the watchlist admin.
-        editors: [],
-        viewers: [],
-        currentType: null,
-    })
-
+    ] = useState<ICreateWatchListUsersState>(
+        existingWatchlist ?
+            getExistingWatchlistUsers(
+                existingWatchlist,
+                [...availableUsers, currentUser],
+            )
+            :
+            {
+                admins: [currentUser], // By default, creator is the watchlist admin.
+                editors: [],
+                viewers: [],
+                currentType: null,
+            }
+    )
 
     const [
         isCreatingWatchlist,
@@ -133,35 +166,40 @@ function WatchListForm({
             viewers: watchlistUsers.viewers.map((user) => user.id),
         };
 
+        let response: Response;
+
         // Send request to backend
-        const response = await fetch('/api/watchlists/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        });
+        if (existingWatchlist) {
+            //TODO Update watchlist call!
+        } else {
+            response = await fetch('/api/watchlists/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+        }
 
         // Close loading modal
         closeModal(LOADING_MODAL_ID);
 
-        if (!response.ok) {
-            const errorData = await response.json();
+        if (!response!.ok) {
+            const errorData = await response!.json();
             console.error(errorData.error)
-            router.push('/error?message=Couldn\'t create watchlist! try again :)');
+            router.push(`/error?message=Couldn\'t ${existingWatchlist ? 'edit' : 'create'} watchlist! try again :)`);
         }
 
         // Redirect to watchlists
         router.replace('/watchlists');
 
-    }, [isCreatingWatchlist, router, watchlistUsers.admins, watchlistUsers.editors, watchlistUsers.viewers])
-
+    }, [existingWatchlist, isCreatingWatchlist, router, watchlistUsers.admins, watchlistUsers.editors, watchlistUsers.viewers])
 
 
     ////////////////////////////
     // RENDER //////////////////
     ////////////////////////////
-    console.log(errors)
+
     return (
         <div className='flexStartCenter gap-4 flex-col'>
 
@@ -356,7 +394,7 @@ function WatchListForm({
 
                 {/* CREATE WATCHLIST BTN */}
                 <Button
-                    title='Create'
+                    title={existingWatchlist ? 'Edit' : 'Create'}
                     paddingX='12'
                     bgColor='highlightedColor'
                     bgHoverColor='highlightedHover'
