@@ -85,3 +85,7 @@
         display: none;
     }
 }
+
+.watchlistCardIconFontSize {
+    font-size: 100px !important;
+}

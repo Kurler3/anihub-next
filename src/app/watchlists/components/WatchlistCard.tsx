@@ -130,14 +130,14 @@ const WatchlistCard = async ({
                         isAnimeInWatchlist ?
                             <div className='bg-red-400 rounded-full border border-red-500 hover:bg-red-600 transition'>
 
-                                <DeleteIcon className='text-white text-[100px]' />
+                                <DeleteIcon className='text-white watchlistCardIconFontSize' />
 
 
                             </div>
                             :
                             <div className='bg-green-400 rounded-full border border-green-500 hover:bg-green-600 transition'>
 
-                                <AddIcon className='text-white text-[100px]' />
+                                <AddIcon className='text-white watchlistCardIconFontSize' />
 
                             </div>
 

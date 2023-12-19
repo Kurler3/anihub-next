@@ -6,9 +6,11 @@ import TextInput from '@/components/inputs/TextInput';
 import Button from '@/components/ui/CustomButton';
 import PaginationComponent from '@/components/ui/PaginationComponent';
 import AnimeCard from '@/components/ui/anime/AnimeCard';
+import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/supabase/supabase-server';
 import { filterAndPaginateWatchlistAnimes, getManyAnimeByIds, getWatchlistById } from '@/services';
 import moment from 'moment';
+import { revalidatePath } from 'next/cache';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import React from 'react'
@@ -46,9 +48,7 @@ const WatchlistPage = async ({
 
     // If no watchlist => notFound
     if (!watchlist) {
-        return {
-            notFound: true,
-        }
+        redirect('/error?message=Couldn\'t find watchlist')
     }
 
     const watchlistUser = watchlist.watchlistUsers.find((user) => user.userId === currentUser.id);
@@ -72,6 +72,39 @@ const WatchlistPage = async ({
         q,
         page,
     )
+
+
+    ////////////////////////
+    // FUNCTIONS ///////////
+    ////////////////////////
+
+    const handleDeleteWatchlist = async (e: FormData) => {
+        'use server'
+
+        const watchlistId = e.get('watchlistId') as string;
+
+        try {
+
+            // Delete
+            await prisma.watchList.delete({
+                where: {
+                    id: +watchlistId,
+                }
+            })
+
+            // Revalidate the path
+            // revalidatePath('/watchlists');
+
+
+
+        } catch (error) {
+            console.error('Error while deleting watchlist...', error);
+            return redirect('/error?message=Error while deleting watchlist')
+        }
+
+        // Redirect back to /watchlists
+        return redirect('/watchlists');
+    }
 
 
 
@@ -112,13 +145,28 @@ const WatchlistPage = async ({
 
                     {
                         role === 'admin' && (
-                            <Link href={`/watchlist/${watchlist.id}/edit`}>
-                                <Button
-                                    title='Edit'
-                                    bgColor='highlightedColor'
-                                    className='text-xs p-2'
-                                />
-                            </Link>
+                            <>
+
+                                <Link href={`/watchlist/${watchlist.id}/edit`}>
+                                    <Button
+                                        title='Edit'
+                                        bgColor='highlightedColor'
+                                        className='text-xs px-5 py-3'
+                                    />
+                                </Link>
+
+                                <form action={handleDeleteWatchlist}>
+                                    <Button
+                                        type='submit'
+                                        title='Delete'
+                                        bgColor='red-500'
+                                        bgHoverColor='red-600'
+                                        className='text-xs p-2'
+                                    />
+                                    <input type="hidden" name="watchlistId" value={watchlist.id} />
+                                </form>
+                            </>
+
 
                         )
                     }
