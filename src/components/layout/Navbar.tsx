@@ -3,9 +3,7 @@ import React from 'react'
 import title from '@/images/title.svg'
 import Link from 'next/link'
 import SearchBar from '../inputs/SearchBar'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SettingsIcon from '@mui/icons-material/Settings';
-import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { getCurrentUser } from '@/lib/supabase/supabase-server'
 import NavbarAvatarButton from './NavbarAvatarButton'
 
@@ -15,7 +13,7 @@ const Navbar = async () => {
   const user = await getCurrentUser();
 
   return (
-    <div className='w-100 flex justify-between items-center'>
+    <div className='w-full flex justify-between items-center sticky top-0 bg-bgColor'>
 
       {/* TITLE + SEARCH BAR */}
       <div className='flex justify-start items-center gap-8 flex-1'>
@@ -42,11 +40,26 @@ const Navbar = async () => {
       {/* RIGHT PART */}
       <div className='flex justify-end items-center gap-6 flex-1'>
 
-        {/* LANGUAGE */}
-        {/* <div className='flexCenterCenter cursor-pointer p-1 pl-2 rounded-md transition hover:bg-bgDarkColor text-white hidden md:flex'>
-          <p>EN</p>
-          <KeyboardArrowDownIcon />
-        </div> */}
+
+        {/* SETTINGS */}
+        {
+          user && (
+            <>
+              <Link href='/me/settings' className='flexCenterCenter cursor-pointer p-1 rounded-md transition hover:bg-bgDarkColor'>
+                <SettingsIcon className='text-white w-[28px] h-[28px]' />
+              </Link>
+              {/* SEPARATOR */}
+              <div
+                className='bg-separatorColor h-[50px] w-[2px]'
+              >
+              </div>
+            </>
+
+          )
+        }
+
+
+
 
         {
           user && (
@@ -58,10 +71,10 @@ const Navbar = async () => {
               </h2>
 
               {/* SEPARATOR */}
-              <div
+              {/* <div
                 className='bg-separatorColor h-[50px] w-[2px]'
               >
-              </div>
+              </div> */}
 
 
 
@@ -70,18 +83,14 @@ const Navbar = async () => {
           )
         }
 
-        {/* SETTINGS */}
-        <div className='flexCenterCenter cursor-pointer p-1 rounded-md transition hover:bg-bgDarkColor'>
-          <SettingsIcon className='text-white w-[28px] h-[28px]' />
-        </div>
 
 
-        {/* NOTIFICATIONS */}
+        {/* NOTIFICATIONS
         {
           user && <div className='flexCenterCenter cursor-pointer p-1 rounded-md transition hover:bg-bgDarkColor'>
             <NotificationsActiveIcon className='text-white w-[28px] h-[28px]' />
           </div>
-        }
+        } */}
 
 
 

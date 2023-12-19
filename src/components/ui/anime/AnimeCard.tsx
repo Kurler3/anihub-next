@@ -1,21 +1,68 @@
+'use client'
+
 /* eslint-disable @next/next/no-img-element */
 
 import { AnimeItem } from '@/types/anime.types'
+import { IconButton } from '@mui/material';
 import Link from 'next/link';
-import React from 'react'
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react'
+import { useSpring, animated } from 'react-spring';
+import AddIcon from '@mui/icons-material/Add';
+import LaunchIcon from '@mui/icons-material/Launch';
+import HorizontalSeparator from '@/components/HorizontalSeparator';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 type Props = {
     anime: AnimeItem;
+    isLoggedIn: boolean;
+    isInWatchlist?: boolean;
 }
 
-const AnimeCard = ({ anime }: Props) => {
-    console.log(anime.episodes)
-    return (
-        <Link href={`/anime/${anime.mal_id}`}>
-            <div
+const AnimeCard = ({ anime, isLoggedIn, isInWatchlist }: Props) => {
 
-                className='flexCenterCenter flex-col overflow-hidden rounded-md w-[225px] cursor-pointer hover:shadow-2xl transition'
-            >
+    const router = useRouter()
+    const [contextMenuVisible, setContextMenuVisible] = useState(false);
+    const [contextMenuPosition, setContextMenuPosition] = useState({ top: 0, left: 0 });
+
+    const fadeInOutAnimation = useSpring({
+        opacity: contextMenuVisible ? 1 : 0,
+        transform: `scale(${contextMenuVisible ? 1 : 0.5})`,
+        config: { duration: 100 },
+    });
+
+    const handleContextMenu = (event: React.MouseEvent) => {
+        event.preventDefault();
+
+        setContextMenuVisible(true);
+        setContextMenuPosition({ top: event.clientY, left: event.clientX });
+    };
+
+    const handleCloseContextMenu = () => {
+        setContextMenuVisible(false);
+    };
+
+    const handleAddToWatchlist = () => {
+        // Add your logic for adding to the watchlist
+        router.push(`/anime/${anime.mal_id}/watchlists`);
+    };
+
+    const handleViewOfficialPage = () => {
+        const officialPageUrl = anime.url;
+        window.open(officialPageUrl, '_blank');
+        handleCloseContextMenu();
+    };
+
+    return (
+        <div
+            onContextMenu={handleContextMenu}
+            className={`
+                flexCenterCenter flex-col overflow-hidden rounded-md w-[225px] cursor-pointer hover:shadow-2xl transition border border-bgColor ${contextMenuVisible ? 'border-highlightedColor' : ''}
+                hover:border-highlightedColor
+            `}
+        >
+            <Link href={`/anime/${anime.mal_id}`} className='w-full'>
+
                 <img
                     src={anime.images.jpg.image_url}
                     alt={`${anime.title}'s image`}
@@ -26,19 +73,72 @@ const AnimeCard = ({ anime }: Props) => {
                     <div className="w-full truncate text-sm">
                         {anime.title}
                     </div>
+                    {anime.episodes && (
+                        <div className="text-xs">
+                            {anime.episodes} episodes
+                        </div>
+                    )}
+                </div>
+
+            </Link>
+
+            {contextMenuVisible && (
+                <div
+                    className="fixed top-0 left-0 w-screen h-screen z-50"
+                    onClick={handleCloseContextMenu}
+                />
+            )}
+
+            {contextMenuVisible && (
+                <animated.div
+                    className="
+                        fixed bg-bgLight border border-highlightedColor rounded-md shadow-md p-4 z-50 flex flex-col justify-start items-center
+                        gap-2
+                    "
+                    style={{ top: contextMenuPosition.top, left: contextMenuPosition.left, ...fadeInOutAnimation }}
+                >
+
+                    {/* Add your context menu items here */}
                     {
-                        anime.episodes && (
-                            <div className="text-xs">
-                                {anime.episodes} episodes
-                            </div>
+                        isLoggedIn && (
+                            <>
+
+                                <div className="flex items-center w-full transition rounded-md hover:shadow-xl text-white hover:bg-bgLighter pr-2" onClick={handleAddToWatchlist}>
+                                    <IconButton className={`${isInWatchlist ? 'text-red-500' : 'text-white'}`}>
+
+                                        {
+                                            isInWatchlist ? (
+                                                <DeleteIcon />
+                                            ) : (
+                                                <AddIcon />
+                                            )
+                                        }
+
+                                    </IconButton>
+                                    <span className="text-sm">
+                                        {
+                                            isInWatchlist ? 'Delete from watchlist' : 'Add to watchlists'
+                                        }
+                                    </span>
+                                </div>
+                                <HorizontalSeparator width={100} />
+                            </>
                         )
                     }
 
-                </div>
-            </div>
-        </Link>
+                    <div
+                        className="flex items-center w-full transition rounded-md hover:shadow-xl text-white hover:bg-bgLighter pr-2"
+                        onClick={handleViewOfficialPage}
+                    >
+                        <IconButton className='text-white'>
+                            <LaunchIcon />
+                        </IconButton>
+                        <span className="text-sm">View Official Page</span>
+                    </div>
+                </animated.div>
+            )}
+        </div>
+    );
+};
 
-    )
-}
-
-export default AnimeCard
+export default AnimeCard;

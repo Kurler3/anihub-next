@@ -69,7 +69,7 @@ const LoginPage = () => {
                 type: 'success',
             })
             setTimeout(() => {
-                refresh()
+                window.location.reload();
                 push('/')
             }, 1500);
 

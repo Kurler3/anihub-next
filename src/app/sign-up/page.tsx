@@ -14,6 +14,7 @@ import Modal from '@/components/ui/Modal';
 import ChooseAvatarModalBody from './components/ChooseAvatarModalBody';
 import { useRouter, redirect } from 'next/navigation';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { revalidatePath } from 'next/cache';
 
 const initialSignUpModalData = {
     message: null,
@@ -82,7 +83,7 @@ const SignUpPage = () => {
         // If success => redirect to /
         if (response.ok) {
             setTimeout(() => {
-                refresh()
+                window.location.reload();
                 push('/');
             }, 2000);
         }

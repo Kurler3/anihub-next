@@ -50,7 +50,7 @@ export async function POST(req: NextRequest) {
         }
 
         // Create the user in your Prisma database
-        await prisma.user.create({
+        const user = await prisma.user.create({
             data: {
                 id: signUpData.user?.id.toString()!, // Use the Supabase user ID as the Prisma user ID
                 email,
@@ -58,6 +58,28 @@ export async function POST(req: NextRequest) {
                 avatarUrl,
             },
         })
+
+        // Create favorite, watching and planned watchlists for user!
+        await Promise.all(
+            ['Favorite', 'Watching', 'Planned'].map(async (listName) => {
+                // Create the list
+                const watchlist = await prisma.watchList.create({
+                    data: {
+                        name: listName,
+                        ownerId: user.id,
+                    },
+                })
+
+                // Add as admin
+                await prisma.watchListUser.create({
+                    data: {
+                        userId: user.id,
+                        role: 'admin',
+                        watchlistId: watchlist.id,
+                    },
+                })
+            }),
+        )
 
         return NextResponse.json({ message: 'User created successfully' }, { status: 201 })
     } catch (error) {

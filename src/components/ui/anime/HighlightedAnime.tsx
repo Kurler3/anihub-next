@@ -77,7 +77,7 @@ const HighlightedAnime = async ({ anime, likes, isInAnimePage }: Props) => {
         <div>
 
             <div
-                className="flexStartStart w-full min-h-[350px] h-[350px] overflow-hidden p-4 bg-bgColor rounded-md shadow-lg transition min-w-[254px] relative"
+                className="flexStartStart w-full min-h-[350px] h-[350px] overflow-hidden p-4 bg-bgColor rounded-md shadow-lg transition min-w-[254px]"
             >
 
                 {/* IMG */}
@@ -138,16 +138,10 @@ const HighlightedAnime = async ({ anime, likes, isInAnimePage }: Props) => {
                         }
                     </div>
 
-
-
-
-
-
                 </div>
-
                 {
                     !isInAnimePage && (
-                        <div className='absolute bottom-4 right-4 flexCenterCenter flex-col'>
+                        <div className='h-full flex justify-end flex-col'>
                             {/* VIEW FULL PAGE */}
                             <Link href={`/anime/${anime.mal_id}`}>
                                 <Button
@@ -166,7 +160,5 @@ const HighlightedAnime = async ({ anime, likes, isInAnimePage }: Props) => {
         </div>
     )
 }
-
-
 
 export default HighlightedAnime

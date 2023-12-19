@@ -1,4 +1,5 @@
 import { type ClassValue, clsx } from 'clsx'
+import { redirect } from 'next/navigation'
 import { twMerge } from 'tailwind-merge'
 
 export function cn(...inputs: ClassValue[]) {
@@ -26,3 +27,8 @@ export function closeModal(modalId: string) {
 }
 
 export const delay = (s: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, 1000 * s))
+
+export const handleError = (error: unknown, msg?: string) => {
+    console.error('Error...', error)
+    redirect(`/error?message=${msg}`)
+}

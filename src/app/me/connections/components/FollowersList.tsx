@@ -85,8 +85,6 @@ export default async function FollowersList({
                 })
             }
 
-
-
             // Revalidate path.
             revalidatePath('/me/connections?tab=followers')
 
@@ -127,6 +125,35 @@ export default async function FollowersList({
 
     }
 
+    const handleCancelFollowRequest = async (e: FormData) => {
+        'use server'
+
+        const followedUserId = e.get('followedUserId') as string;
+        const followerUserId = e.get('followerUserId') as string;
+
+        try {
+
+            // Delete follow request.
+            await prisma.followRequest.delete({
+                where: {
+                    followerUserId_followedUserId: {
+                        followerUserId: followedUserId,
+                        followedUserId: followerUserId,
+                    }
+                }
+            })
+
+            // Revalidate path.
+            revalidatePath('/me/connections?tab=followers')
+
+
+
+        } catch (error) {
+            console.error('Error: ', error);
+            redirect('/error?message=Something went wrong while canceling the follow request');
+        }
+
+    }
 
     return followers.length > 0 ? followers.map((follower, index) => {
 
@@ -163,33 +190,48 @@ export default async function FollowersList({
 
                     {/* FOLLOW / UNFOLLOW */}
                     {
-                        isFollowing ? (
-                            <form action={unfollowUser}>
+                        isCurrentUserRequestingToFollow ? (
+                            <form action={handleCancelFollowRequest}>
                                 <Button
-                                    title="Unfollow"
-                                    bgColor="bgLight"
-                                    bgHoverColor="bgLighter"
+                                    title='Cancel follow request'
+                                    bgColor='red-500'
                                     paddingX="8"
                                     className="text-xs"
+                                    bgHoverColor='red-600'
                                     type='submit'
                                 />
                                 <input type="hidden" name="followedUserId" value={follower.followedUserId} />
                                 <input type="hidden" name="followerUserId" value={follower.followerUserId} />
+
                             </form>
-                        ) : (
-                            <form action={followUser}>
-                                <Button
-                                    title="Follow"
-                                    bgColor="highlightedColor"
-                                    bgHoverColor="highlightedHover"
-                                    paddingX="8"
-                                    className="text-xs"
-                                    type='submit'
-                                />
-                                <input type="hidden" name="followedUserId" value={follower.followedUserId} />
-                                <input type="hidden" name="followerUserId" value={follower.followerUserId} />
-                            </form>
-                        )
+                        ) :
+                            isFollowing ? (
+                                <form action={unfollowUser}>
+                                    <Button
+                                        title="Unfollow"
+                                        bgColor="bgLight"
+                                        bgHoverColor="bgLighter"
+                                        paddingX="8"
+                                        className="text-xs"
+                                        type='submit'
+                                    />
+                                    <input type="hidden" name="followedUserId" value={follower.followedUserId} />
+                                    <input type="hidden" name="followerUserId" value={follower.followerUserId} />
+                                </form>
+                            ) : (
+                                <form action={followUser}>
+                                    <Button
+                                        title="Follow"
+                                        bgColor="highlightedColor"
+                                        bgHoverColor="highlightedHover"
+                                        paddingX="8"
+                                        className="text-xs"
+                                        type='submit'
+                                    />
+                                    <input type="hidden" name="followedUserId" value={follower.followedUserId} />
+                                    <input type="hidden" name="followerUserId" value={follower.followerUserId} />
+                                </form>
+                            )
                     }
 
                 </div>

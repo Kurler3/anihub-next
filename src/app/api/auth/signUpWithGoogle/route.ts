@@ -43,7 +43,7 @@ export async function GET(req: NextRequest) {
     ///////////////////////////////////////////////////
 
     // Create the user in your Prisma database
-    await prisma.user.create({
+    const newUser = await prisma.user.create({
         data: {
             id: user.id.toString()!,
             email: user.email!,
@@ -51,6 +51,28 @@ export async function GET(req: NextRequest) {
             avatarUrl: user.user_metadata.avatar_url,
         },
     })
+
+    // Create favorite, watching and planned watchlists for user!
+    await Promise.all(
+        ['Favorite', 'Watching', 'Planned'].map(async (listName) => {
+            // Create the list
+            const watchlist = await prisma.watchList.create({
+                data: {
+                    name: listName,
+                    ownerId: newUser.id,
+                },
+            })
+
+            // Add as admin
+            await prisma.watchListUser.create({
+                data: {
+                    userId: newUser.id,
+                    role: 'admin',
+                    watchlistId: watchlist.id,
+                },
+            })
+        }),
+    )
 
     return NextResponse.redirect(new URL('/', req.url))
 }

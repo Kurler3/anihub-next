@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,16 +8,16 @@ datasource db {
 }
 
 model User {
-  id                   String                @id @unique
-  avatarUrl            String?
+  id                   String                @id @unique @db.Uuid      
+  avatarUrl            String?               @map("avatar_url")
   username             String                @unique
   email                String                @unique
   bio                  String?
-  isProfilePublic      Boolean               @default(false) // Profiles are private by default
-  createdAt            DateTime              @default(now())
-  updatedAt            DateTime              @default(now())
-  following            Follow[]             @relation("follower")
-  followers            Follow[]             @relation("followed")
+  isProfilePublic      Boolean               @default(false) @map("is_profile_public") // Profiles are private by default  
+  createdAt            DateTime              @default(now()) @map("created_at")
+  updatedAt            DateTime              @default(now()) @map("updated_at")
+  following            Follow[]              @relation("follower")
+  followers            Follow[]              @relation("followed")
   posts                Post[]
   comments             Comment[]
   commentLikes         CommentLike[]
@@ -40,193 +37,168 @@ model User {
 
 model AnimeLike {
   id        Int           @id @default(autoincrement())
-  userId    String      
-  user      User  @relation(fields: [userId], references: [id])
-  animeId   String
+  userId    String        @map("user_id") @db.Uuid
+  user      User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  animeId   String        @map("anime_id")
   @@map("anime_likes")
 }
 
 model Follow {
-
-  // User that is following.
-  followerUser   User   @relation("follower", fields: [followerUserId], references: [id])
-  followerUserId String
-
-  // User that is being followed.
-  followedUser    User   @relation("followed", fields: [followedUserId], references: [id])
-  followedUserId  String
-
+  followerUser   User   @relation("follower", fields: [followerUserId], references: [id], onDelete: Cascade)
+  followerUserId String @map("follower_user_id") @db.Uuid
+  followedUser   User   @relation("followed", fields: [followedUserId], references: [id], onDelete: Cascade)
+  followedUserId String @map("followed_user_id") @db.Uuid
   @@id([followedUserId, followerUserId])
   @@map("follows")
 }
 
 model FollowRequest {
-    followerUser    User   @relation("follower_request", fields: [followerUserId], references: [id])
-    followerUserId  String
-    followedUser   User   @relation("followed_request", fields: [followedUserId], references: [id])
-    followedUserId String
-
-    createdAt   DateTime      @default(now())
-
-    @@id([followerUserId, followedUserId])
-    @@map("follow_requests")
+  followerUser    User   @relation("follower_request", fields: [followerUserId], references: [id], onDelete: Cascade)
+  followerUserId  String @map("follower_user_id") @db.Uuid
+  followedUser    User   @relation("followed_request", fields: [followedUserId], references: [id], onDelete: Cascade)
+  followedUserId  String @map("followed_user_id") @db.Uuid
+  createdAt       DateTime @default(now()) @map("created_at")
+  @@id([followerUserId, followedUserId])
+  @@map("follow_requests")
 }
 
 model Post {
-  id          Int           @id @default(autoincrement())
-  userId      String
-  user        User          @relation(fields: [userId], references: [id])
-  title       String
-  body        String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @default(now())
-  comments    Comment[]
-  likes    PostLike[]
-  dislikes PostDislike[]
-
+  id        Int       @id @default(autoincrement())
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  body      String
+  createdAt DateTime   @default(now()) @map("created_at")
+  updatedAt DateTime   @default(now()) @map("updated_at")
+  comments  Comment[]
+  likes     PostLike[]
+  dislikes  PostDislike[]
   @@map("posts")
 }
 
 model PostLike {
-  id      Int    @id @default(autoincrement())
-  userId  String
-  user    User   @relation(fields: [userId], references: [id])
-  postId  Int
-  comment Post   @relation(fields: [postId], references: [id])
-
-  createdAt DateTime @default(now())
-
+  id        Int       @id @default(autoincrement())
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    Int       @map("post_id") 
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now()) @map("created_at")
   @@map("posts_likes")
 }
 
 model PostDislike {
-  id      Int    @id @default(autoincrement())
-  userId  String
-  user    User   @relation(fields: [userId], references: [id])
-  postId  Int
-  comment Post   @relation(fields: [postId], references: [id])
-
-  createdAt DateTime @default(now())
-
+  id        Int       @id @default(autoincrement())
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId    Int       @map("post_id")
+  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now()) @map("created_at")
   @@map("posts_dislikes")
 }
 
 model Comment {
   id              Int       @id @default(autoincrement())
-  userId          String
-  user            User      @relation(fields: [userId], references: [id])
-  postId          Int
-  post            Post      @relation(fields: [postId], references: [id])
-  parentCommentId Int? // Nullable field to reference the parent comment
-  parentComment   Comment?  @relation("ChildComments", fields: [parentCommentId], references: [id])
+  content         String
+  userId          String    @map("user_id") @db.Uuid
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  postId          Int       @map("post_id")
+  post            Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parentCommentId Int?      @map("parent_comment_id") // Nullable field to reference the parent comment
+  parentComment   Comment?  @relation("ChildComments", fields: [parentCommentId], references: [id], onDelete: Cascade)
   childComments   Comment[] @relation("ChildComments")
-
-  createdAt DateTime         @default(now())
-  updatedAt DateTime         @default(now())
-  likes     CommentLike[]
-  dislikes  CommentDislike[]
-
+  createdAt       DateTime   @default(now()) @map("created_at")
+  updatedAt       DateTime   @default(now()) @map("updated_at")
+  likes           CommentLike[]
+  dislikes        CommentDislike[]
   @@map("comments")
 }
 
 model CommentLike {
-  id        Int     @id @default(autoincrement())
-  userId    String
-  user      User    @relation(fields: [userId], references: [id])
-  commentId Int
-  comment   Comment @relation(fields: [commentId], references: [id])
-
-  createdAt DateTime @default(now())
-
+  id        Int       @id @default(autoincrement())
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commentId Int       @map("comment_id")
+  comment   Comment   @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now()) @map("created_at")
   @@map("comments_likes")
 }
 
 model CommentDislike {
-  id        Int     @id @default(autoincrement())
-  userId    String
-  user      User    @relation(fields: [userId], references: [id])
-  commentId Int
-  comment   Comment @relation(fields: [commentId], references: [id])
-
-  createdAt DateTime @default(now())
-
+  id        Int       @id @default(autoincrement())
+  userId    String    @map("user_id") @db.Uuid
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  commentId Int       @map("comment_id")
+  comment   Comment   @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  createdAt DateTime   @default(now()) @map("created_at")
   @@map("comments_dislikes")
 }
 
 model AnimeComment {
-  id      Int    @id @default(autoincrement())
-  userId  String
-  user    User   @relation(fields: [userId], references: [id])
-  animeId Int
-  episode Int?
-  content String
-
-  parentAnimeCommentId Int?
+  id                Int       @id @default(autoincrement())
+  userId            String    @map("user_id") @db.Uuid
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  animeId           Int       @map("anime_id")
+  episode           Int?
+  content           String
+  parentAnimeCommentId Int?   @map("parent_anime_comment_id")
   parentAnimeComment   AnimeComment?  @relation("ChildAnimeComments", fields: [parentAnimeCommentId], references: [id], onDelete: Cascade)
   childAnimeComments   AnimeComment[] @relation("ChildAnimeComments")
-
-  // Likes and Dislikes relationships
-  likes    AnimeCommentLike[]    @relation("AnimeCommentLikes")
-  dislikes AnimeCommentDislike[] @relation("AnimeCommentDislikes")
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
-
+  likes              AnimeCommentLike[]    @relation("AnimeCommentLikes")
+  dislikes           AnimeCommentDislike[] @relation("AnimeCommentDislikes")
+  createdAt          DateTime   @default(now()) @map("created_at")
+  updatedAt          DateTime   @default(now()) @map("updated_at")
   @@map("anime_comments")
 }
 
 model AnimeCommentLike {
-  id             Int          @id @default(autoincrement())
-  userId         String
-  user           User         @relation(fields: [userId], references: [id])
-  animeCommentId Int
+  id             Int       @id @default(autoincrement())
+  userId         String    @map("user_id") @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  animeCommentId Int       @map("anime_comment_id")
   animeComment   AnimeComment @relation("AnimeCommentLikes", fields: [animeCommentId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
+  createdAt      DateTime   @default(now()) @map("created_at")
   @@map("anime_comments_likes")
 }
 
 model AnimeCommentDislike {
-  id             Int          @id @default(autoincrement())
-  userId         String
-  user           User         @relation(fields: [userId], references: [id])
-  animeCommentId Int
+  id             Int       @id @default(autoincrement())
+  userId         String    @map("user_id") @db.Uuid
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  animeCommentId Int       @map("anime_comment_id")
   animeComment   AnimeComment @relation("AnimeCommentDislikes", fields: [animeCommentId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-
+  createdAt      DateTime   @default(now()) @map("created_at")
   @@map("anime_comments_dislikes")
 }
 
 model WatchList {
-  id             Int              @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   name           String
   description    String?
-  ownerId        String
-  owner          User             @relation(fields: [ownerId], references: [id])
+  ownerId        String    @map("owner_id") @db.Uuid
+  owner          User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   watchlistUsers WatchListUser[]
   watchlistAnime WatchlistAnime[]
-
+  createdAt      DateTime   @default(now()) @map("created_at")
   @@map("watchlists")
 }
 
 model WatchListUser {
-  role        String
-  userId      String
-  user        User      @relation(fields: [userId], references: [id])
-  watchlistId Int
-  watchlist   WatchList @relation(fields: [watchlistId], references: [id])
-
+  role        String    @map("role")
+  userId      String    @map("user_id") @db.Uuid
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  watchlistId Int       @map("watchlist_id")
+  watchlist   WatchList @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+  createdAt   DateTime   @default(now()) @map("created_at")
   @@id([userId, watchlistId])
   @@map("watchlist_users")
 }
 
 model WatchlistAnime {
-  watchListId Int
-  watchlist   WatchList @relation(fields: [watchListId], references: [id])
-  animeId     Int
-
+  watchListId Int       @map("watchlist_id")
+  watchlist   WatchList @relation(fields: [watchListId], references: [id], onDelete: Cascade)
+  animeId     String    @map("anime_id")
+  animeImgUrl  String   @map("anime_img_url")
+  createdAt   DateTime   @default(now()) @map("created_at")
   @@id([watchListId, animeId])
   @@map("watchlist_animes")
 }

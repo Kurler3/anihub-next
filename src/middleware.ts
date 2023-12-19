@@ -12,6 +12,8 @@ const NEED_LOGIN_PATHS = [
     '/reset-pwd',
     '/me/edit',
     '/me/connections',
+    '/watchlists/create',
+    '/me/settings',
 ]
 const CANNOT_BE_LOGGED_IN_PATHS = ['/sign-up', '/login', '/forgot-pwd']
 

@@ -7,8 +7,11 @@ import PaginationComponent from '@/components/ui/PaginationComponent'
 import AnimeCard from '@/components/ui/anime/AnimeCard'
 import { ANIME_STATUS, ANIME_TYPES, SEASONS } from '@/lib/constants'
 import { getSearchAnimeOptions } from '@/lib/functions'
+import { getCurrentUser } from '@/lib/supabase/supabase-server'
 import { getAnimeGenres, searchAnimes } from '@/services'
 import { ISearchAnimeParams } from '@/types'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
 interface IProps {
@@ -18,6 +21,8 @@ interface IProps {
 const SearchPage = async ({
   searchParams,
 }: IProps) => {
+
+  const user = await getCurrentUser()
 
   const {
     data: animeData,
@@ -45,7 +50,7 @@ const SearchPage = async ({
       <h1 className='text-xl'>Search</h1>
 
       {/* INPUTS */}
-      <form className='w-full flexCenterCenter gap-3 flex-wrap'>
+      <form className='w-full flexStartCenter gap-3 flex-wrap'>
 
         {/* SEARCH INPUT */}
         <TextInput
@@ -117,6 +122,7 @@ const SearchPage = async ({
               <AnimeCard
                 key={`anime_card_${anime.mal_id}_${index}`}
                 anime={anime}
+                isLoggedIn={!!user}
               />
             )
 
