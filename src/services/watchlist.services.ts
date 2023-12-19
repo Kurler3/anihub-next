@@ -45,7 +45,12 @@ export const getWatchLists = async ({ q, page, user, roles }: IGetWatchlistsProp
     }
 
     // Get the watchlists
-    const watchlists = await prisma.watchList.findMany(query)
+    const watchlists = await prisma.watchList.findMany({
+        ...query,
+        orderBy: {
+            createdAt: 'desc',
+        },
+    })
 
     // Determine pagination details
     const hasNextPage = watchlists.length > perPage

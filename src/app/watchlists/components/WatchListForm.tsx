@@ -197,12 +197,18 @@ function WatchListForm({
             router.push(`/error?message=Couldn\'t ${existingWatchlist ? 'edit' : 'create'} watchlist! try again :)`);
         }
 
-        // Redirect
-        if (existingWatchlist) {
-            router.replace(`/watchlist/${existingWatchlist.id}`);
-        } else {
-            router.replace('/watchlists');
-        }
+        setTimeout(() => {
+
+            router.refresh()
+
+            // Redirect
+            if (existingWatchlist) {
+                router.push(`/watchlist/${existingWatchlist.id}`);
+            } else {
+                router.push('/watchlists');
+            }
+        }, 1000);
+
 
 
     }, [existingWatchlist, isCreatingWatchlist, router, watchlistUsers.admins, watchlistUsers.editors, watchlistUsers.viewers])

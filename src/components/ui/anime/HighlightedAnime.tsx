@@ -22,10 +22,10 @@ type Props = {
     anime: AnimeItem;
     likes: IAnimeLike[];
     isInAnimePage: boolean;
+    isInWatchlistsPage?: boolean;
 }
 
-const HighlightedAnime = async ({ anime, likes, isInAnimePage }: Props) => {
-
+const HighlightedAnime = async ({ anime, likes, isInAnimePage, isInWatchlistsPage }: Props) => {
 
     const user = await getCurrentUser();
 
@@ -37,7 +37,6 @@ const HighlightedAnime = async ({ anime, likes, isInAnimePage }: Props) => {
             const animeId = e.get('animeId') as string;
             const userId = e.get('userId') as string;
 
-            console.log('Anime id: ', animeId);
 
             const existingLike = await prisma.animeLike.findFirst({
                 where: {
@@ -87,7 +86,7 @@ const HighlightedAnime = async ({ anime, likes, isInAnimePage }: Props) => {
                     className="h-full object-contain rounded-md"
                 />
 
-                <div className="hidden md:flex flexStartStart flex-col ml-4 gap-3 h-full">
+                <div className="hidden md:flex flexStartStart flex-col ml-4 gap-3 h-full p-2">
 
                     {/* TITLE */}
                     <h1 className="text-xl font-bold">{anime.title_japanese} ({anime.title_english})</h1>
@@ -132,28 +131,47 @@ const HighlightedAnime = async ({ anime, likes, isInAnimePage }: Props) => {
                                     <input className='hidden' name='animeId' value={anime.mal_id.toString()} />
                                     <input className='hidden' name='userId' value={user.id.toString()} />
 
-
                                 </form>
                             )
                         }
                     </div>
 
                 </div>
-                {
-                    !isInAnimePage && (
-                        <div className='h-full flex justify-end flex-col'>
-                            {/* VIEW FULL PAGE */}
+
+                <div className='h-full flex justify-end flex-col gap-2'>
+
+                    {
+                        !isInAnimePage && (
+
                             <Link href={`/anime/${anime.mal_id}`}>
                                 <Button
                                     title='View Anime'
                                     bgColor='highlightedColor'
                                     paddingX='8'
                                     bgHoverColor='highlightedHover'
+                                    className='text-sm'
                                 />
                             </Link>
-                        </div>
-                    )
-                }
+
+                        )
+                    }
+
+                    {/* ADD TO WATCHLIST */}
+                    {
+                        user && !isInWatchlistsPage && (
+                            <Link href={`/anime/${anime.mal_id}/watchlists`}>
+                                <Button
+                                    title='Add to watchlists'
+                                    bgColor='bgLight'
+                                    paddingX='8'
+                                    bgHoverColor='bgLighter'
+                                    className='text-sm'
+                                />
+                            </Link>
+                        )
+                    }
+
+                </div>
 
 
             </div>

@@ -108,9 +108,9 @@ const AnimeCard = ({ anime, isLoggedIn, isInWatchlist }: Props) => {
 
                                         {
                                             isInWatchlist ? (
-                                                <DeleteIcon />
+                                                <DeleteIcon className='text-red-500' />
                                             ) : (
-                                                <AddIcon />
+                                                <AddIcon className='text-white' />
                                             )
                                         }
 
@@ -131,7 +131,7 @@ const AnimeCard = ({ anime, isLoggedIn, isInWatchlist }: Props) => {
                         onClick={handleViewOfficialPage}
                     >
                         <IconButton className='text-white'>
-                            <LaunchIcon />
+                            <LaunchIcon className='text-white' />
                         </IconButton>
                         <span className="text-sm">View Official Page</span>
                     </div>

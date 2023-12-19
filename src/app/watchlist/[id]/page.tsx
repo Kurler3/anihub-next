@@ -193,7 +193,7 @@ const WatchlistPage = async ({
 
                         {
                             filteredAnimeList.length > 0 ? (
-                                <div className='flex flex-wrap items-center'>
+                                <div className='flex flex-wrap items-center gap-4'>
                                     {
                                         filteredAnimeList.map((anime) => {
                                             return (

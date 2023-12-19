@@ -125,24 +125,24 @@ const WatchlistCard = async ({
 
             {/* ADD/REMOVE ICON */}
             {addingRemovingAnimeId && (
-                <div className="flexCenterCenter h-full absolute top-0 left-0 w-full text-white z-20">
+                <button type='submit' className="flexCenterCenter h-full absolute top-0 left-0 w-full text-white z-20">
                     {
                         isAnimeInWatchlist ?
                             <div className='bg-red-400 rounded-full border border-red-500 hover:bg-red-600 transition'>
-                                <button type='submit'>
-                                    <DeleteIcon className='text-white text-[100px]' />
-                                </button>
+
+                                <DeleteIcon className='text-white text-[100px]' />
+
 
                             </div>
                             :
                             <div className='bg-green-400 rounded-full border border-green-500 hover:bg-green-600 transition'>
-                                <button type='submit'>
-                                    <AddIcon className='text-white text-[100px]' />
-                                </button>
+
+                                <AddIcon className='text-white text-[100px]' />
+
                             </div>
 
                     }
-                </div>
+                </button>
             )}
 
             {/* Semi-transparent overlay */}
