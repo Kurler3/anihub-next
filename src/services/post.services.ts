@@ -1,6 +1,7 @@
 'use server'
 
 import prisma from '@/lib/prisma'
+import { getFullURL } from '@/lib/utils'
 import {
     IGetSocialPagePosts,
     IPost,
@@ -185,7 +186,8 @@ export const deletePost = async (postId: number, currentPath?: string) => {
 }
 
 export const getPostCommentExtraData = async (postCommentId: number) => {
-    const res = await fetch(`/api/post-comment/getExtraData?postCommentId=${postCommentId}`)
+    const url = getFullURL(`/api/post-comment/getExtraData?postCommentId=${postCommentId}`)
+    const res = await fetch(url)
 
     if (!res.ok) throw new Error('Error while getting post comment extra data')
 
@@ -195,7 +197,8 @@ export const getPostCommentExtraData = async (postCommentId: number) => {
 }
 
 export const getPostCommentChildrenComments = async (postCommentId: number) => {
-    const res = await fetch(`/api/post-comment/getExtraData?postCommentId=${postCommentId}&fields=childComments`)
+    const url = getFullURL(`/api/post-comment/getExtraData?postCommentId=${postCommentId}&fields=childComments`)
+    const res = await fetch(url)
 
     if (!res.ok) throw new Error('Error while getting post comment extra data')
 
@@ -206,8 +209,7 @@ export const getPostCommentChildrenComments = async (postCommentId: number) => {
 
 // Create post comment like / dislike
 export const createPostCommentLikeDislike = async (commentId: number, like: boolean) => {
-    const url = `/api/post-comment/${like ? 'like' : 'dislike'}`
-
+    const url = getFullURL(`/api/post-comment/${like ? 'like' : 'dislike'}`)
     // Make request to server.
     const response = await fetch(url, {
         method: 'POST',

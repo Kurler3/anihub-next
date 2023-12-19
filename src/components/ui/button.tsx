@@ -1,6 +1,6 @@
 
 
-import React, { ButtonHTMLAttributes } from 'react'
+import React from 'react'
 
 type Props = {
     title: string;

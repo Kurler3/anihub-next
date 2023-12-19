@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from 'clsx'
 import { redirect } from 'next/navigation'
 import { twMerge } from 'tailwind-merge'
+import { BASE_PROTOCOL, BASE_URL } from './constants'
 
 export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
@@ -31,4 +32,8 @@ export const delay = (s: number): Promise<void> => new Promise((resolve) => setT
 export const handleError = (error: unknown, msg?: string) => {
     console.error('Error...', error)
     redirect(`/error?message=${msg}`)
+}
+
+export const getFullURL = (url: string) => {
+    return `${BASE_PROTOCOL}://${BASE_URL}${url}`
 }
