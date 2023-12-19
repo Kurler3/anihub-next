@@ -187,7 +187,7 @@ const WatchlistCard = async ({
 
                         {
                             watchlist.watchlistUsers.length > 1 ?
-                                ' People' : 'Person'
+                                ' People' : ' Person'
                         }
                     </div>
 
