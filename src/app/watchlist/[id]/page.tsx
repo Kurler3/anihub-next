@@ -3,7 +3,7 @@
 import WatchListUsersAvatars from '@/app/watchlists/components/WatchListUsersAvatars';
 import HorizontalSeparator from '@/components/HorizontalSeparator';
 import TextInput from '@/components/inputs/TextInput';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/CustomButton';
 import PaginationComponent from '@/components/ui/PaginationComponent';
 import AnimeCard from '@/components/ui/anime/AnimeCard';
 import { getCurrentUser } from '@/lib/supabase/supabase-server';

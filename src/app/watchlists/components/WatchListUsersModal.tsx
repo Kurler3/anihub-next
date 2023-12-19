@@ -5,7 +5,7 @@ import Image from 'next/image';
 import React, { useEffect, useMemo, useState } from 'react'
 import SearchIcon from '@mui/icons-material/Search';
 import HorizontalSeparator from '@/components/HorizontalSeparator';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/CustomButton';
 import { closeModal } from '@/lib/utils';
 import { MANAGE_WATCHILIST_USERS_MODAL_ID } from '@/lib/constants';
 

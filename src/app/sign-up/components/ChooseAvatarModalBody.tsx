@@ -2,7 +2,7 @@
 'use client'
 
 
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/CustomButton';
 import { PUBLIC_IMAGES_URLS } from '@/lib/constants';
 import { getRandomValueFromArray } from '@/lib/utils';
 import Image from 'next/image';

@@ -1,6 +1,6 @@
 'use client' // Error components must be Client Components
 
-import Button from '@/components/ui/Button'
+import Button from '@/components/ui/CustomButton'
 import { useEffect } from 'react'
 
 export default function Error({

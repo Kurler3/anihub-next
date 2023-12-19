@@ -1,7 +1,7 @@
 
 
 import UserInfo from '@/app/me/connections/components/UserInfo';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/CustomButton';
 import { getSocialPagePeople } from '@/services';
 import { IUserWithConnections } from '@/types'
 import Link from 'next/link';

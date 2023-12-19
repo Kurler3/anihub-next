@@ -2,7 +2,7 @@
 
 import HorizontalSeparator from '@/components/HorizontalSeparator'
 import Alert from '@/components/ui/Alert';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/CustomButton';
 import GoogleButton from '@/components/ui/GoogleButton'
 import Modal from '@/components/ui/Modal';
 import { LOGIN_LOADING_MODAL_ID } from '@/lib/constants';

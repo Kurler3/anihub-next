@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/ui/Button'
+import Button from '@/components/ui/CustomButton'
 import Image from 'next/image'
 import React, { useCallback, useState } from 'react'
 import HorizontalSeparator from '@/components/HorizontalSeparator';

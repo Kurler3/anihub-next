@@ -4,7 +4,7 @@ import Image from "next/image";
 import React from "react";
 import UserInfo from "./UserInfo";
 import { IUserWithConnections } from "@/types";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/CustomButton";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";

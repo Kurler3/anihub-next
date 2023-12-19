@@ -1,6 +1,6 @@
 'use client'
 
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/CustomButton';
 import { ICreateWatchListUsersState, ICreateWatchlistFormData, IUser, IWatchList } from '@/types'
 import React, { useCallback, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';

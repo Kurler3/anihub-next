@@ -1,4 +1,4 @@
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/CustomButton";
 import prisma from "@/lib/prisma";
 import { IFollow, IUserWithConnections } from "@/types";
 import { revalidatePath } from "next/cache";

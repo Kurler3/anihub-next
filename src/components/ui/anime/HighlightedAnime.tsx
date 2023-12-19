@@ -8,7 +8,7 @@ import { IUser } from '@/types';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import prisma from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
-import Button from '../Button';
+import Button from '../CustomButton';
 import { getCurrentUser } from '@/lib/supabase/supabase-server';
 
 

@@ -1,7 +1,7 @@
 
 
 import HorizontalSeparator from '@/components/HorizontalSeparator';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/CustomButton';
 import { getCurrentUser } from '@/lib/supabase/supabase-server';
 import { getUserById } from '@/services';
 import Image from 'next/image';

@@ -2,7 +2,7 @@
 import MultiSelectDropdown from '@/components/inputs/MultiDropdownInput'
 import SingleSelectDropdown from '@/components/inputs/SingleSelectDropdown'
 import TextInput from '@/components/inputs/TextInput'
-import Button from '@/components/ui/Button'
+import Button from '@/components/ui/CustomButton'
 import PaginationComponent from '@/components/ui/PaginationComponent'
 import AnimeCard from '@/components/ui/anime/AnimeCard'
 import { ANIME_STATUS, ANIME_TYPES, SEASONS } from '@/lib/constants'

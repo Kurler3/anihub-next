@@ -1,6 +1,6 @@
 'use client'
 import Alert from '@/components/ui/Alert';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/CustomButton';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';

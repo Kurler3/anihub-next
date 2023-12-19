@@ -1,4 +1,4 @@
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/CustomButton';
 import prisma from '@/lib/prisma';
 import { getCurrentUser } from '@/lib/supabase/supabase-server'
 import Image from 'next/image';

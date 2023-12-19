@@ -2,7 +2,8 @@
 
 
 import Alert from '@/components/ui/Alert';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/CustomButton';
+
 import { supabase } from '@/lib/supabase/supabase-client';
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form';

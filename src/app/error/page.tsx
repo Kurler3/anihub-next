@@ -1,5 +1,5 @@
 'use client'
-import Button from '@/components/ui/Button'
+import Button from '@/components/ui/CustomButton'
 import { useSearchParams, useRouter } from 'next/navigation'
 
 import React from 'react'
