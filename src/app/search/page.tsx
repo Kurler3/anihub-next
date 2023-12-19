@@ -10,6 +10,8 @@ import { getSearchAnimeOptions } from '@/lib/functions'
 import { getCurrentUser } from '@/lib/supabase/supabase-server'
 import { getAnimeGenres, searchAnimes } from '@/services'
 import { ISearchAnimeParams } from '@/types'
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
 import React from 'react'
 
 interface IProps {
@@ -48,7 +50,7 @@ const SearchPage = async ({
       <h1 className='text-xl'>Search</h1>
 
       {/* INPUTS */}
-      <form className='w-full flexCenterCenter gap-3 flex-wrap'>
+      <form className='w-full flexStartCenter gap-3 flex-wrap'>
 
         {/* SEARCH INPUT */}
         <TextInput

@@ -26,6 +26,10 @@ const SingleSelectDropdown = ({ formInputName, options, placeholderText, default
         return selectedOption ? selectedOption.name : placeholderText;
     }, [placeholderText, selectedOption]);
 
+    const handleClearSelection = () => {
+        setSelectedOption(null);
+    };
+
     return (
         <div className='dropdown w-48'>
             <div
@@ -39,6 +43,19 @@ const SingleSelectDropdown = ({ formInputName, options, placeholderText, default
                 </div>
             </div>
             <div tabIndex={0} className='dropdown-content z-[1] p-2 shadow rounded-box bg-bgLight mt-2 flex flex-col text-sm'>
+                {/* Clear Selection Button */}
+                {selectedOption && (
+                    <div className='flex items-center py-2 px-4'>
+                        <button
+                            type='button'
+                            className='text-placeholderColor hover:text-highlightedHover transition'
+                            onClick={handleClearSelection}
+                        >
+                            Clear Selection
+                        </button>
+                    </div>
+                )}
+
                 {/* OPTIONS */}
                 {options.map((option) => {
                     const isSelected = selectedOption?.id === option.id;

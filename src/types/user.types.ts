@@ -33,6 +33,10 @@ export interface IUserWithFollowing extends IUser {
     following: IFollow[]
 }
 
+export interface IUserWithFollowRequests extends IUser {
+    followerRequests: IFollowRequest[]
+}
+
 export interface IUserWithConnections extends IUser {
     followers: IFollow[]
     following: IFollow[]

@@ -8,6 +8,8 @@ import Button from "@/components/ui/Button";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import prisma from "@/lib/prisma";
+import SearchBar from "@/components/inputs/SearchBar";
+import TextInput from "@/components/inputs/TextInput";
 
 
 
@@ -156,6 +158,34 @@ export default async function SearchUsers({
     return (
         <div className="w-full h-full flexStartStart flex-col p-4 pl-12 gap-3">
 
+            {/* SEARCH */}
+            <form className='w-full flexStartCenter gap-3 flex-wrap'>
+
+                {/* SEARCH INPUT */}
+                {/* SEARCH INPUT */}
+                <TextInput
+                    name="q"
+                    placeholder='Search for users...'
+                    initialValue={q ?? ''}
+                />
+
+                <input
+                    type='hidden'
+                    name='tab'
+                    value='findPeople'
+                />
+
+                {/* SUBMIT */}
+                <Button
+                    title='Filter'
+                    type='submit'
+                    bgColor='highlightedColor'
+                    bgHoverColor='highlightedColorHover'
+                    paddingX='8'
+                    className='text-sm'
+                />
+
+            </form>
 
             {/* USERS */}
             <div className="flexStartCenter flex-col gap-4 flex-1 w-full">
