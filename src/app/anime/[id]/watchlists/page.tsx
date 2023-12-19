@@ -56,6 +56,7 @@ const AnimeWatchlistsPage = async ({
                 anime={anime}
                 likes={animeLikesMap}
                 isInAnimePage
+                isInWatchlistsPage
             />
 
             {/* ADD AND REMOVE FROM WATCHLISTS */}

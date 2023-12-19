@@ -187,6 +187,7 @@ export const deletePost = async (postId: number, currentPath?: string) => {
 
 export const getPostCommentExtraData = async (postCommentId: number) => {
     const url = getFullURL(`/api/post-comment/getExtraData?postCommentId=${postCommentId}`)
+
     const res = await fetch(url)
 
     if (!res.ok) throw new Error('Error while getting post comment extra data')
