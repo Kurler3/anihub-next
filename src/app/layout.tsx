@@ -4,6 +4,8 @@ import AppLayoutWrapper from '@/components/layout/AppLayoutWrapper'
 //👇 Import Open Sans font
 import { McLaren } from 'next/font/google'
 import LoadingModal from '@/components/ui/LoadingModal'
+import { Analytics } from '@vercel/analytics/react';
+
 
 //👇 Configure our font object
 const mcLaren = McLaren({
@@ -28,6 +30,7 @@ export default function RootLayout({
         <AppLayoutWrapper>
           {children}
         </AppLayoutWrapper>
+        <Analytics />
       </body>
     </html>
   )
