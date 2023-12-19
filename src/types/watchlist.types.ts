@@ -58,6 +58,6 @@ export interface ICreateWatchlistData extends ICreateWatchlistFormData {
     viewers: string[]
 }
 
-export interface IUpdateWatchlistData extends ICreateWatchlistFormData {
+export interface IUpdateWatchlistData extends ICreateWatchlistData {
     id: number
 }

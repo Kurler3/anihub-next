@@ -176,7 +176,7 @@ function WatchListForm({
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(data),
+                body: JSON.stringify({ ...data, id: existingWatchlist.id }),
             })
         } else {
             response = await fetch('/api/watchlists/create', {
@@ -197,8 +197,13 @@ function WatchListForm({
             router.push(`/error?message=Couldn\'t ${existingWatchlist ? 'edit' : 'create'} watchlist! try again :)`);
         }
 
-        // Redirect to watchlists
-        router.replace('/watchlists');
+        // Redirect
+        if (existingWatchlist) {
+            router.replace(`/watchlist/${existingWatchlist.id}`);
+        } else {
+            router.replace('/watchlists');
+        }
+
 
     }, [existingWatchlist, isCreatingWatchlist, router, watchlistUsers.admins, watchlistUsers.editors, watchlistUsers.viewers])
 
