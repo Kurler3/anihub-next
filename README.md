@@ -2,7 +2,7 @@
 
 Welcome to the revamped AniHub project!
 
-![image](https://github.com/Kurler3/anihub-next/assets/43253459/91098bd0-7f7b-42e5-a473-42df6f631013)
+![image](https://github.com/Kurler3/anihub-next/assets/43253459/57da63d5-a0b3-4602-a145-886ea227d338)
 
 ## Overview
 
