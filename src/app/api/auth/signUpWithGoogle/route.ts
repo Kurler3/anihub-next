@@ -1,6 +1,8 @@
+import { PUBLIC_IMAGES_BASE_URL, PUBLIC_IMAGES_URLS } from '@/lib/constants'
 import prisma from '@/lib/prisma'
 import { getSupabaseRouteHandler } from '@/lib/supabase/supabase-route-handler'
 import { NextRequest, NextResponse } from 'next/server'
+import uuid from 'uuid'
 
 export async function GET(req: NextRequest) {
     /////////////////////////////////////////////////
@@ -47,14 +49,14 @@ export async function GET(req: NextRequest) {
         data: {
             id: user.id.toString()!,
             email: user.email!,
-            username: user.user_metadata.full_name,
-            avatarUrl: user.user_metadata.avatar_url,
+            username: user.user_metadata?.full_name ?? `User ${uuid.v4()}`,
+            avatarUrl: user.user_metadata?.avatar_url ?? `${PUBLIC_IMAGES_URLS[0]}`,
         },
     })
 
     // Create favorite, watching and planned watchlists for user!
     await Promise.all(
-        ['Favorite', 'Watching', 'Planned'].map(async (listName) => {
+        ['Favorites', 'Watching', 'Planned'].map(async (listName) => {
             // Create the list
             const watchlist = await prisma.watchList.create({
                 data: {
