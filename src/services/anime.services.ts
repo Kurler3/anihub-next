@@ -29,9 +29,9 @@ export const fetchAnimeData: (endpoint: string, params?: ISearchAnimeParams) => 
                   }
               })
               .join('&')
-
+    
     const res = await fetch(`${JIKAN_API_URL}/${endpoint}?${queryString}`, { next: { revalidate: 60 * 10 } })
-
+  
     if (!res.ok) {
         const errorMessage = await res.text()
         throw new Error(`Error ANIME FETCH: ${errorMessage}`)

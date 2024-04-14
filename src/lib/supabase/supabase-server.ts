@@ -75,6 +75,8 @@ export const getCurrentUser = async (includeParams?: IGetUserIncludeParams) => {
             }
         }
 
+
+        console.log('Before calling prisma')
         // Get from db
         const userFromDb = await prisma.user.findUnique({
             where: {
@@ -83,6 +85,7 @@ export const getCurrentUser = async (includeParams?: IGetUserIncludeParams) => {
             include: prismaInclude,
         })
 
+        console.log('After calling prisma')
         if (!userFromDb) return null
 
         return {

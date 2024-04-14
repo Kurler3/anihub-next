@@ -4,7 +4,6 @@ import AnimeCard from "@/components/ui/anime/AnimeCard";
 import HighlightedAnime from "@/components/ui/anime/HighlightedAnime";
 import { getCurrentUser } from "@/lib/supabase/supabase-server";
 import { getAnimeLikes, getTopAnime } from "@/services";
-import { IUserWithWatchlists } from "@/types";
 import Link from "next/link";
 
 export default async function Home() {
