@@ -5,6 +5,7 @@ import HighlightedAnime from "@/components/ui/anime/HighlightedAnime";
 import { getCurrentUser } from "@/lib/supabase/supabase-server";
 import { getAnimeLikes, getTopAnime } from "@/services";
 import Link from "next/link";
+import { redirect } from 'next/navigation';
 
 export default async function Home() {
 
@@ -15,7 +16,15 @@ export default async function Home() {
 
   const animeData = responseResult.data;
 
-  const animeLikesMap = animeData.length > 0 ? await getAnimeLikes(animeData[0].mal_id.toString()) : [];
+  let animeLikesMap;
+
+  try {
+     animeLikesMap = animeData.length > 0 ? await getAnimeLikes(animeData[0].mal_id.toString()) : [];
+  } catch (error) {
+    console.error(error);
+    redirect('/error?message=Something went wrong D:')
+  }
+ 
 
   return (
     <main className='flex-1 h-full p-8 w-full flexStartStart flex-col gap-4'>

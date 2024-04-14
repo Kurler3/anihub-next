@@ -154,11 +154,17 @@ export const getAnimeCommentChildrenComments = async (animeCommentId: number) =>
 }
 
 export const getAnimeLikes = async (animeId: string): Promise<IAnimeLike[]> => {
-    const likes = await prisma.animeLike.findMany({
-        where: {
-            animeId,
-        },
-    })
 
-    return likes as IAnimeLike[]
+    try {
+        const likes = await prisma.animeLike.findMany({
+            where: {
+                animeId,
+            },
+        })
+    
+        return likes as IAnimeLike[]   
+    } catch (error) {
+        console.error("Error getting anime likes", error);
+        throw new Error('Error while getting anime likes')
+    }
 }
